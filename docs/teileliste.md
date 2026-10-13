@@ -4,7 +4,7 @@ Stand: 13.10.2026. **Entwurf zur Freigabe, nichts bestellen.** Preise sind Momen
 
 Legende: **R** = recherchierter Preis mit Quelle, **S** = Schätzung (kein belastbarer Preis gefunden).
 
-Grundlage: Architektur aus CLAUDE.md (zweistufiger Hub: Mikrocontroller plus Pi Zero 2 W als Körper, Pi 5 als Gehirn). Mikrocontroller, Sensorliste und Gehirn-Rechner sind noch **offen**. Die Auswahl unten ist ein Vorschlag.
+Grundlage: Architektur aus CLAUDE.md (zweistufiger Hub: Mikrocontroller plus Pi Zero 2 W als Körper). **Gehirn: Marvins alter Laptop als Heimserver** (Entscheidung 13.10.2026), daher keine Kosten fürs Gehirn. Mikrocontroller und Sensorliste sind noch **offen**, die Auswahl unten ist ein Vorschlag.
 
 ## 1. Körper (Pi Zero 2 W)
 
@@ -24,7 +24,11 @@ Grundlage: Architektur aus CLAUDE.md (zweistufiger Hub: Mikrocontroller plus Pi 
 | Kleinteile | Gehäuse, Kabel, Steckbrett, Not-Aus-Taster, Pufferkondensator | 20–40 € | S | |
 | **Summe Körper** | | **ca. 202–309 €** | | |
 
-## 2. Gehirn (Variante Raspberry Pi 5)
+## 2. Gehirn
+
+**Gewählt: alter Laptop als Heimserver, 0 €.** Der Laptop-Akku dient gleichzeitig als USV. Eignung noch prüfen (siehe unten). Die Pi-5-Variante bleibt als Rückfalloption stehen.
+
+### Rückfalloption Raspberry Pi 5
 
 | Teil | Vorschlag | Preis | Art | Quelle / Hinweis |
 |---|---|---|---|---|
@@ -44,7 +48,7 @@ Grundlage: Architektur aus CLAUDE.md (zweistufiger Hub: Mikrocontroller plus Pi 
 |---|---|
 | Körper + Pi 5 ohne USV | ca. 448–585 € |
 | Körper + Pi 5 mit USV | ca. 508–665 € |
-| Körper + vorhandener Heimserver | ca. 202–309 € |
+| **Körper + alter Laptop als Gehirn (gewählt)** | **ca. 202–309 €** |
 
 ## 4. Laufende Kosten
 
@@ -62,6 +66,7 @@ Grundlage: Architektur aus CLAUDE.md (zweistufiger Hub: Mikrocontroller plus Pi 
 
 ## 6. Offene Entscheidungen
 - Mikrocontroller bestätigen (Vorschlag Pico 2 W) und Sensorliste festlegen.
-- Gehirn: Pi 5 kaufen oder vorhandenen Heimserver nutzen.
+- ~~Gehirn: Pi 5 kaufen oder vorhandenen Heimserver nutzen.~~ Entschieden: alter Laptop.
+- Laptop-Eignung: mindestens 8 GB RAM empfohlen, SSD, 64-Bit-Linux, Betrieb mit zugeklapptem Deckel, Akkuzustand (Dauerladen auf 100 % altert den Akku, Ladegrenze setzen wenn möglich), Stromverbrauch im Leerlauf.
 - Akku-Lösung für den Körper: UPS HAT (C) oder Powerbank.
 - Budget-Obergrenze für die Anschaffung und monatliches API-Limit.

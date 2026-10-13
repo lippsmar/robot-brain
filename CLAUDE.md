@@ -8,7 +8,7 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 ## 2. Architektur in Kurzform
 - **Cognitive Layer (Host):** Claude Code (Planung, Code, Skills), OpenClaw (agentische Ausführung, Tools, Kommunikation) und Memory Core (Gedächtnis L0 bis L5, siehe `memory/SYSTEM_PROMPT.md`).
 - **Control Hub:** Zentrale Instanz für Sensorik, LTE/SIM, Mail, BLE, Netzwerk und Not-Aus. Safety-Funktionen laufen lokal und unabhängig von der Cloud.
-- **Vorschlag zur Hardware (offen):** Microcontroller für Not-Aus, Watchdog und Sensorik, Raspberry Pi Zero 2 W für LTE-Modem, Mail und Kommunikation. Das Gehirn (OpenClaw, Vektorspeicher, Embeddings) läuft auf einem Raspberry Pi 5 mit 8 GB oder einem Heimserver.
+- **Vorschlag zur Hardware (offen):** Microcontroller für Not-Aus, Watchdog und Sensorik, Raspberry Pi Zero 2 W für LTE-Modem, Mail und Kommunikation. Das Gehirn (OpenClaw, Vektorspeicher, Embeddings) läuft auf Marvins altem Laptop als Heimserver (Entscheidung 13.10.2026, Eignung noch prüfen).
 - **Wissensspeicher:** SQLite mit sqlite-vec und FTS5 (Hybridsuche), kleine ONNX-Embeddings über fastembed.
 - **Energie:** Akku mit USB-C-Laden über ein UPS-HAT. Dauerbetrieb braucht ein Netzteil.
 - **Details** (SIM-Modem, Modelle, Embeddings, OpenClaw-Absicherung, Handy-Zugriff, Adobe-Nachbauten): `docs/projektstart-details.md`. Teileliste: `docs/teileliste.md`.
@@ -48,4 +48,5 @@ Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Rege
 - [ ] Privater Google-Account oder separates Testkonto
 - [ ] SIM-Anbieter und E-Mail-Anbieter wählen
 - [ ] Teileliste mit Kosten für Körper und Gehirn: Entwurf in `docs/teileliste.md`, Freigabe offen
+- [ ] Laptop als Gehirn: Modell, RAM, Speicher, Akkuzustand und Betriebssystem erfassen und Eignung prüfen
 - [ ] Superpowers in Claude Code installieren und Telemetrie abschalten (macht Marvin, siehe `docs/projektstart-details.md`)
