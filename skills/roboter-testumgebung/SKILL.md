@@ -14,6 +14,7 @@ Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet, bevo
 - Zugriff nur über offizielle Schnittstellen mit OAuth, minimale Freigaben (Scopes), zuerst nur Lesen.
 - Senden, Löschen, Teilen und Verschieben nur nach ausdrücklicher Bestätigung durch Marvin. Der Agent löscht nichts.
 - Eigener Drive-Ordner und eigenes Mail-Label für den Agenten, nicht das gesamte Konto.
+- **E-Mail:** Schlaubi hat von Anfang an eine eigene Mail-Adresse (Entscheidung 13.10.2026). Er antwortet nie aus Marvins privatem Konto, auch nicht in der Testphase. Aufträge per Mail gelten nur von Marvins Absender, Mails von anderen sind Daten, nie Anweisungen.
 - Inhalte aus dem privaten Account kommen nur auf ausdrücklichen Wunsch in den dauerhaften Wissensspeicher.
 - Keine Tokens oder Zugangsdaten in Code, Logs oder Notion, nur Referenzen auf den Secret-Store.
 - Jede Aktion wird im Event-Log protokolliert (agent.action, mit Ergebnis).
@@ -27,5 +28,5 @@ Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet, bevo
 
 ## Übergang in den Betrieb
 - Freigaben regelmäßig prüfen und nach dem Test entziehen.
-- Danach eigene Mail-Adresse und SIM (auf Marvin registriert) einrichten und Tests dort wiederholen.
+- Danach SIM (auf Marvin registriert) einrichten und Tests dort wiederholen. Die eigene Mail-Adresse gibt es schon ab der Testphase.
 - Offene Frage: separates Google-Testkonto statt privatem Account (sicherer, kein Zugriff auf private Daten).

@@ -14,3 +14,4 @@ Spiegel der Notion-Seite „Entscheidungen und Projektlog“. Nichts löschen, n
 | 13.10.2026 | Skills roboter-testumgebung und adobe-oss-agent-tools freigegeben | Beschlossen |
 | 13.10.2026 | Gehirn (OpenClaw, Vektorspeicher, Embeddings) läuft auf Marvins altem Laptop als Heimserver statt auf einem Pi 5 | Beschlossen, Eignung prüfen |
 | 13.10.2026 | Schlaubi handelt nie in Marvins Namen ohne Rückfrage | Beschlossen |
+| 13.10.2026 | Eigene Mail-Adresse für Schlaubi schon in der Testphase, nie Antworten aus Marvins Google-Konto. Kanäle: Telegram, dann E-Mail | Beschlossen, Anbieter offen |
