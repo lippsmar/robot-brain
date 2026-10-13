@@ -22,7 +22,7 @@ Grundlage: Design Körper „Schlaubi“ Version 1. **Gehirn: Marvins alter Lapt
 | Schalter | Ein-Aus-Schalter oder Metall-Taster | 3–8 € | S | dient als Not-Aus |
 | Laden | USB-C-Einbaubuchse oder kurzes Durchführungskabel | 5–10 € | S | |
 | Kleinteile | Kabel, Schrauben, Abstandshalter, Lichtleiter, Pufferkondensator | 15–30 € | S | |
-| Gehäuse | Holzrahmen aus Marvins Bestand, Seiten aus Acrylglas opal/satiniert 3 mm (Zuschnitt) | 10–25 € | S | Marvins Variante 13.10.2026 |
+| Gehäuse | Holzrahmen aus Marvins Bestand, Seiten aus Acrylglas opal weiß, matt/satiniert, 3 mm (Zuschnitt, für Hinterleuchtung) | 10–25 € | S | Marvins Variante 13.10.2026 |
 | **Summe Version 1** | | **ca. 158–254 €** | | |
 
 **Gestrichen gegenüber dem ersten Entwurf:** UPS HAT (C) (Akku zu klein, ca. 1 Stunde), Pico 2 W (ohne Motoren nicht nötig, bleibt Option).
