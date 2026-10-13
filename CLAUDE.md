@@ -11,7 +11,7 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 - **Vorschlag zur Hardware (offen):** Microcontroller für Not-Aus, Watchdog und Sensorik, Raspberry Pi Zero 2 W für LTE-Modem, Mail und Kommunikation. Das Gehirn (OpenClaw, Vektorspeicher, Embeddings) läuft auf Marvins altem Laptop als Heimserver (Entscheidung 13.10.2026, Eignung noch prüfen).
 - **Wissensspeicher:** SQLite mit sqlite-vec und FTS5 (Hybridsuche), dazu LanceDB als Vergleich und Ersatz. Kleine ONNX-Embeddings über fastembed.
 - **Energie:** Akku mit USB-C-Laden über ein UPS-HAT. Dauerbetrieb braucht ein Netzteil.
-- **Details** (SIM-Modem, Modelle, Embeddings, OpenClaw-Absicherung, Handy-Zugriff, Adobe-Nachbauten): `docs/projektstart-details.md`. Teileliste: `docs/teileliste.md`. Design des Körpers „Schlaubi“: `docs/design-koerper.md`. OpenClaw-Prüfung: `docs/pruefung-openclaw.md`.
+- **Details** (SIM-Modem, Modelle, Embeddings, OpenClaw-Absicherung, Handy-Zugriff, Adobe-Nachbauten): `docs/projektstart-details.md`. Teileliste: `docs/teileliste.md`. Design des Körpers „Schlaubi“: `docs/design-koerper.md`. Design des Gehirns: `docs/design-gehirn.md`. OpenClaw-Prüfung: `docs/pruefung-openclaw.md`.
 
 ## 3. Arbeitsregeln für Claude Code
 - Vor der Arbeit den Skill `skills/roboter-projekt` befolgen.
@@ -38,6 +38,7 @@ Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Rege
 ## 6. Datenschutz und Kamera
 - Lokale Datenhaltung, verschlüsselte Laufwerke, keine Telemetrie, VPN, möglichst wenig persönliche Daten an die API.
 - Marvins Stimme bleibt lokal: Audio geht nie an Cloud-Dienste, auch nicht als Rückfall. Nur erkannter Text geht an die Claude-API (Entscheidung 13.10.2026).
+- Kamerabilder dürfen zur Auswertung an die Claude-API, nur wenn Marvin etwas zeigt, ohne Metadaten (Entscheidung 13.10.2026).
 - Kameras und Mikrofone erkennbar, keine verdeckten Aufnahmen, Aufnahmen von Personen nur mit Einwilligung. Personenbezogene Daten mit `pii: true`.
 
 ## 7. Offene Punkte
