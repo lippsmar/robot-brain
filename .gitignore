@@ -1,0 +1,19 @@
+# Secrets nie einchecken, nur Referenzen auf den Secret-Store
+.env
+*.env
+secrets/
+*.pem
+*.key
+credentials*.json
+token*.json
+
+# Rohdaten und Logs bleiben lokal
+data/raw/**
+data/curated/**
+logs/events/*.jsonl
+!**/.gitkeep
+
+__pycache__/
+*.pyc
+.venv/
+.DS_Store

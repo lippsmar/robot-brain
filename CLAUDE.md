@@ -1,0 +1,46 @@
+# CLAUDE.md – KI-Roboter (robot-brain)
+
+Status: Entwurf v0.1, Stand 13.10.2026. Spiegel der Notion-Seite „CLAUDE.md – Projektbeschreibung“. Bei Widerspruch gilt Notion, und es wird nachgefragt.
+
+## 1. Ziel
+Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammelt, auf Anweisung Themen vertieft und sein Wissen in einem externen Speicher ablegt und abrufbar hält. Er hat eine eigene SIM-Karte (SMS, Daten) und eine eigene E-Mail-Adresse. Marvin trägt die rechtliche Verantwortung für alle Konten, die SIM und den API-Key.
+
+## 2. Architektur in Kurzform
+- **Cognitive Layer (Host):** Claude Code (Planung, Code, Skills), OpenClaw (agentische Ausführung, Tools, Kommunikation) und Memory Core (Gedächtnis L0 bis L5, siehe `memory/SYSTEM_PROMPT.md`).
+- **Control Hub:** Zentrale Instanz für Sensorik, LTE/SIM, Mail, BLE, Netzwerk und Not-Aus. Safety-Funktionen laufen lokal und unabhängig von der Cloud.
+- **Vorschlag zur Hardware (offen):** Microcontroller für Not-Aus, Watchdog und Sensorik, Raspberry Pi Zero 2 W für LTE-Modem, Mail und Kommunikation. Das Gehirn (OpenClaw, Vektorspeicher, Embeddings) läuft auf einem Raspberry Pi 5 mit 8 GB oder einem Heimserver.
+- **Wissensspeicher:** SQLite mit sqlite-vec und FTS5 (Hybridsuche), kleine ONNX-Embeddings über fastembed.
+- **Energie:** Akku mit USB-C-Laden über ein UPS-HAT. Dauerbetrieb braucht ein Netzteil.
+
+## 3. Arbeitsregeln für Claude Code
+- Vor der Arbeit den Skill `skills/roboter-projekt` befolgen.
+- Keine physischen oder irreversiblen Aktionen ohne Freigabe.
+- Keine Secrets, Zugangsdaten, SIM-PINs oder Tokens in Code, Logs, Notion oder Gedächtnis. Nur Referenzen auf den Secret-Store.
+- Fremde Skills, Repos und Pakete vor der Nutzung vollständig lesen und nach der Checkliste in `skills/INDEX.md` bewerten.
+- Keine Umgehung von SIM-Registrierung, Identitätsprüfungen oder Bot-Sperren. Der Roboter gibt sich als Automat zu erkennen und beachtet robots.txt.
+- Jede Aktion des Agenten wird protokolliert (Event-Log gemäß Schema).
+- Nichts erfinden. Fehlendes wird nachgefragt oder als offen markiert.
+- Neue Features: `skills/roboter-brainstorming-plan`. Fehler: `skills/roboter-debugging`.
+
+## 4. Token und Budget
+- Der laufende Roboter nutzt einen API-Key aus der Anthropic Console mit Prepaid-Guthaben und monatlichem Ausgabenlimit.
+- Die Abo-Anmeldung (OAuth) von Claude Pro oder Max wird nicht in OpenClaw oder anderen Drittanbieter-Tools verwendet. Das Abo dient der Entwicklung in Claude Code.
+- Selbsterhalt: Budget überwachen, bei knappem Stand drosseln und Marvin per SMS oder Mail zum Nachladen auffordern.
+- Modellwahl: günstiges Modell für Hintergrundrecherche, stärkeres Modell für Gespräche. Modellname steht in der Config.
+
+## 5. Testphase
+Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Regeln: `skills/roboter-testumgebung` (Entwurf).
+
+## 6. Datenschutz und Kamera
+- Lokale Datenhaltung, verschlüsselte Laufwerke, keine Telemetrie, möglichst wenig persönliche Daten an die API.
+- Kameras und Mikrofone erkennbar, keine verdeckten Aufnahmen. Personenbezogene Daten mit `pii: true`.
+
+## 7. Offene Punkte
+- [ ] Microcontroller-Modell und Sensorliste festlegen
+- [ ] Zweistufiger Hub (Microcontroller plus Pi Zero 2 W) oder reiner Microcontroller
+- [ ] Speicherziel festlegen (lokal, NAS, Cloud-Bucket)
+- [ ] Vektordatenbank bestätigen (Vorschlag sqlite-vec mit FTS5)
+- [ ] Retention-Fristen pro Datentyp
+- [ ] Freigabe-Policy für physische Aktionen
+- [ ] Privater Google-Account oder separates Testkonto
+- [ ] SIM-Anbieter und E-Mail-Anbieter wählen

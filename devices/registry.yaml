@@ -1,0 +1,22 @@
+# Geräte-Registry. Unbekannte Geräte: status unverified, nie automatisch steuern.
+# Beispiel-Einträge aus dem Memory Core, noch keine echten Geräte.
+- device_id: ble-thermo-01
+  name: Thermometer Wohnzimmer
+  type: sensor
+  protocol: ble
+  address: "AA:BB:CC:DD:EE:FF"
+  capabilities: [temperature, humidity, battery]
+  gatt:
+    temperature: "00002a6e-0000-1000-8000-00805f9b34fb"
+  status: unverified
+  control_allowed: false
+  log_interval_s: 60
+- device_id: net-plug-01
+  name: Smart Plug Werkbank
+  type: actuator
+  protocol: http
+  address: "192.168.1.42"
+  capabilities: [power_on_off, power_metering]
+  status: unverified
+  control_allowed: false
+  requires_approval: true
