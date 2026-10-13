@@ -44,8 +44,8 @@ Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Rege
 - [ ] Microcontroller-Modell und Sensorliste festlegen (Vorschlag im Design: Version 1 ohne Mikrocontroller)
 - [ ] Zweistufiger Hub (Microcontroller plus Pi Zero 2 W) oder reiner Microcontroller
 - [x] Speicherziel: Gedächtnis auf dem Laptop, Sicherung verschlüsselt auf externer Festplatte zu Hause (13.10.2026)
-- [ ] Vektordatenbank bestätigen (Vorschlag sqlite-vec mit FTS5)
-- [ ] Retention-Fristen pro Datentyp (Wissen und Interessen: für immer, 13.10.2026. Übrige Daten: Vorschlag in Notion „Design Gehirn“, offen)
+- [ ] Vektordatenbank: sqlite-vec mit FTS5 plus zusätzlicher Vektorspeicher (Marvin, 13.10.2026), Kandidat LanceDB, Zweck und Auswahl offen
+- [x] Retention-Fristen pro Datentyp mit Merk-Schutz (13.10.2026, Notion „Design Gehirn“)
 - [ ] Freigabe-Policy für physische Aktionen
 - [ ] Privater Google-Account oder separates Testkonto
 - [ ] SIM-Anbieter wählen (E-Mail: mail.de FreeMail, Konto legt Marvin an)
