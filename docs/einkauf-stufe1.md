@@ -11,7 +11,7 @@ Stand 13.10.2026. Preise inkl. MwSt., ohne Versand, Momentaufnahmen. **Vor dem K
 | 3 | Kabel auf Micro-USB (USB-A oder USB-C, passend zum Messgerät), kurz und dick (für 2 A+) | Pi Zero hat Micro-USB | ca. 3–5 € (Schätzung) | Elektronik-Shop deiner Wahl, entfällt falls vorhanden |
 | 4 | Jumperkabel Dupont **female-female**, 20 cm | Mikrofon, später LED/Summer | ab 1,60 € | BerryBase Jumperkabel: https://www.berrybase.de/bauelemente/prototyping/jumperkabel/ |
 | 6 | Stiftleiste 2×20, 2,54 mm (nur falls am Pi noch keine Pins angelötet sind) | zum Anlöten am Pi Zero 2 W | ca. 1 € (Schätzung) | Elektronik-Shop deiner Wahl |
-| 5 | microSD 32 GB, Markenkarte A1 | Betriebssystem, entfällt falls vorhanden | ca. 7 € | z. B. https://www.ebay.de/itm/116572688443 |
+| 5 | microSD 32 GB, Markenkarte A1 | Betriebssystem. **Vorhanden** (Größe zu Hause prüfen). Nur kaufen, falls kleiner als 16 GB | ca. 7 € | z. B. https://www.ebay.de/itm/116572688443 |
 
 **Summe: ca. 12–26 € plus Versand.**
 

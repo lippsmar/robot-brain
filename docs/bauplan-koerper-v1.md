@@ -47,6 +47,8 @@ Ablauf jedes Schritts: **Messung oder Test festlegen → ausführen (erwartet: s
 - Prüfung: Lieferung vollständig, Pi und Karte unbeschädigt.
 
 ## Phase 2 – Grundsystem
+**Schritt-für-Schritt-Anleitung:** `docs/anleitung-phase2.md`.
+
 **2.1 System aufspielen:** Raspberry Pi OS Lite 64-bit mit Raspberry Pi Imager, Benutzer, WLAN und SSH-Schlüssel vorab einstellen (kein Passwort-Login).
 - Test vorher: `ssh schlaubi` schlägt fehl (Pi aus).
 - Test nachher: `ssh schlaubi` verbindet ohne Passwort, `uname -m` zeigt `aarch64`.
