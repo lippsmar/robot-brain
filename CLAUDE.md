@@ -16,6 +16,7 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 ## 3. Arbeitsregeln für Claude Code
 - Vor der Arbeit den Skill `skills/roboter-projekt` befolgen.
 - Keine physischen oder irreversiblen Aktionen ohne Freigabe.
+- Nichts in Marvins Namen ohne Rückfrage: keine Nachrichten, Mails, SMS oder Anrufe als Marvin, keine Käufe, Anmeldungen, Zusagen, Termine oder Beiträge für ihn. Lesen, recherchieren und Entwürfe vorbereiten ist erlaubt.
 - Keine Secrets, Zugangsdaten, SIM-PINs oder Tokens in Code, Logs, Notion oder Gedächtnis. Nur Referenzen auf den Secret-Store.
 - Fremde Skills, Repos und Pakete vor der Nutzung vollständig lesen und nach der Checkliste in `skills/INDEX.md` bewerten.
 - Keine Umgehung von SIM-Registrierung, Identitätsprüfungen oder Bot-Sperren. Der Roboter gibt sich als Automat zu erkennen und beachtet robots.txt.
