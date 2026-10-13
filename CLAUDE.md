@@ -9,7 +9,7 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 - **Cognitive Layer (Host):** Claude Code (Planung, Code, Skills), OpenClaw (agentische Ausführung, Tools, Kommunikation) und Memory Core (Gedächtnis L0 bis L5, siehe `memory/SYSTEM_PROMPT.md`).
 - **Control Hub:** Zentrale Instanz für Sensorik, LTE/SIM, Mail, BLE, Netzwerk und Not-Aus. Safety-Funktionen laufen lokal und unabhängig von der Cloud.
 - **Vorschlag zur Hardware (offen):** Microcontroller für Not-Aus, Watchdog und Sensorik, Raspberry Pi Zero 2 W für LTE-Modem, Mail und Kommunikation. Das Gehirn (OpenClaw, Vektorspeicher, Embeddings) läuft auf Marvins altem Laptop als Heimserver (Entscheidung 13.10.2026, Eignung noch prüfen).
-- **Wissensspeicher:** SQLite mit sqlite-vec und FTS5 (Hybridsuche), kleine ONNX-Embeddings über fastembed.
+- **Wissensspeicher:** SQLite mit sqlite-vec und FTS5 (Hybridsuche), dazu LanceDB als Vergleich und Ersatz. Kleine ONNX-Embeddings über fastembed.
 - **Energie:** Akku mit USB-C-Laden über ein UPS-HAT. Dauerbetrieb braucht ein Netzteil.
 - **Details** (SIM-Modem, Modelle, Embeddings, OpenClaw-Absicherung, Handy-Zugriff, Adobe-Nachbauten): `docs/projektstart-details.md`. Teileliste: `docs/teileliste.md`. Design des Körpers „Schlaubi“: `docs/design-koerper.md`. OpenClaw-Prüfung: `docs/pruefung-openclaw.md`.
 
@@ -44,7 +44,7 @@ Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Rege
 - [ ] Microcontroller-Modell und Sensorliste festlegen (Vorschlag im Design: Version 1 ohne Mikrocontroller)
 - [ ] Zweistufiger Hub (Microcontroller plus Pi Zero 2 W) oder reiner Microcontroller
 - [x] Speicherziel: Gedächtnis auf dem Laptop, Sicherung verschlüsselt auf externer Festplatte zu Hause (13.10.2026)
-- [ ] Vektordatenbank: sqlite-vec mit FTS5 plus zusätzlicher Vektorspeicher (Marvin, 13.10.2026), Kandidat LanceDB, Zweck und Auswahl offen
+- [x] Vektordatenbank: sqlite-vec mit FTS5, dazu LanceDB als Vergleich und Ersatz (13.10.2026). LanceDB vor Nutzung nach Checkliste prüfen
 - [x] Retention-Fristen pro Datentyp mit Merk-Schutz (13.10.2026, Notion „Design Gehirn“)
 - [ ] Freigabe-Policy für physische Aktionen
 - [ ] Privater Google-Account oder separates Testkonto
