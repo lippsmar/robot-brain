@@ -1,28 +1,42 @@
-# Teileliste mit Kosten (Entwurf)
+# Teileliste mit Kosten (Version 1, zur Freigabe)
 
-Stand: 13.10.2026. **Entwurf zur Freigabe, nichts bestellen.** Preise sind Momentaufnahmen aus Shops und Preisvergleichen, inklusive MwSt., ohne Versand. Vor dem Kauf im Shop prüfen.
+Stand: 13.10.2026, angepasst an `docs/design-koerper.md`. **Zur Freigabe, nichts bestellen.** Preise sind Momentaufnahmen aus Shops und Preisvergleichen, inklusive MwSt., ohne Versand. Vor dem Kauf im Shop prüfen.
 
 Legende: **R** = recherchierter Preis mit Quelle, **S** = Schätzung (kein belastbarer Preis gefunden).
 
-Grundlage: Architektur aus CLAUDE.md (zweistufiger Hub: Mikrocontroller plus Pi Zero 2 W als Körper). **Gehirn: Marvins alter Laptop als Heimserver** (Entscheidung 13.10.2026), daher keine Kosten fürs Gehirn. Mikrocontroller und Sensorliste sind noch **offen**, die Auswahl unten ist ein Vorschlag.
+Grundlage: Design Körper „Schlaubi“ Version 1. **Gehirn: Marvins alter Laptop als Heimserver**, daher keine Kosten fürs Gehirn. In Version 1 kein eigener Mikrocontroller (Vorschlag im Design, Abschnitt 6).
 
-## 1. Körper (Pi Zero 2 W)
+## 1. Körper „Schlaubi“ (Version 1)
 
 | Teil | Vorschlag | Preis | Art | Quelle / Hinweis |
 |---|---|---|---|---|
 | Rechner | Raspberry Pi Zero 2 WH (mit Stiftleiste) | 20,90 € | R | buyzero.de (Zero 2 W ohne Leiste 17,90 €, BerryBase 18,90 €). Verfügbarkeit schwankt |
-| Speicherkarte | microSD 32–64 GB, A1/A2 | 10–20 € | S | Markenkarte, kein Extreme-Modell nötig |
+| Speicherkarte | microSD 32–64 GB, A1/A2 | 10–20 € | S | Markenkarte |
 | LTE-Modem | Waveshare SIM7600E-H 4G HAT (Europa-Bänder) | 72,90–99,00 € | R | Botland 72,90 €, Tinytronics 75,00 €, welectron 99,00 €. Antennen dabei |
-| Akku / USV | Waveshare UPS HAT (C) für Pi Zero, 1000 mAh | 22,90 € | R | BerryBase, welectron. **Ob es die Modem-Spitzen bis 2 A schafft, ist unklar** (Datenblatt prüfen) |
-| Alternative Akku | Powerbank 10.000 mAh mit Pass-Through-Laden + Netzteil 5 V 3 A | 30–40 € | S | Passt zur Annahme „ein bis zwei Tage Laufzeit“ aus dem Projektstart |
-| Mikrocontroller | Raspberry Pi Pico 2 W (Not-Aus, Watchdog, Sensorik) | 7,50 € | R | BerryBase |
-| Klima-Sensor | BME280 (Temperatur, Feuchte, Luftdruck) | 5–11 € | R | Makershop 5,80 €, AZ-Delivery 10,99 € |
-| Abstands-Sensor | VL53L1X ToF, bis 4 m | 5–18 € | R | eBay-Angebote (Händler aus China günstiger, länger Lieferzeit) |
+| Akku | Powerbank ca. 10.000 mAh mit Pass-Through (gleichzeitig laden und versorgen), USB-C, flach (ca. 9 × 6 × 2 cm) | 25–40 € | S | erst nach Strommessung kaufen. Pass-Through im Datenblatt prüfen |
 | Kamera | Raspberry Pi Camera Module 3 (75° oder 120°) | 30–45 € | R | geizhals.at 40,00 € (120°), älter ca. 31 € (75°) |
 | Kamerakabel | Mini-CSI-Kabel für Pi Zero | ca. 3 € | S | Zero hat kleineren Kamera-Anschluss |
 | Mikrofon | INMP441 I2S-Modul | ca. 5 € | S | nur Dollarpreis gefunden (4,95 USD) |
-| Kleinteile | Gehäuse, Kabel, Steckbrett, Not-Aus-Taster, Pufferkondensator | 20–40 € | S | |
-| **Summe Körper** | | **ca. 202–309 €** | | |
+| Status-LED | RGB-LED WS2812 (einzeln oder kleiner Ring) | ca. 2 € | S | |
+| Summer | Piezo-Summer | ca. 1 € | S | |
+| Schalter | Ein-Aus-Schalter oder Metall-Taster | 3–8 € | S | dient als Not-Aus |
+| Laden | USB-C-Einbaubuchse oder kurzes Durchführungskabel | 5–10 € | S | |
+| Kleinteile | Kabel, Schrauben, Abstandshalter, Lichtleiter, Pufferkondensator | 15–30 € | S | |
+| Gehäuse | Holz und Metall | 0–20 € | S | aus Marvins Bestand |
+| **Summe Version 1** | | **ca. 193–304 €** | | |
+
+**Gestrichen gegenüber dem ersten Entwurf:** UPS HAT (C) (Akku zu klein, ca. 1 Stunde), Pico 2 W (ohne Motoren nicht nötig, bleibt Option).
+
+**Optional, nicht in Version 1:**
+
+| Teil | Vorschlag | Preis | Art |
+|---|---|---|---|
+| Klima-Sensor | BME280 | 5–11 € | R |
+| Abstands-Sensor | VL53L1X | 5–18 € | R |
+| Mikrocontroller | Raspberry Pi Pico 2 W | 7,50 € | R |
+| Display (Version 2) | kleines rundes oder eckiges SPI-Display | offen | – |
+
+**Werkzeug für den ersten Test:** USB-Strommessgerät (USB-C) zum Messen des Verbrauchs, ca. 10–20 € (S).
 
 ## 2. Gehirn
 
@@ -46,9 +60,9 @@ Grundlage: Architektur aus CLAUDE.md (zweistufiger Hub: Mikrocontroller plus Pi 
 
 | Variante | Summe |
 |---|---|
-| Körper + Pi 5 ohne USV | ca. 448–585 € |
-| Körper + Pi 5 mit USV | ca. 508–665 € |
-| **Körper + alter Laptop als Gehirn (gewählt)** | **ca. 202–309 €** |
+| Körper Version 1 + Pi 5 ohne USV (Rückfall) | ca. 439–580 € |
+| Körper Version 1 + Pi 5 mit USV (Rückfall) | ca. 499–660 € |
+| **Körper Version 1 + alter Laptop als Gehirn (gewählt)** | **ca. 193–304 €** |
 
 ## 4. Laufende Kosten
 
@@ -56,17 +70,17 @@ Grundlage: Architektur aus CLAUDE.md (zweistufiger Hub: Mikrocontroller plus Pi 
 |---|---|---|---|
 | Prepaid-SIM mit SMS und Daten | ca. 5–9 € je 28 Tage | R | z. B. CallYa Start 4,99 € (2 GB), otelo Smart S 4,95 € (2 GB), ja!mobil 8,99 € (25 GB). Auf Marvin registriert |
 | Claude-API | Ausgabenlimit legt Marvin fest | offen | Prepaid-Guthaben in der Anthropic Console |
-| E-Mail-Adresse | offen | offen | Anbieter noch nicht gewählt |
+| E-Mail-Adresse | 0 € | R | mail.de FreeMail (Entscheidung 13.10.2026) |
 | Such-API für Recherche | offen | offen | Anbieter noch nicht gewählt |
 
 ## 5. Hinweise zur Hardware
 - Der SIM7600-HAT kann über die GPIO-Leiste (UART) oder per USB-Kabel betrieben werden. Für mobiles Internet ist USB schneller. Der Zero hat nur einen freien USB-Port.
-- UPS HAT (C) sitzt unter dem Zero (Federkontakte), das LTE-HAT oben auf der Stiftleiste. Passung und Höhe vor dem Kauf prüfen.
+- Das LTE-HAT sitzt oben auf der Stiftleiste des Zero. Die Powerbank liegt daneben im Würfel und versorgt beide über USB. Passung im 10-cm-Würfel vor dem Kauf prüfen.
 - Modem-Stromspitzen bis etwa 2 A: Stromversorgung mit Reserve, Pufferkondensator, kein schwaches Netzteil.
 
 ## 6. Offene Entscheidungen
-- Mikrocontroller bestätigen (Vorschlag Pico 2 W) und Sensorliste festlegen.
+- ~~Mikrocontroller und Sensorliste~~ Vorschlag im Design: Version 1 ohne Mikrocontroller, ohne Zusatzsensoren.
 - ~~Gehirn: Pi 5 kaufen oder vorhandenen Heimserver nutzen.~~ Entschieden: alter Laptop.
 - Laptop-Eignung: mindestens 8 GB RAM empfohlen, SSD, 64-Bit-Linux, Betrieb mit zugeklapptem Deckel, Akkuzustand (Dauerladen auf 100 % altert den Akku, Ladegrenze setzen wenn möglich), Stromverbrauch im Leerlauf.
-- Akku-Lösung für den Körper: UPS HAT (C) oder Powerbank.
-- Budget-Obergrenze für die Anschaffung und monatliches API-Limit.
+- ~~Akku-Lösung~~ Vorschlag im Design: Powerbank ca. 10.000 mAh mit Pass-Through, Kauf erst nach Strommessung.
+- ~~Budget-Obergrenze~~ Keine feste Grenze, Version 1 ca. 193–304 €. Offen: monatliches API-Limit.
