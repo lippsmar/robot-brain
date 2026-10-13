@@ -31,3 +31,9 @@ Geprüft nach der Checkliste in `skills/INDEX.md`. Gegenstand: offizielles Repo 
 
 ## Quellen (im Repo gelesen)
 `LICENSE`, `package.json`, `docker-compose.yml`, `scripts/docker/setup.sh`, `SECURITY.md`, `docs/gateway/telemetry.md`, `docs/gateway/security/hardened-baseline.md`, `docs/gateway/security/exposure-runbook.md`, `docs/install/docker/networking-and-storage.md`, `docs/providers/anthropic.md`, `docs/channels/telegram.md`, `docs/channels/sms.md`, `docs/automation/imap.md`
+
+# Kurzprüfung lokale Sprachsoftware (13.10.2026)
+- **Spracherkennung whisper.cpp** (ggml-org): MIT, aus `LICENSE` gelesen. Läuft auf der CPU, also auch auf alten Laptops. Wie schnell, hängt vom Prozessor ab und wird auf dem gewählten Laptop gemessen. Zahlen werden erst nach der Messung eingetragen.
+- **Sprachausgabe Piper:** Die Entwicklung ist von rhasspy/piper nach OHF-Voice/piper1-gpl umgezogen. Neue Lizenz GPL-3.0 (aus `COPYING` gelesen). Für den privaten Einsatz als eigenes Programm ist das unproblematisch.
+- **Stimme de_DE thorsten high:** Datensatz CC0. Sie ist aus der englischen Stimme „lessac“ weiterentwickelt (Model Card). Vor einer kommerziellen Nutzung (Abo-Modell) die Lizenz der Basisstimme prüfen.
+- Nichts installiert. Repos nicht vollständig gelesen, nur Lizenz und Status.
