@@ -5,7 +5,7 @@ description: "Vor jedem neuen Feature, Bauteil oder Umbau am KI-Roboter: erst kl
 
 # Brainstorming und Plan für den KI-Roboter
 
-Angepasst aus den Skills brainstorming und writing-plans von obra/superpowers (MIT-Lizenz, Copyright (c) 2025 Jesse Vincent).
+Angepasst aus den Skills brainstorming und writing-plans von obra/superpowers (MIT-Lizenz, Copyright (c) 2025 Jesse Vincent). Entscheidungsbaum und Faktensuche angepasst aus dem Skill grilling von mattpocock/skills (MIT-Lizenz, Copyright (c) 2026 Matt Pocock).
 
 ## Erst prüfen: Was ist bekannt?
 - Alles Wichtige steht in der Anfrage: direkt umsetzen und sagen, was gemacht wurde.
@@ -15,9 +15,12 @@ Angepasst aus den Skills brainstorming und writing-plans von obra/superpowers (M
 - Pro Nachricht genau eine offene Frage, ohne Antwortliste. Klare, einfache Sprache.
 - Konkret fragen: "Wann hast du dir das zuletzt gewünscht?", "Was würde dich stören, wenn es falsch läuft?"
 - Klären: Zweck, Erfolg, Nicht-Ziele, was es auf keinen Fall tun darf, vorhandene Teile, Budget, welche Entscheidungen Marvin selbst treffen will.
+- Offene Entscheidungen als **Entscheidungsbaum** führen: Jede Entscheidung hat Folgeentscheidungen, die erst nach ihr sinnvoll sind. Immer die Frage stellen, deren Voraussetzungen schon geklärt sind. Nichts stillschweigend annehmen.
+- **Fakten selbst nachschlagen**, Entscheidungen Marvin überlassen: Was in Notion, im Repo, in Datenblättern oder in der Doku steht, selbst suchen statt Marvin zu fragen. Nur echte Entscheidungen (Wünsche, Budget, Abwägungen) gehen an ihn.
 - Eigene Annahmen als Annahmen kennzeichnen, nie als Marvins Entscheidung ausgeben.
 - Zwischendurch in 200 bis 300 Wörtern zurückspiegeln und fragen, was fehlt oder falsch ist.
 - Ein schneller Wegwerf-Prototyp ist erlaubt, wenn Marvin zustimmt. Er bleibt Wegwerf.
+- Das Gespräch ist fertig, wenn im Entscheidungsbaum keine offene Frage mehr übrig ist und Marvin bestätigt, dass das Verständnis stimmt.
 
 ## Größe festlegen
 - Kleine Aufgabe: direkt machen.

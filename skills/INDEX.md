@@ -10,6 +10,7 @@ Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. St
 | [roboter-debugging](roboter-debugging/SKILL.md) | aktiv | Ursache finden, Nachweis vor Erfolgsmeldung |
 | [roboter-testumgebung](roboter-testumgebung/SKILL.md) | aktiv | Testphase mit privatem Google-Account |
 | [adobe-oss-agent-tools](adobe-oss-agent-tools/SKILL.md) | aktiv | Prüfverfahren für Adobe-Nachbauten (die Tools selbst sind noch ungeprüft) |
+| [roboter-retro](roboter-retro/SKILL.md) | neu 13.10.2026, in Claude hochzuladen | Rückblick auf Sitzungen, Verbesserungen an Regeln, Skills und Prüfungen |
 
 ## Geplante Roboter-Skills (noch nicht geschrieben)
 | Skill | Kategorie | Zweck | Schnittstelle |
@@ -32,8 +33,8 @@ Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. St
 | Quelle | Status | Anmerkung |
 |---|---|---|
 | obra/superpowers (MIT, Jesse Vincent) | alle 15 gelesen 13.10.2026, empfohlen für Claude Code | test-driven-development, systematic-debugging, verification-before-completion aktiv in Claude. Telemetrie mit `SUPERPOWERS_DISABLE_TELEMETRY` abschalten. executing-plans/subagent-driven-development entscheiden ohne Rückfrage: Freigabe-Sperre hat Vorrang. using-git-worktrees installiert Pakete automatisch |
-| mattpocock/skills: grilling, grill-me (MIT) | geprüft 13.10.2026, nicht zusätzlich installieren | Ideen-Verfeinerung per Entscheidungsbaum. Fragt mehrere Fragen pro Runde, überschneidet sich mit roboter-brainstorming-plan |
-| mattpocock/skills: retro (MIT) | geprüft 13.10.2026, bedingt geeignet | Rückblick auf Coding-Sitzungen, braucht writing-for-agents. Vorlage für eigenen roboter-retro |
+| mattpocock/skills: grilling, grill-me (MIT) | geprüft 13.10.2026, nicht zusätzlich installieren | Ideen-Verfeinerung per Entscheidungsbaum. Fragt mehrere Fragen pro Runde. Entscheidungsbaum und Faktensuche in roboter-brainstorming-plan übernommen |
+| mattpocock/skills: retro (MIT) | geprüft 13.10.2026, als roboter-retro angepasst | Rückblick auf Coding-Sitzungen, braucht writing-for-agents |
 | corca-ai/claude-plugins: cwf:retro (MIT) | abgelehnt 13.10.2026 | Braucht ganzes CWF-Framework mit Hooks bei jeder Eingabe, 37 Skripte, optional Slack-Webhook |
 | storytold/photocraft (MIT/Apache-2.0) | gezielt geprüft 13.10.2026, bedingt geeignet | Adobe-Nachbau, early alpha, 510k Zeilen Rust nicht vollständig gelesen. Keine Telemetrie gefunden, Steuerkanal nur localhost mit Token, MCP ohne Pfadbeschränkung: nur im Container auf Kopien |
 | Everything Claude Code (affaan-m) | nicht komplett installieren | Überschneidet sich mit Memory Core, viele Hooks |
