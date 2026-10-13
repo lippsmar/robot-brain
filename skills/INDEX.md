@@ -10,7 +10,7 @@ Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. St
 | [roboter-debugging](roboter-debugging/SKILL.md) | aktiv | Ursache finden, Nachweis vor Erfolgsmeldung |
 | [roboter-testumgebung](roboter-testumgebung/SKILL.md) | aktiv | Testphase mit privatem Google-Account |
 | [adobe-oss-agent-tools](adobe-oss-agent-tools/SKILL.md) | aktiv | Prüfverfahren für Adobe-Nachbauten (die Tools selbst sind noch ungeprüft) |
-| [roboter-retro](roboter-retro/SKILL.md) | neu 13.10.2026, in Claude hochzuladen | Rückblick auf Sitzungen, Verbesserungen an Regeln, Skills und Prüfungen |
+| [roboter-retro](roboter-retro/SKILL.md) | aktiv in Claude seit 13.10.2026 | Rückblick auf Sitzungen, Verbesserungen an Regeln, Skills und Prüfungen |
 | [photocraft-agent](photocraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | Photoshop-Nachbau steuern |
 | [vectorcraft-agent](vectorcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | Illustrator-Nachbau steuern |
 | [filmcraft-agent](filmcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | Premiere-Pro-Nachbau steuern |
