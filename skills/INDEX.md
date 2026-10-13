@@ -31,12 +31,14 @@ Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. St
 ## Fremde Skills
 | Quelle | Status | Anmerkung |
 |---|---|---|
-| obra/superpowers (MIT, Jesse Vincent) | geprüft, empfohlen | test-driven-development, systematic-debugging, verification-before-completion aktiv in Claude. Telemetrie mit `SUPERPOWERS_DISABLE_TELEMETRY` abschalten |
+| obra/superpowers (MIT, Jesse Vincent) | alle 15 gelesen 13.10.2026, empfohlen für Claude Code | test-driven-development, systematic-debugging, verification-before-completion aktiv in Claude. Telemetrie mit `SUPERPOWERS_DISABLE_TELEMETRY` abschalten. executing-plans/subagent-driven-development entscheiden ohne Rückfrage: Freigabe-Sperre hat Vorrang. using-git-worktrees installiert Pakete automatisch |
+| mattpocock/skills: grilling, grill-me (MIT) | geprüft 13.10.2026, nicht zusätzlich installieren | Ideen-Verfeinerung per Entscheidungsbaum. Fragt mehrere Fragen pro Runde, überschneidet sich mit roboter-brainstorming-plan |
+| mattpocock/skills: retro (MIT) | geprüft 13.10.2026, bedingt geeignet | Rückblick auf Coding-Sitzungen, braucht writing-for-agents. Vorlage für eigenen roboter-retro |
+| corca-ai/claude-plugins: cwf:retro (MIT) | abgelehnt 13.10.2026 | Braucht ganzes CWF-Framework mit Hooks bei jeder Eingabe, 37 Skripte, optional Slack-Webhook |
+| storytold/photocraft (MIT/Apache-2.0) | gezielt geprüft 13.10.2026, bedingt geeignet | Adobe-Nachbau, early alpha, 510k Zeilen Rust nicht vollständig gelesen. Keine Telemetrie gefunden, Steuerkanal nur localhost mit Token, MCP ohne Pfadbeschränkung: nur im Container auf Kopien |
 | Everything Claude Code (affaan-m) | nicht komplett installieren | Überschneidet sich mit Memory Core, viele Hooks |
 | Awesome Claude Code (hesreallyhim) | Nachschlagequelle | Linkliste, jeden Fund einzeln prüfen |
 | pm-skills (Alireza Rezvani) | abgelehnt | Jira/Confluence, Skripte, Netzwerk, Lizenz widersprüchlich |
-| Retro-Skill, Ideen-Verfeinerung | offen | Noch nicht gelesen |
-| Adobe-Nachbauten (PhotoCraft u. a.) | offen | Siehe adobe-oss-agent-tools |
 
 ## Prüfcheckliste für fremde Skills
 - [ ] Quelle und Autor bekannt
