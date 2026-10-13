@@ -45,7 +45,7 @@ Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Rege
 - [ ] Zweistufiger Hub (Microcontroller plus Pi Zero 2 W) oder reiner Microcontroller
 - [x] Speicherziel: Gedächtnis auf dem Laptop, Sicherung verschlüsselt auf externer Festplatte zu Hause (13.10.2026)
 - [ ] Vektordatenbank bestätigen (Vorschlag sqlite-vec mit FTS5)
-- [ ] Retention-Fristen pro Datentyp
+- [ ] Retention-Fristen pro Datentyp (Wissen und Interessen: für immer, 13.10.2026. Übrige Daten: Vorschlag in Notion „Design Gehirn“, offen)
 - [ ] Freigabe-Policy für physische Aktionen
 - [ ] Privater Google-Account oder separates Testkonto
 - [ ] SIM-Anbieter wählen (E-Mail: mail.de FreeMail, Konto legt Marvin an)
