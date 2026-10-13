@@ -22,7 +22,13 @@ Keine Passwörter, PINs oder Wiederherstellungsschlüssel in Notion, im Repo ode
 - [ ] Wird sie noch für etwas anderes gebraucht?
 
 ## C. Inhalte sichern (pro Laptop und für die externe Platte)
-**Sicherungsziel:** ein Laufwerk oder Speicher, der **nicht** Schlaubis künftige Sicherungsplatte ist und nicht gelöscht wird. Wohin genau, entscheidet Marvin.
+**Sicherungsziel (Marvin, 13.10.2026):** eine **zweite externe Festplatte**, getrennt von Schlaubis künftiger Sicherungsplatte.
+- [ ] Zweite Platte: Größe notieren, reicht der Platz für alle Laptops? (Belegten Speicher der Laptops zusammenrechnen, etwa 20 % Reserve)
+- [ ] Liegt auf der zweiten Platte schon etwas? Das bleibt unangetastet.
+- [ ] Beide Platten beschriften: „Alt-Sicherung – nicht löschen“ und „Schlaubi-Sicherung“
+- [ ] Pro Laptop ein eigener Ordner, z. B. `Laptop-1_Lenovo-T460_2026-10`
+- [ ] Empfindliches (SSH-Schlüssel, Wallets, Lizenzschlüssel) nur verschlüsselt ablegen, z. B. in einem verschlüsselten Container oder einem Passwort-Manager
+- Hinweis: Nach dem Löschen eines Laptops gibt es die alten Daten nur noch auf dieser einen Platte. Was dir wirklich wichtig ist (z. B. Fotos), zusätzlich an einem zweiten Ort sichern.
 
 Was ansehen und sichern:
 - [ ] Eigene Dateien: Dokumente, Bilder, Videos, Musik, Desktop, Downloads

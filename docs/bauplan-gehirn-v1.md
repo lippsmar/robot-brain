@@ -27,7 +27,7 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
 
 ## Phase 0 – Vorbereitung (Marvin)
 **0.1 Steckbriefe** für alle Kandidaten-Laptops ausfüllen (Notion „Design Gehirn“, Laptop-Auswahl).
-**0.2 Inhalte sichern:** Alles, was auf den Laptops und der externen Festplatte noch gebraucht wird, auf ein anderes Ziel sichern und prüfen. **Löschen ist noch nicht freigegeben** (Marvin, 13.10.2026).
+**0.2 Inhalte sichern:** Alles, was auf den Laptops und der externen Festplatte noch gebraucht wird, auf eine zweite externe Festplatte sichern und prüfen. **Löschen ist noch nicht freigegeben** (Marvin, 13.10.2026).
 **0.3 Material prüfen:** externe Festplatte (Größe notieren), USB-Stick ab 8 GB, LAN-Kabel wenn möglich.
 - Prüfung: Checkliste `docs/checkliste-phase0-gehirn.md` vollständig abgehakt, Sicherung geprüft.
 
