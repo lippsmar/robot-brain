@@ -21,3 +21,4 @@ Spiegel der Notion-Seite „Entscheidungen und Projektlog“. Nichts löschen, n
 | 13.10.2026 | Selbsterhalt erweitert: Sparen, Zuarbeit für Einnahmen (Marvin verkauft), Belohnung. Deutsches Recht, Einnahmen sind Marvins, Freigabe-Stufen (Einzelfreigabe, später begrenzte Dauerfreigaben als ADR). Abo-Modell später als eigenes Projekt | Beschlossen |
 | 13.10.2026 | API-Monatslimit 30 $ (Recherche höchstens 15 $), Warnung 80 %, Sparmodus 90 %, Stopp 100 % | Beschlossen |
 | 13.10.2026 | Sprache bleibt lokal: Audio (Aktivierungswort, Spracherkennung, Sprachausgabe) verlässt nie Würfel und Laptop, kein Cloud-Sprachdienst, auch nicht als Rückfall. Nur der erkannte Text geht für das Gespräch an die Claude-API | Beschlossen |
+| 13.10.2026 | Sicherung von Schlaubis Gedächtnis auf einer externen Festplatte bei Marvin zu Hause. Verschlüsselt und automatisch, Wiederherstellung wird regelmäßig getestet. Werkzeug und Takt legt der Plan fest | Beschlossen |

@@ -43,7 +43,7 @@ Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Rege
 ## 7. Offene Punkte
 - [ ] Microcontroller-Modell und Sensorliste festlegen (Vorschlag im Design: Version 1 ohne Mikrocontroller)
 - [ ] Zweistufiger Hub (Microcontroller plus Pi Zero 2 W) oder reiner Microcontroller
-- [ ] Speicherziel festlegen (lokal, NAS, Cloud-Bucket)
+- [x] Speicherziel: Gedächtnis auf dem Laptop, Sicherung verschlüsselt auf externer Festplatte zu Hause (13.10.2026)
 - [ ] Vektordatenbank bestätigen (Vorschlag sqlite-vec mit FTS5)
 - [ ] Retention-Fristen pro Datentyp
 - [ ] Freigabe-Policy für physische Aktionen
