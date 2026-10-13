@@ -28,3 +28,4 @@ Spiegel der Notion-Seite „Entscheidungen und Projektlog“. Nichts löschen, n
 | 13.10.2026 | Zusätzlicher Vektorspeicher: LanceDB, als Vergleich und Ersatz für sqlite-vec. Beide werden aus derselben Quelle (append-only Einträge und Markdown) befüllt und lassen sich daraus neu aufbauen. Fällt einer aus, sucht Schlaubi im anderen weiter. Vor der Nutzung vollständige Prüfung nach Checkliste | Beschlossen |
 | 13.10.2026 | Kamerabilder dürfen zur Auswertung an die Claude-API, nur wenn Marvin etwas zeigt. Ohne Metadaten (EXIF, Ort), Personen nur mit Einwilligung | Beschlossen |
 | 13.10.2026 | Design Gehirn Version 1 freigegeben (docs/design-gehirn.md). Bauplan Gehirn Version 1 geschrieben, zur Bestätigung | Beschlossen |
+| 13.10.2026 | Bauplan Gehirn Version 1 bestätigt. Löschen von Laptops und externer Festplatte noch nicht freigegeben: erst alle Inhalte sichern und prüfen (Checkliste Phase 0) | Beschlossen |

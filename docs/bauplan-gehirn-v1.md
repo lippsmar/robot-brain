@@ -1,6 +1,6 @@
 # Bauplan Gehirn „Schlaubi“ – Version 1
 
-Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 freigegeben. **Dieser Plan wird erst umgesetzt, wenn Marvin ihn bestätigt.** Konten, Schlüssel und Käufe macht Marvin selbst, weil sie auf seinen Namen laufen und sein Geld kosten.
+Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 freigegeben. **Von Marvin am 13.10.2026 bestätigt.** Konten, Schlüssel und Käufe macht Marvin selbst, weil sie auf seinen Namen laufen und sein Geld kosten.
 
 ## Kopf
 - **Ziel:** Ein alter Laptop wird zum Gehirn. Er versteht Marvins Sprache lokal, spricht über Claude mit ihm, merkt sich Wissen dauerhaft, recherchiert im Hintergrund und ist nur über das private Netz erreichbar.
@@ -27,8 +27,9 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
 
 ## Phase 0 – Vorbereitung (Marvin)
 **0.1 Steckbriefe** für alle Kandidaten-Laptops ausfüllen (Notion „Design Gehirn“, Laptop-Auswahl).
-**0.2 Material prüfen:** externe Festplatte (Größe notieren, wird komplett gelöscht), USB-Stick ab 8 GB, LAN-Kabel wenn möglich.
-- Prüfung: Liste in Notion vollständig.
+**0.2 Inhalte sichern:** Alles, was auf den Laptops und der externen Festplatte noch gebraucht wird, auf ein anderes Ziel sichern und prüfen. **Löschen ist noch nicht freigegeben** (Marvin, 13.10.2026).
+**0.3 Material prüfen:** externe Festplatte (Größe notieren), USB-Stick ab 8 GB, LAN-Kabel wenn möglich.
+- Prüfung: Checkliste `docs/checkliste-phase0-gehirn.md` vollständig abgehakt, Sicherung geprüft.
 
 ## Phase 1 – Laptop auswählen
 **1.1 Vorauswahl** nach Steckbrief: 64-Bit-Prozessor, mindestens 8 GB RAM, SSD möglich.
