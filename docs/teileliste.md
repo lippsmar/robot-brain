@@ -10,20 +10,20 @@ Grundlage: Design Körper „Schlaubi“ Version 1. **Gehirn: Marvins alter Lapt
 
 | Teil | Vorschlag | Preis | Art | Quelle / Hinweis |
 |---|---|---|---|---|
-| Rechner | Raspberry Pi Zero 2 WH (mit Stiftleiste) | 20,90 € | R | buyzero.de (Zero 2 W ohne Leiste 17,90 €, BerryBase 18,90 €). Verfügbarkeit schwankt |
+| Rechner | Raspberry Pi Zero 2 WH (mit Stiftleiste) | 0 € | – | **Marvin hat schon einen Pi** (Modell noch bestätigen, muss ein Zero 2 W sein). Sonst 20,90 € |
 | Speicherkarte | microSD 32–64 GB, A1/A2 | 10–20 € | S | Markenkarte |
 | LTE-Modem | Waveshare SIM7600E-H 4G HAT (Europa-Bänder) | 72,90–99,00 € | R | Botland 72,90 €, Tinytronics 75,00 €, welectron 99,00 €. Antennen dabei |
-| Akku | Powerbank ca. 10.000 mAh mit Pass-Through (gleichzeitig laden und versorgen), USB-C, flach (ca. 9 × 6 × 2 cm) | 25–40 € | S | erst nach Strommessung kaufen. Pass-Through im Datenblatt prüfen |
+| Akku | Powerbank ca. 10.000 mAh mit Pass-Through | 0 € | – | **Marvin hat Powerbanks.** Kapazität, Größe und Pass-Through in Phase 11 prüfen. Nur falls keine passt: 25–40 € |
 | Kamera | Raspberry Pi Camera Module 3 (75° oder 120°) | 30–45 € | R | geizhals.at 40,00 € (120°), älter ca. 31 € (75°) |
 | Kamerakabel | Mini-CSI-Kabel für Pi Zero | ca. 3 € | S | Zero hat kleineren Kamera-Anschluss |
 | Mikrofon | INMP441 I2S-Modul | ca. 5 € | S | nur Dollarpreis gefunden (4,95 USD) |
-| Status-LED | RGB-LED WS2812 (einzeln oder kleiner Ring) | ca. 2 € | S | |
+| Status-Licht | WS2812-Ring oder -Streifen, 8–12 LEDs (leuchtet durch den milchigen Kunststoff) | 3–8 € | S | |
 | Summer | Piezo-Summer | ca. 1 € | S | |
 | Schalter | Ein-Aus-Schalter oder Metall-Taster | 3–8 € | S | dient als Not-Aus |
 | Laden | USB-C-Einbaubuchse oder kurzes Durchführungskabel | 5–10 € | S | |
 | Kleinteile | Kabel, Schrauben, Abstandshalter, Lichtleiter, Pufferkondensator | 15–30 € | S | |
-| Gehäuse | Holz und Metall | 0–20 € | S | aus Marvins Bestand |
-| **Summe Version 1** | | **ca. 193–304 €** | | |
+| Gehäuse | Holzrahmen aus Marvins Bestand, Seiten aus Acrylglas opal/satiniert 3 mm (Zuschnitt) | 10–25 € | S | Marvins Variante 13.10.2026 |
+| **Summe Version 1** | | **ca. 158–254 €** | | |
 
 **Gestrichen gegenüber dem ersten Entwurf:** UPS HAT (C) (Akku zu klein, ca. 1 Stunde), Pico 2 W (ohne Motoren nicht nötig, bleibt Option).
 
@@ -62,7 +62,7 @@ Grundlage: Design Körper „Schlaubi“ Version 1. **Gehirn: Marvins alter Lapt
 |---|---|
 | Körper Version 1 + Pi 5 ohne USV (Rückfall) | ca. 439–580 € |
 | Körper Version 1 + Pi 5 mit USV (Rückfall) | ca. 499–660 € |
-| **Körper Version 1 + alter Laptop als Gehirn (gewählt)** | **ca. 193–304 €** |
+| **Körper Version 1 + alter Laptop als Gehirn (gewählt)** | **ca. 158–254 €** |
 
 ## 4. Laufende Kosten
 

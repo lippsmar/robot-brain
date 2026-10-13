@@ -62,6 +62,14 @@ Details und Preise: `docs/teileliste.md`.
 **Akku-Begründung:** geschätzt 2,5–4 W Verbrauch, für 6 Stunden 15–24 Wh, also etwa 5.000–7.500 mAh. Eine fertige Powerbank mit Schutzschaltung ist sicherer als ein Eigenbau-Akku aus Einzelzellen. Der echte Verbrauch wird vor dem Akku-Kauf gemessen.
 
 ## 8. Gehäuse
+**Marvins Variante (13.10.2026, bevorzugt):** Holzrahmen als Würfel-Gerüst, Seiten mit milchigem Kunststoff verkleidet (z. B. 3 mm Acrylglas opal/satiniert, als Zuschnitt). Folgen:
+- Die LED leuchtet durch den milchigen Kunststoff: Der ganze Würfel glüht in der Zustandsfarbe. Dafür statt einer einzelnen LED einen kleinen WS2812-Ring oder -Streifen (ca. 8–12 LEDs) innen.
+- Kunststoff lässt Funk durch, die Antennen dürfen hinter jeder Kunststoffseite liegen. Metall nur am Rahmen oder Boden, nie vor Antennen.
+- Kamera braucht ein klares Fenster oder ein Loch in der Frontplatte, Mikrofon ein paar kleine Löcher.
+- Lüftung über Schlitze im Rahmen oder Boden, Acryl isoliert Wärme.
+- Rahmen innen als Träger für die Elektronik, eine Seite abnehmbar (z. B. mit Magneten oder Schrauben).
+
+Ursprünglicher Vorschlag (Alternative):
 - Holzwürfel 10 cm, z. B. Nussbaum oder Eiche, Metall als Akzent (Boden, Kanten oder Kühlblech).
 - Antennen nur an Holzseiten, nie hinter Metall (Metall blockiert Funk).
 - LED hinter dünn ausgefrästem Holz oder einem kleinen Lichtleiter: unsichtbar, bis Schlaubi zuhört.
