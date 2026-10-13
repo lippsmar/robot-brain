@@ -37,6 +37,7 @@ Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Rege
 
 ## 6. Datenschutz und Kamera
 - Lokale Datenhaltung, verschlüsselte Laufwerke, keine Telemetrie, VPN, möglichst wenig persönliche Daten an die API.
+- Marvins Stimme bleibt lokal: Audio geht nie an Cloud-Dienste, auch nicht als Rückfall. Nur erkannter Text geht an die Claude-API (Entscheidung 13.10.2026).
 - Kameras und Mikrofone erkennbar, keine verdeckten Aufnahmen, Aufnahmen von Personen nur mit Einwilligung. Personenbezogene Daten mit `pii: true`.
 
 ## 7. Offene Punkte
