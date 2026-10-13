@@ -1,6 +1,6 @@
 # Design Gehirn „Schlaubi“ – Version 1
 
-Stand 13.10.2026. **Zur Freigabe durch Marvin.** Bis zur Freigabe wird nichts installiert, eingerichtet oder bestellt. Spiegel der Notion-Seite „Design Gehirn“, dort stehen auch Herleitung und Recherche.
+Stand 13.10.2026. **Freigegeben von Marvin am 13.10.2026.** Umsetzung nach `docs/bauplan-gehirn-v1.md`, sobald Marvin ihn bestätigt. Spiegel der Notion-Seite „Design Gehirn“, dort stehen auch Herleitung und Recherche.
 
 ## 1. Zweck
 Das Gehirn ist Schlaubis Denken und Gedächtnis. Es läuft auf einem alten Laptop bei Marvin zu Hause. Es versteht Marvins Sprache, führt das Gespräch über Claude und merkt sich Wissen und Interessen dauerhaft. Wenn nichts zu tun ist, recherchiert es im Hintergrund.

@@ -52,6 +52,8 @@ Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Rege
 - [ ] SIM-Anbieter wählen (E-Mail: mail.de FreeMail, Konto legt Marvin an)
 - [x] Design Körper Version 1 freigegeben (13.10.2026, `docs/design-koerper.md`)
 - [x] Bauplan Körper Version 1 bestätigt (13.10.2026)
+- [x] Design Gehirn Version 1 freigegeben (13.10.2026, `docs/design-gehirn.md`)
+- [ ] Bauplan Gehirn Version 1 bestätigen (`docs/bauplan-gehirn-v1.md`)
 - [ ] Phase 1: Teile Stufe 1 bestellen (Marvin, `docs/einkauf-stufe1.md`)
 - [ ] Laptop als Gehirn: Modell, RAM, Speicher, Akkuzustand und Betriebssystem erfassen und Eignung prüfen
 - [ ] Superpowers in Claude Code installieren und Telemetrie abschalten (macht Marvin, siehe `docs/projektstart-details.md`)
