@@ -47,7 +47,7 @@ Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Rege
 - [ ] Retention-Fristen pro Datentyp
 - [ ] Freigabe-Policy für physische Aktionen
 - [ ] Privater Google-Account oder separates Testkonto
-- [ ] SIM-Anbieter und E-Mail-Anbieter wählen
+- [ ] SIM-Anbieter wählen (E-Mail: mail.de FreeMail, Konto legt Marvin an)
 - [ ] Teileliste mit Kosten für Körper und Gehirn: Entwurf in `docs/teileliste.md`, Freigabe offen
 - [ ] Laptop als Gehirn: Modell, RAM, Speicher, Akkuzustand und Betriebssystem erfassen und Eignung prüfen
 - [ ] Superpowers in Claude Code installieren und Telemetrie abschalten (macht Marvin, siehe `docs/projektstart-details.md`)
