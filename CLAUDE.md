@@ -49,6 +49,7 @@ Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Rege
 - [ ] Privater Google-Account oder separates Testkonto
 - [ ] SIM-Anbieter wählen (E-Mail: mail.de FreeMail, Konto legt Marvin an)
 - [x] Design Körper Version 1 freigegeben (13.10.2026, `docs/design-koerper.md`)
-- [ ] Bauplan Körper Version 1 bestätigen (`docs/bauplan-koerper-v1.md`)
+- [x] Bauplan Körper Version 1 bestätigt (13.10.2026)
+- [ ] Phase 1: Teile Stufe 1 bestellen (Marvin, `docs/einkauf-stufe1.md`)
 - [ ] Laptop als Gehirn: Modell, RAM, Speicher, Akkuzustand und Betriebssystem erfassen und Eignung prüfen
 - [ ] Superpowers in Claude Code installieren und Telemetrie abschalten (macht Marvin, siehe `docs/projektstart-details.md`)

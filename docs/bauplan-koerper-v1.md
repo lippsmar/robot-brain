@@ -43,7 +43,7 @@ Ablauf jedes Schritts: **Messung oder Test festlegen → ausführen (erwartet: s
 ---
 
 ## Phase 1 – Bestellung Stufe 1 (Testteile, ca. 50–70 €)
-**1.1 Teile bestellen (Marvin):** Pi Zero 2 WH, microSD 32 GB, Mikrofon INMP441, USB-C-Strommessgerät, Netzteil 5 V / 3 A, Steckbrett und Steckkabel.
+**1.1 Teile bestellen (Marvin):** nach `docs/einkauf-stufe1.md` (Pi Zero 2 WH, microSD, INMP441, 27-W-USB-C-Netzteil, USB-C-Tester, Adapter USB-C auf Micro-USB, Jumperkabel), ca. 56–60 € plus Versand.
 - Prüfung: Lieferung vollständig, Pi und Karte unbeschädigt.
 
 ## Phase 2 – Grundsystem
