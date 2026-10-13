@@ -10,7 +10,7 @@ Grundlage: Design Körper „Schlaubi“ Version 1. **Gehirn: Marvins alter Lapt
 
 | Teil | Vorschlag | Preis | Art | Quelle / Hinweis |
 |---|---|---|---|---|
-| Rechner | Raspberry Pi Zero 2 WH (mit Stiftleiste) | 0 € | – | **Marvin hat schon einen Pi** (Modell noch bestätigen, muss ein Zero 2 W sein). Sonst 20,90 € |
+| Rechner | Raspberry Pi Zero 2 WH (mit Stiftleiste) | 0 € | – | **Vorhanden: Raspberry Pi Zero 2 W** (bestätigt 13.10.2026). Falls ohne Pins: Stiftleiste 2×20 anlöten, ca. 1 € |
 | Speicherkarte | microSD 32–64 GB, A1/A2 | 10–20 € | S | Markenkarte |
 | LTE-Modem | Waveshare SIM7600E-H 4G HAT (Europa-Bänder) | 72,90–99,00 € | R | Botland 72,90 €, Tinytronics 75,00 €, welectron 99,00 €. Antennen dabei |
 | Akku | Powerbank ca. 10.000 mAh mit Pass-Through | 0 € | – | **Marvin hat Powerbanks.** Kapazität, Größe und Pass-Through in Phase 11 prüfen. Nur falls keine passt: 25–40 € |

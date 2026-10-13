@@ -10,11 +10,12 @@ Stand 13.10.2026. Preise inkl. MwSt., ohne Versand, Momentaufnahmen. **Vor dem K
 | 2 | USB-Strommessgerät **passend zum Netzteil**: bei USB-A UNI-T UT658A (8,90 €), bei USB-C KWS-1902C (ca. 7,50 €) | Strommessung Phase 3, 4, 11 | 7,50–8,90 € | BerryBase USB-Messgeräte: https://www.berrybase.de/en/workshop/measurement-technology/usb-testers/ |
 | 3 | Kabel auf Micro-USB (USB-A oder USB-C, passend zum Messgerät), kurz und dick (für 2 A+) | Pi Zero hat Micro-USB | ca. 3–5 € (Schätzung) | Elektronik-Shop deiner Wahl, entfällt falls vorhanden |
 | 4 | Jumperkabel Dupont **female-female**, 20 cm | Mikrofon, später LED/Summer | ab 1,60 € | BerryBase Jumperkabel: https://www.berrybase.de/bauelemente/prototyping/jumperkabel/ |
+| 6 | Stiftleiste 2×20, 2,54 mm (nur falls am Pi noch keine Pins angelötet sind) | zum Anlöten am Pi Zero 2 W | ca. 1 € (Schätzung) | Elektronik-Shop deiner Wahl |
 | 5 | microSD 32 GB, Markenkarte A1 | Betriebssystem, entfällt falls vorhanden | ca. 7 € | z. B. https://www.ebay.de/itm/116572688443 |
 
 **Summe: ca. 12–26 € plus Versand.**
 
-**Nicht mehr nötig:** Pi Zero 2 WH (vorhanden, Modell prüfen), Netzteil (vorhanden, mindestens 5 V / 2,5 A), Powerbank (vorhanden, in Phase 11 prüfen).
+**Nicht mehr nötig:** Pi (vorhanden: Raspberry Pi Zero 2 W, bestätigt 13.10.2026), Netzteil (vorhanden, mindestens 5 V / 2,5 A), Powerbank (vorhanden, in Phase 11 prüfen).
 
 ## Aufbau der Strommessung
 Netzteil → USB-Messgerät → Kabel auf Micro-USB → Pi Zero (Strom-Buchse „PWR“). Später kommt statt des Netzteils die Powerbank davor. **Vor dem Kauf prüfen**, dass Stecker und Buchsen von Tester und Adapter zusammenpassen (Tester: USB-C-Stecker und -Buchse).
