@@ -11,13 +11,13 @@ Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. St
 | [roboter-testumgebung](roboter-testumgebung/SKILL.md) | aktiv | Testphase mit privatem Google-Account |
 | [adobe-oss-agent-tools](adobe-oss-agent-tools/SKILL.md) | aktiv | Prüfverfahren für Adobe-Nachbauten (die Tools selbst sind noch ungeprüft) |
 | [roboter-retro](roboter-retro/SKILL.md) | neu 13.10.2026, in Claude hochzuladen | Rückblick auf Sitzungen, Verbesserungen an Regeln, Skills und Prüfungen |
-| [photocraft-agent](photocraft-agent/SKILL.md) | neu 13.10.2026, in Claude hochzuladen | Photoshop-Nachbau steuern |
-| [vectorcraft-agent](vectorcraft-agent/SKILL.md) | neu 13.10.2026, in Claude hochzuladen | Illustrator-Nachbau steuern |
-| [filmcraft-agent](filmcraft-agent/SKILL.md) | neu 13.10.2026, in Claude hochzuladen | Premiere-Pro-Nachbau steuern |
-| [lightcraft-agent](lightcraft-agent/SKILL.md) | neu 13.10.2026, in Claude hochzuladen | Lightroom-Nachbau steuern |
-| [effectcraft-agent](effectcraft-agent/SKILL.md) | neu 13.10.2026, in Claude hochzuladen | After-Effects-Nachbau steuern |
-| [pdfcraft-agent](pdfcraft-agent/SKILL.md) | neu 13.10.2026, in Claude hochzuladen | Acrobat-Pro-Nachbau steuern |
-| [designcraft-agent](designcraft-agent/SKILL.md) | neu 13.10.2026, in Claude hochzuladen | InDesign-Nachbau steuern |
+| [photocraft-agent](photocraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | Photoshop-Nachbau steuern |
+| [vectorcraft-agent](vectorcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | Illustrator-Nachbau steuern |
+| [filmcraft-agent](filmcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | Premiere-Pro-Nachbau steuern |
+| [lightcraft-agent](lightcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | Lightroom-Nachbau steuern |
+| [effectcraft-agent](effectcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | After-Effects-Nachbau steuern |
+| [pdfcraft-agent](pdfcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | Acrobat-Pro-Nachbau steuern |
+| [designcraft-agent](designcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | InDesign-Nachbau steuern |
 
 ## Geplante Roboter-Skills (noch nicht geschrieben)
 | Skill | Kategorie | Zweck | Schnittstelle |
