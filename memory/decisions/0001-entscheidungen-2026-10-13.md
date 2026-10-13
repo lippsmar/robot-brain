@@ -16,3 +16,4 @@ Spiegel der Notion-Seite „Entscheidungen und Projektlog“. Nichts löschen, n
 | 13.10.2026 | Schlaubi handelt nie in Marvins Namen ohne Rückfrage | Beschlossen |
 | 13.10.2026 | Eigene Mail-Adresse für Schlaubi schon in der Testphase, nie Antworten aus Marvins Google-Konto. Kanäle: Telegram, dann E-Mail | Beschlossen, Anbieter offen |
 | 13.10.2026 | Mail-Anbieter für Schlaubi: mail.de FreeMail (IMAP imap.mail.de:993, SMTP smtp.mail.de:465). Marvin legt das Konto an | Beschlossen |
+| 13.10.2026 | Design Körper „Schlaubi“ Version 1 freigegeben (docs/design-koerper.md) | Beschlossen |
