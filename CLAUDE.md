@@ -29,7 +29,7 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 ## 4. Token und Budget
 - Der laufende Roboter nutzt einen API-Key aus der Anthropic Console mit Prepaid-Guthaben und monatlichem Ausgabenlimit.
 - Die Abo-Anmeldung (OAuth) von Claude Pro oder Max wird nicht in OpenClaw oder anderen Drittanbieter-Tools verwendet. Das Abo dient der Entwicklung in Claude Code.
-- Selbsterhalt: Budget überwachen, bei knappem Stand drosseln und Marvin per SMS oder Mail zum Nachladen auffordern.
+- Selbsterhalt: Budget überwachen, bei knappem Stand Sparmodus und Marvin zum Nachladen auffordern. Dazu Sparen (lokales Modell, Cache), Zuarbeit für Einnahmen (Marvin verkauft) und Belohnung durch Marvin. Immer nach deutschem Recht, Einnahmen sind Marvins Einnahmen, Veröffentlichen und Verkaufen nur mit Freigabe (Details: Notion „Design Gehirn“).
 - Modellwahl: Haiku für Hintergrundrecherche, Sonnet oder Opus für Gespräche. Modellname steht in der Config, beim Start die Models-API abfragen und neue Modelle melden.
 
 ## 5. Testphase

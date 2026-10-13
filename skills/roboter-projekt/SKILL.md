@@ -13,7 +13,7 @@ Immer verwenden, wenn es um den KI-Roboter, Robot Brain, Memory Core, OpenClaw, 
 
 ## 2. Feste Regeln
 - Laufender Roboter nutzt einen API-Key mit Prepaid-Guthaben und Ausgabenlimit. Die Abo-Anmeldung (OAuth) von Claude Pro/Max nie in OpenClaw oder anderen Drittanbieter-Tools verwenden. Das Abo dient nur der Entwicklung in Claude Code.
-- Selbsterhalt = Budget überwachen, drosseln, Marvin zum Nachladen auffordern. Kein eigenes Konto, kein selbständiges Geldbeschaffen.
+- Selbsterhalt (Entscheidung 13.10.2026): (1) Sparen: lokales Modell für einfache Aufgaben, Cache, günstigstes passendes Modell, Sparmodus bei knappem Budget. (2) Zuarbeit: verkaufbare Arbeit im Hintergrund vorbereiten, Marvin prüft, veröffentlicht, verkauft und rechnet ab. (3) Belohnung: Marvin lädt Budget nach, wenn vereinbarte Ziele erreicht sind. Immer nach deutschem Recht, alle Einnahmen sind Marvins Einnahmen. Kein eigenes Konto. Veröffentlichen, Verkaufen und Konten nur mit Einzelfreigabe, außer Marvin hat eine begrenzte Dauerfreigabe als ADR erteilt.
 - SIM und Konten laufen auf Marvin. Keine Umgehung von SIM-Registrierung, Identitätsprüfungen oder Bot-Sperren. Der Roboter gibt sich im Netz als Automat zu erkennen und beachtet robots.txt.
 - Keine verdeckten Aufnahmen von Personen. Kamera und Mikrofon erkennbar, Personendaten mit `pii: true`.
 - Keine Secrets, Tokens, PINs in Code, Logs, Notion oder Gedächtnis, nur Referenzen auf den Secret-Store.
