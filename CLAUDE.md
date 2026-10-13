@@ -11,7 +11,7 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 - **Vorschlag zur Hardware (offen):** Microcontroller für Not-Aus, Watchdog und Sensorik, Raspberry Pi Zero 2 W für LTE-Modem, Mail und Kommunikation. Das Gehirn (OpenClaw, Vektorspeicher, Embeddings) läuft auf einem Raspberry Pi 5 mit 8 GB oder einem Heimserver.
 - **Wissensspeicher:** SQLite mit sqlite-vec und FTS5 (Hybridsuche), kleine ONNX-Embeddings über fastembed.
 - **Energie:** Akku mit USB-C-Laden über ein UPS-HAT. Dauerbetrieb braucht ein Netzteil.
-- **Details** (SIM-Modem, Modelle, Embeddings, OpenClaw-Absicherung, Handy-Zugriff): `docs/projektstart-details.md`.
+- **Details** (SIM-Modem, Modelle, Embeddings, OpenClaw-Absicherung, Handy-Zugriff, Adobe-Nachbauten): `docs/projektstart-details.md`. Teileliste: `docs/teileliste.md`.
 
 ## 3. Arbeitsregeln für Claude Code
 - Vor der Arbeit den Skill `skills/roboter-projekt` befolgen.
@@ -47,6 +47,5 @@ Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Rege
 - [ ] Freigabe-Policy für physische Aktionen
 - [ ] Privater Google-Account oder separates Testkonto
 - [ ] SIM-Anbieter und E-Mail-Anbieter wählen
-- [ ] Teileliste mit Kosten für Körper und Gehirn
+- [ ] Teileliste mit Kosten für Körper und Gehirn: Entwurf in `docs/teileliste.md`, Freigabe offen
 - [ ] Superpowers in Claude Code installieren und Telemetrie abschalten (macht Marvin, siehe `docs/projektstart-details.md`)
-- [ ] Instagram-Beitrag aus dem Chat: Inhalt nachreichen (Screenshot oder Text)

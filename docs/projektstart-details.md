@@ -63,6 +63,14 @@ Anfang 2026 waren laut einer Quelle über 135.000 OpenClaw-Instanzen offen errei
 ## Superpowers in Claude Code
 - Installation durch Marvin: `/plugin install superpowers@claude-plugins-official`, Telemetrie mit `SUPERPOWERS_DISABLE_TELEMETRY=1` abschalten.
 
-## Nicht gelesene Quellen
-- Instagram-Beitrag https://www.instagram.com/p/DeWtKBRAGDo/ : Inhalt unbekannt, Instagram sperrt automatische Zugriffe. Bei Bedarf Screenshot oder Text nachreichen.
+## Adobe-Nachbauten (Instagram-Beitrag von evolving.ai)
+Von Marvin am 13.10.2026 als Screenshot nachgereicht. Aussagen des Beitrags, nicht überprüft:
+- Ein Entwickler bzw. Team (ArtCraft) hat sieben Adobe-Apps neu gebaut, laut Beitrag „mit Hilfe von Claude Opus 5.5“, frei, Open Source, in Rust, ohne Adobe-Code, aus öffentlichen Spezifikationen und durch Beobachten des Verhaltens.
+- Die „Crafting Apps“: PhotoCraft (Photoshop), VectorCraft (Illustrator), FilmCraft (Premiere Pro), LightCraft (Lightroom), EffectCraft (After Effects), PdfCraft (Acrobat Pro) und ein InDesign-Nachbau (Name im Screenshot nicht sichtbar).
+- KI-Agenten wie Claude sollen jede App steuern können.
+- PhotoCraft soll in den ersten zehn Tagen über 25.000 GitHub-Sterne bekommen haben. Andere Quellen nennen abweichende Zahlen.
+- Geprüft ist bisher nur PhotoCraft (siehe `skills/INDEX.md`). Die anderen sechs Apps sind ungeprüft und werden vor Nutzung nach `skills/adobe-oss-agent-tools` geprüft.
+- Mit welchem Modell der Code geschrieben wurde, lässt sich aus dem Repo nicht belegen.
+
+## Nicht verfügbare Quellen
 - Datei `ki-roboter-projekt.md` aus dem Chat: liegt nur im Chat. Gegenstück ist die Notion-Seite „Entscheidungen und Projektlog“.
