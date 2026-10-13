@@ -5,7 +5,7 @@ description: "Prüfverfahren für Open-Source-Nachbauten von Adobe-Apps (z. B. P
 
 # Open-Source-Nachbauten von Adobe-Apps für Agenten
 
-> Status: Entwurf, aus Notion rekonstruiert (Original nicht gefunden). Vor Aktivierung prüfen.
+> Status: freigegeben von Marvin am 13.10.2026 (aus Notion rekonstruiert, Original nicht gefunden).
 
 ## Status
 Die Projekte sind Community-Projekte, keine Veröffentlichung von Adobe, sehr neu und laut Roadmap unvollständig.

@@ -29,7 +29,7 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 - Modellwahl: günstiges Modell für Hintergrundrecherche, stärkeres Modell für Gespräche. Modellname steht in der Config.
 
 ## 5. Testphase
-Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Regeln: `skills/roboter-testumgebung` (Entwurf).
+Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Regeln: `skills/roboter-testumgebung`.
 
 ## 6. Datenschutz und Kamera
 - Lokale Datenhaltung, verschlüsselte Laufwerke, keine Telemetrie, möglichst wenig persönliche Daten an die API.

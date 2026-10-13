@@ -5,7 +5,7 @@ description: "Testphase des KI-Roboters mit Marvins privatem Google-Account: Sch
 
 # Testumgebung des KI-Roboters
 
-> Status: Entwurf, aus Notion rekonstruiert (Original nicht gefunden). Vor Aktivierung prüfen.
+> Status: freigegeben von Marvin am 13.10.2026 (aus Notion rekonstruiert, Original nicht gefunden).
 
 ## Grundsatz
 Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet, bevor eigene Mail-Adresse und SIM eingerichtet werden.

@@ -8,8 +8,8 @@ Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. St
 | [roboter-projekt](roboter-projekt/SKILL.md) | aktiv | Arbeitsweise, Regeln, Doku, Testphase |
 | [roboter-brainstorming-plan](roboter-brainstorming-plan/SKILL.md) | aktiv | Erst klären, dann Design und Plan |
 | [roboter-debugging](roboter-debugging/SKILL.md) | aktiv | Ursache finden, Nachweis vor Erfolgsmeldung |
-| [roboter-testumgebung](roboter-testumgebung/SKILL.md) | Entwurf, rekonstruiert | Testphase mit privatem Google-Account |
-| [adobe-oss-agent-tools](adobe-oss-agent-tools/SKILL.md) | Entwurf, rekonstruiert | Prüfverfahren für Adobe-Nachbauten |
+| [roboter-testumgebung](roboter-testumgebung/SKILL.md) | freigegeben 13.10.2026 | Testphase mit privatem Google-Account |
+| [adobe-oss-agent-tools](adobe-oss-agent-tools/SKILL.md) | freigegeben 13.10.2026 | Prüfverfahren für Adobe-Nachbauten (die Tools selbst sind noch ungeprüft) |
 
 ## Geplante Roboter-Skills (noch nicht geschrieben)
 | Skill | Kategorie | Zweck | Schnittstelle |
