@@ -1,6 +1,6 @@
 ---
 name: "roboter-projekt"
-description: "Arbeitsweise für Marvins KI-Roboter-Projekt (Pi Zero, OpenClaw, Memory Core in Notion): Kontext laden, Regeln einhalten, Entscheidungen und Log pflegen, Skills prüfen, Google-Testphase."
+description: "Arbeitsweise für Marvins KI-Roboter-Projekt (Pi Zero, OpenClaw, Memory Core in Notion): Kontext laden, Regeln einhalten, Entscheidungen und Log pflegen, Skills prüfen, Google-Testphase mit separatem Testkonto."
 ---
 
 # KI-Roboter-Projekt (robot-brain)
@@ -20,12 +20,13 @@ Immer verwenden, wenn es um den KI-Roboter, Robot Brain, Memory Core, OpenClaw, 
 - Physische oder irreversible Aktionen nur mit Freigabe. Not-Aus läuft lokal auf dem Microcontroller.
 - Nichts erfinden. Fehlendes als offen markieren oder nachfragen.
 
-## 3. Testphase mit Marvins privatem Google-Account
+## 3. Testphase mit separatem Google-Testkonto
+- Separates Google-Testkonto (Entscheidung 13.10.2026), legt Marvin an. Nur Testdaten, kein Zugriff auf Marvins privates Konto.
 - Nur offizielle Schnittstellen mit OAuth, minimale Freigaben, zuerst nur Lesen.
 - Senden, Löschen, Teilen, Verschieben nur nach ausdrücklicher Bestätigung. Der Agent löscht nichts.
 - Eigener Drive-Ordner und eigenes Mail-Label für den Agenten.
-- Inhalte aus dem privaten Account nur auf ausdrücklichen Wunsch in den dauerhaften Wissensspeicher.
-- Freigaben nach dem Test entziehen. Offene Option: separates Testkonto.
+- Testdaten nicht in den dauerhaften Wissensspeicher.
+- Freigaben nach dem Test entziehen. Regeln: Skill roboter-testumgebung.
 
 ## 4. Fremde Skills und Repos prüfen (vor jeder Nutzung)
 1. Quelle und Autor feststellen.

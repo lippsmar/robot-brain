@@ -33,7 +33,7 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 - Modellwahl: Haiku für Hintergrundrecherche, Sonnet oder Opus für Gespräche. Modellname steht in der Config, beim Start die Models-API abfragen und neue Modelle melden.
 
 ## 5. Testphase
-Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Regeln: `skills/roboter-testumgebung`.
+Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marvin anlegt (Entscheidung 13.10.2026). Kein Zugriff auf Marvins privates Google-Konto. Regeln: `skills/roboter-testumgebung`.
 
 ## 6. Datenschutz und Kamera
 - Lokale Datenhaltung, verschlüsselte Laufwerke, keine Telemetrie, VPN, möglichst wenig persönliche Daten an die API.
@@ -48,7 +48,7 @@ Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Rege
 - [x] Vektordatenbank: sqlite-vec mit FTS5, dazu LanceDB als Vergleich und Ersatz (13.10.2026). LanceDB vor Nutzung nach Checkliste prüfen
 - [x] Retention-Fristen pro Datentyp mit Merk-Schutz (13.10.2026, Notion „Design Gehirn“)
 - [ ] Freigabe-Policy für physische Aktionen
-- [ ] Privater Google-Account oder separates Testkonto
+- [x] Separates Google-Testkonto statt privatem Account (13.10.2026). Anlegen: Marvin
 - [ ] SIM-Anbieter wählen (E-Mail: mail.de FreeMail, Konto legt Marvin an)
 - [x] Design Körper Version 1 freigegeben (13.10.2026, `docs/design-koerper.md`)
 - [x] Bauplan Körper Version 1 bestätigt (13.10.2026)
