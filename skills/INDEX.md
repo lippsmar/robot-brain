@@ -44,6 +44,7 @@ Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. St
 | mattpocock/skills: retro (MIT) | geprüft 13.10.2026, als roboter-retro angepasst | Rückblick auf Coding-Sitzungen, braucht writing-for-agents |
 | corca-ai/claude-plugins: cwf:retro (MIT) | abgelehnt 13.10.2026 | Braucht ganzes CWF-Framework mit Hooks bei jeder Eingabe, 37 Skripte, optional Slack-Webhook |
 | storytold: PhotoCraft, VectorCraft, FilmCraft, LightCraft, EffectCraft, PdfCraft, DesignCraft (MIT/Apache-2.0) | alle 7 gezielt geprüft 13.10.2026, bedingt geeignet | Übersicht im Skill adobe-oss-agent-tools. Korrektur: PhotoCraft hat doch eine Ordnerbeschränkung (Read-/Write-Root). Ohne Beschränkung: FilmCraft, LightCraft, DesignCraft |
+| openclaw/openclaw 2026.10.2 (MIT, OpenClaw Foundation) | gezielt geprüft 13.10.2026, bedingt geeignet | Gehirn-Software. Pflicht: Ports nur an 127.0.0.1, Telemetrie aus, keine Abo-Session-Keys, Hardened Baseline, kein Docker-Socket. Details: `docs/pruefung-openclaw.md` |
 | Everything Claude Code (affaan-m) | nicht komplett installieren | Überschneidet sich mit Memory Core, viele Hooks |
 | Awesome Claude Code (hesreallyhim) | Nachschlagequelle | Linkliste, jeden Fund einzeln prüfen |
 | pm-skills (Alireza Rezvani) | abgelehnt | Jira/Confluence, Skripte, Netzwerk, Lizenz widersprüchlich |
