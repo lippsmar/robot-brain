@@ -11,6 +11,7 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 - **Vorschlag zur Hardware (offen):** Microcontroller für Not-Aus, Watchdog und Sensorik, Raspberry Pi Zero 2 W für LTE-Modem, Mail und Kommunikation. Das Gehirn (OpenClaw, Vektorspeicher, Embeddings) läuft auf einem Raspberry Pi 5 mit 8 GB oder einem Heimserver.
 - **Wissensspeicher:** SQLite mit sqlite-vec und FTS5 (Hybridsuche), kleine ONNX-Embeddings über fastembed.
 - **Energie:** Akku mit USB-C-Laden über ein UPS-HAT. Dauerbetrieb braucht ein Netzteil.
+- **Details** (SIM-Modem, Modelle, Embeddings, OpenClaw-Absicherung, Handy-Zugriff): `docs/projektstart-details.md`.
 
 ## 3. Arbeitsregeln für Claude Code
 - Vor der Arbeit den Skill `skills/roboter-projekt` befolgen.
@@ -20,20 +21,22 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 - Keine Umgehung von SIM-Registrierung, Identitätsprüfungen oder Bot-Sperren. Der Roboter gibt sich als Automat zu erkennen und beachtet robots.txt.
 - Jede Aktion des Agenten wird protokolliert (Event-Log gemäß Schema).
 - Nichts erfinden. Fehlendes wird nachgefragt oder als offen markiert.
-- Neue Features: `skills/roboter-brainstorming-plan`. Fehler: `skills/roboter-debugging`.
+- OpenClaw nur in Docker, nur an localhost, mit Gateway-Token, Zugriff von außen nur über privates Netz (z. B. Tailscale), regelmäßig `openclaw security audit`.
+- Neue Features: `skills/roboter-brainstorming-plan`. Fehler: `skills/roboter-debugging`. Rückblick: `skills/roboter-retro`.
+- Bei Konflikt mit allgemeinen Skills (z. B. Superpowers) gelten die roboter-Skills und die Freigabe-Sperre.
 
 ## 4. Token und Budget
 - Der laufende Roboter nutzt einen API-Key aus der Anthropic Console mit Prepaid-Guthaben und monatlichem Ausgabenlimit.
 - Die Abo-Anmeldung (OAuth) von Claude Pro oder Max wird nicht in OpenClaw oder anderen Drittanbieter-Tools verwendet. Das Abo dient der Entwicklung in Claude Code.
 - Selbsterhalt: Budget überwachen, bei knappem Stand drosseln und Marvin per SMS oder Mail zum Nachladen auffordern.
-- Modellwahl: günstiges Modell für Hintergrundrecherche, stärkeres Modell für Gespräche. Modellname steht in der Config.
+- Modellwahl: Haiku für Hintergrundrecherche, Sonnet oder Opus für Gespräche. Modellname steht in der Config, beim Start die Models-API abfragen und neue Modelle melden.
 
 ## 5. Testphase
 Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Regeln: `skills/roboter-testumgebung`.
 
 ## 6. Datenschutz und Kamera
-- Lokale Datenhaltung, verschlüsselte Laufwerke, keine Telemetrie, möglichst wenig persönliche Daten an die API.
-- Kameras und Mikrofone erkennbar, keine verdeckten Aufnahmen. Personenbezogene Daten mit `pii: true`.
+- Lokale Datenhaltung, verschlüsselte Laufwerke, keine Telemetrie, VPN, möglichst wenig persönliche Daten an die API.
+- Kameras und Mikrofone erkennbar, keine verdeckten Aufnahmen, Aufnahmen von Personen nur mit Einwilligung. Personenbezogene Daten mit `pii: true`.
 
 ## 7. Offene Punkte
 - [ ] Microcontroller-Modell und Sensorliste festlegen
@@ -44,3 +47,6 @@ Alle Funktionen werden zuerst mit Marvins privatem Google-Account getestet. Rege
 - [ ] Freigabe-Policy für physische Aktionen
 - [ ] Privater Google-Account oder separates Testkonto
 - [ ] SIM-Anbieter und E-Mail-Anbieter wählen
+- [ ] Teileliste mit Kosten für Körper und Gehirn
+- [ ] Superpowers in Claude Code installieren und Telemetrie abschalten (macht Marvin, siehe `docs/projektstart-details.md`)
+- [ ] Instagram-Beitrag aus dem Chat: Inhalt nachreichen (Screenshot oder Text)
