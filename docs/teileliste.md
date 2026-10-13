@@ -69,7 +69,7 @@ Grundlage: Design Körper „Schlaubi“ Version 1. **Gehirn: Marvins alter Lapt
 | Posten | Preis | Art | Quelle / Hinweis |
 |---|---|---|---|
 | Prepaid-SIM mit SMS und Daten | ca. 5–9 € je 28 Tage | R | z. B. CallYa Start 4,99 € (2 GB), otelo Smart S 4,95 € (2 GB), ja!mobil 8,99 € (25 GB). Auf Marvin registriert |
-| Claude-API | Ausgabenlimit legt Marvin fest | offen | Prepaid-Guthaben in der Anthropic Console |
+| Claude-API | höchstens 30 $ / Monat (Schätzung normal ca. 25 $) | R | Limit in der Anthropic Console, Entscheidung 13.10.2026 |
 | E-Mail-Adresse | 0 € | R | mail.de FreeMail (Entscheidung 13.10.2026) |
 | Such-API für Recherche | offen | offen | Anbieter noch nicht gewählt |
 
