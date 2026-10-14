@@ -52,3 +52,4 @@ Spiegel der Notion-Seite „Entscheidungen und Projektlog“. Nichts löschen, n
 | 14.10.2026 | Version 1 bekommt Sensoren für Temperatur (BME280, inkl. Luftfeuchte und Luftdruck) und Licht (BH1750), an Software-I2C GPIO22/23 wegen Taster an GPIO3. Teileliste Version 1 jetzt ca. 164–267 € | Beschlossen |
 | 14.10.2026 | Geräusche und Messwerte werden immer gesammelt, wenn der Würfel an ist. Betriebstemperaturen von Pi (vcgencmd) und LTE-Modem (AT+CPMUTEMP, zu prüfen) werden mit erfasst | Beschlossen |
 | 14.10.2026 | Zweiter Temperatursensor BMP280 an der Zuluft in Version 1 (Abluft BME280), Kühlung über Temperaturunterschied plus Chip- und Modemtemperatur. Teileliste Version 1 ca. 166–269 € | Beschlossen |
+| 14.10.2026 | Aufbewahrung: Messwerte und Geräuschklassen für immer, bewusste Aufnahmen gelten als gemerkt. Design Umgebungsbewusstsein und Datensammlung Version 1 geschrieben, zur Freigabe | Beschlossen |
