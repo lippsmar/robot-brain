@@ -1,6 +1,6 @@
 # Bauplan Umgebungsbewusstsein und Datensammlung – Version 1
 
-Stand 14.10.2026. Grundlage: `docs/design-daten.md`, von Marvin am 14.10.2026 freigegeben. **Dieser Plan wird erst umgesetzt, wenn Marvin ihn bestätigt.**
+Stand 14.10.2026. Grundlage: `docs/design-daten.md`, von Marvin am 14.10.2026 freigegeben. **Von Marvin am 14.10.2026 bestätigt.**
 
 ## Kopf
 - **Ziel:** Der Würfel erfasst immer, wenn er an ist, Geräusche als Merkmale, Messwerte und groben Kontext. Das Gehirn legt alles sauber im Data Lake ab, erkennt Muster und nutzt sie für Schlaubis Umgebungsbewusstsein und Laune. Gespräche anderer werden nie mitgehört.

@@ -55,3 +55,4 @@ Spiegel der Notion-Seite „Entscheidungen und Projektlog“. Nichts löschen, n
 | 14.10.2026 | Aufbewahrung: Messwerte und Geräuschklassen für immer, bewusste Aufnahmen gelten als gemerkt. Design Umgebungsbewusstsein und Datensammlung Version 1 geschrieben, zur Freigabe | Beschlossen |
 | 14.10.2026 | Bauplan Charakter Version 1 bestätigt. Design Umgebungsbewusstsein und Datensammlung Version 1 freigegeben (Marvin: „Ja Freigabe“). Bauplan Datensammlung Version 1 geschrieben, zur Bestätigung | Beschlossen |
 | 14.10.2026 | Idee Wissen und Fähigkeiten teilen: zuerst mit Freunden, später mit zahlenden Kunden. Austausch zwischen mehreren Schlaubis gewünscht | Beschlossen, Design in Klärung |
+| 14.10.2026 | Bauplan Datensammlung Version 1 bestätigt | Beschlossen |
