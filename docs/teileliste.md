@@ -25,7 +25,8 @@ Grundlage: Design Körper „Schlaubi“ Version 1. **Gehirn: Marvins alter Lapt
 | Gehäuse | Holzrahmen aus Marvins Bestand, Seiten aus Acrylglas opal weiß, matt/satiniert, 3 mm (Zuschnitt, für Hinterleuchtung) | 10–25 € | S | Marvins Variante 13.10.2026 |
 | Klima-Sensor | BME280 (Temperatur, Luftfeuchte, Luftdruck), I2C | ca. 4–11 € | S | Ergänzung 14.10.2026. BerryBase-Preis nicht gefunden, andere Händler ca. 3,70–11,45 € |
 | Licht-Sensor | BH1750 (GY-302), I2C | ca. 2,40 € | R | Ergänzung 14.10.2026, BerryBase (Preis indirekt gefunden, im Shop prüfen) |
-| **Summe Version 1** | | **ca. 164–267 €** | | |
+| Zuluft-Sensor | BMP280 (GY-BMP280, Temperatur und Luftdruck), I2C | ca. 1,60 € | R | Ergänzung 14.10.2026, BerryBase |
+| **Summe Version 1** | | **ca. 166–269 €** | | |
 
 **Gestrichen gegenüber dem ersten Entwurf:** UPS HAT (C) (Akku zu klein, ca. 1 Stunde), Pico 2 W (ohne Motoren nicht nötig, bleibt Option).
 

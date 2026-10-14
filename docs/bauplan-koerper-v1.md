@@ -32,7 +32,7 @@ Stand 13.10.2026. Grundlage: `docs/design-koerper.md` (von Marvin am 13.10.2026 
 | Piezo-Summer (passiv) | Signal über 100-Ω-Widerstand | GPIO16 (36), GND (34) |
 | Taster (sauber herunterfahren / wecken) | Kontakt | GPIO3 (5), GND (39) |
 | Kamera | Flachbandkabel | CSI-Anschluss (Mini-CSI) |
-| Sensoren BME280 und BH1750 (I2C, Ergänzung 14.10.2026) | SDA / SCL | Software-I2C (`i2c-gpio`) auf GPIO22 (15) und GPIO23 (16), 3,3 V (17), GND (20). Grund: Der Hardware-I2C nutzt GPIO2/GPIO3, und GPIO3 ist schon der Taster mit Weckfunktion. Vor dem Löten mit der Pinbelegung des LTE-HAT abgleichen (Schritt 10.1) |
+| Sensoren BME280, BMP280 und BH1750 (I2C, Ergänzung 14.10.2026) | SDA / SCL | Software-I2C (`i2c-gpio`) auf GPIO22 (15) und GPIO23 (16), 3,3 V (17), GND (20). Grund: Der Hardware-I2C nutzt GPIO2/GPIO3, und GPIO3 ist schon der Taster mit Weckfunktion. Vor dem Löten mit der Pinbelegung des LTE-HAT abgleichen (Schritt 10.1) |
 | LTE-HAT | laut Waveshare-Wiki | Pins in Schritt 10.1 prüfen, Konflikte mit 3, 12, 16, 18–20 ausschließen |
 
 Hinweise zur Belegung: Die LED nutzt den PWM-Baustein an GPIO12. Der Summer liegt deshalb bewusst nicht an GPIO13 (zweiter PWM-Kanal), sondern an GPIO16 mit Software-Ton. Die WS2812 läuft mit 5 V, das Datensignal mit 3,3 V funktioniert meist. Falls die LED flackert, einen Pegelwandler (z. B. 74AHCT125) einsetzen.
@@ -110,12 +110,14 @@ Ablauf jedes Schritts: **Messung oder Test festlegen → ausführen (erwartet: s
 - Test: Herunterfahren ohne Fehler, Neustart funktioniert, Dateisystem sauber.
 
 ## Phase 8a – Sensoren Temperatur und Licht (Ergänzung 14.10.2026)
-**8a.1 Bestellung (Marvin):** BME280 und BH1750 zusammen mit Stufe 2.
-**8a.2 Anschluss:** Software-I2C auf GPIO22/23 (siehe Pinbelegung), beide Sensoren am selben Bus (Adressen 0x76/0x77 und 0x23).
-- Test: `i2cdetect` auf dem Software-Bus zeigt beide Adressen.
+**8a.1 Bestellung (Marvin):** BME280, BMP280 und BH1750 zusammen mit Stufe 2.
+**8a.2 Anschluss:** Software-I2C auf GPIO22/23 (siehe Pinbelegung), alle drei Sensoren am selben Bus. BME280 (Abluft) auf Adresse 0x77, BMP280 (Zuluft) auf 0x76 (über den SDO-Pin einstellen), BH1750 auf 0x23.
+- Test: `i2cdetect` auf dem Software-Bus zeigt alle drei Adressen.
 **8a.3 Messen:** Temperatur, Luftfeuchte, Luftdruck und Helligkeit jede Minute an das Gehirn (Data Lake L5, Zeitreihe mit Gerät und Qualität).
 - Test: Werte im Vergleich mit einem Zimmerthermometer und Handy-Helligkeitsmesser plausibel. Taschenlampe auf den Lichtsensor ergibt einen deutlichen Sprung.
-**8a.4 Abwärme:** Temperatur im geschlossenen Würfel nach einer Stunde mit der Raumtemperatur vergleichen. Bei mehr als 1 °C Abweichung den Sensor näher an die Lüftung setzen oder eine Korrektur berechnen.
+**8a.4 Kühlung messen:** Zuluft (BMP280) und Abluft (BME280) gegenüberstellen, dazu Chip-Temperatur (`vcgencmd`) und Modem-Temperatur (`AT+CPMUTEMP`, in Phase 10 prüfen). Jede Minute ins Gehirn.
+- Test: Vor dem Einbau messen beide Sensoren nebeneinander höchstens 0,5 °C verschieden (sonst Abgleich speichern). Im geschlossenen Würfel nach einer Stunde: Abluft wärmer als Zuluft, Chip unter 70 °C, keine Drosselung.
+- Warnung an Marvin, wenn die Chip-Temperatur 70 °C erreicht oder der Pi drosselt.
 
 ## Phase 9 – Kamera
 **9.1 Kamera anschließen (Strom aus)**, Flachbandkabel richtig herum.
