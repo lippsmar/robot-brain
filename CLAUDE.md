@@ -54,7 +54,8 @@ Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marv
 - [x] Bauplan Körper Version 1 bestätigt (13.10.2026)
 - [x] Design Gehirn Version 1 freigegeben (13.10.2026, `docs/design-gehirn.md`)
 - [x] Bauplan Gehirn Version 1 bestätigt (13.10.2026, `docs/bauplan-gehirn-v1.md`)
-- [ ] Design Charakter Version 1 freigeben (`docs/design-charakter.md`)
+- [x] Design Charakter Version 1 freigegeben (14.10.2026, `docs/design-charakter.md`)
+- [ ] Bauplan Charakter Version 1 bestätigen (`docs/bauplan-charakter-v1.md`)
 - [ ] Gehirn Phase 0: Bestandsaufnahme und Inhalte sichern (Marvin, `docs/checkliste-phase0-gehirn.md`). Löschen noch nicht freigegeben
 - [ ] Phase 1: Teile Stufe 1 bestellen (Marvin, `docs/einkauf-stufe1.md`)
 - [ ] Laptop als Gehirn: Modell, RAM, Speicher, Akkuzustand und Betriebssystem erfassen und Eignung prüfen
