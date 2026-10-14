@@ -1,6 +1,6 @@
 # Bauplan Charakter „Schlaubi“ – Version 1
 
-Stand 14.10.2026. Grundlage: `docs/design-charakter.md`, von Marvin am 14.10.2026 freigegeben, einschließlich der drei Annahmen in Abschnitt 11. **Dieser Plan wird erst umgesetzt, wenn Marvin ihn bestätigt.**
+Stand 14.10.2026. Grundlage: `docs/design-charakter.md`, von Marvin am 14.10.2026 freigegeben, einschließlich der drei Annahmen in Abschnitt 11. **Von Marvin am 14.10.2026 bestätigt.**
 
 ## Kopf
 - **Ziel:** Schlaubis Charakter als Profil, das Gesprächen, Stimme, Licht und Tönen eine durchgehende Persönlichkeit gibt. Der feste Kern ist geschützt, die Laune begründet. Das Profil lässt sich im Gespräch bearbeiten und entwickelt sich von selbst weiter.

@@ -1,6 +1,6 @@
 # Design Umgebungsbewusstsein und Datensammlung – Version 1
 
-Stand 14.10.2026. **Zur Freigabe durch Marvin.** Spiegel der Notion-Seite „Idee: Umgebungsbewusstsein und Datensammlung“, dort stehen Herleitung und Recherche.
+Stand 14.10.2026. **Freigegeben von Marvin am 14.10.2026.** Bauplan: `docs/bauplan-daten-v1.md`. Spiegel der Notion-Seite „Idee: Umgebungsbewusstsein und Datensammlung“, dort stehen Herleitung und Recherche.
 
 ## 1. Zweck
 Schlaubi soll seine Umgebung so gut wie möglich verstehen, Muster in Marvins Alltag erkennen und später mit den Daten eigene Modelle trainieren. Gesammelt wird, was nicht personenbezogen ist oder nur Marvin betrifft.

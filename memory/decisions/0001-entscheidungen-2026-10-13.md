@@ -53,3 +53,5 @@ Spiegel der Notion-Seite „Entscheidungen und Projektlog“. Nichts löschen, n
 | 14.10.2026 | Geräusche und Messwerte werden immer gesammelt, wenn der Würfel an ist. Betriebstemperaturen von Pi (vcgencmd) und LTE-Modem (AT+CPMUTEMP, zu prüfen) werden mit erfasst | Beschlossen |
 | 14.10.2026 | Zweiter Temperatursensor BMP280 an der Zuluft in Version 1 (Abluft BME280), Kühlung über Temperaturunterschied plus Chip- und Modemtemperatur. Teileliste Version 1 ca. 166–269 € | Beschlossen |
 | 14.10.2026 | Aufbewahrung: Messwerte und Geräuschklassen für immer, bewusste Aufnahmen gelten als gemerkt. Design Umgebungsbewusstsein und Datensammlung Version 1 geschrieben, zur Freigabe | Beschlossen |
+| 14.10.2026 | Bauplan Charakter Version 1 bestätigt. Design Umgebungsbewusstsein und Datensammlung Version 1 freigegeben (Marvin: „Ja Freigabe“). Bauplan Datensammlung Version 1 geschrieben, zur Bestätigung | Beschlossen |
+| 14.10.2026 | Idee Wissen und Fähigkeiten teilen: zuerst mit Freunden, später mit zahlenden Kunden. Austausch zwischen mehreren Schlaubis gewünscht | Beschlossen, Design in Klärung |
