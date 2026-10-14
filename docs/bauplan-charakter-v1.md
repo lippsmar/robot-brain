@@ -122,7 +122,12 @@ Stand 14.10.2026. Grundlage: `docs/design-charakter.md`, von Marvin am 14.10.202
 2. **Nur aus dem Zusammenhang:** Marvin sagt es, z. B. „Das ist mein Kumpel“. Einfacher, aber unsicher.
 3. **Beides:** Erkennung, und im Zweifel gilt der Zusammenhang.
 
-Marvin entscheidet. Bis dahin gilt: Unsicher, ob es Marvin ist, heißt eine fremde Person, also keine Aufträge und nichts speichern.
+**Entschieden (Marvin, 14.10.2026): beides.** Lokale Sprechererkennung, im Zweifel gilt der Zusammenhang.
+- Das Stimmprofil ist ein biometrisches Merkmal: nur Marvins Profil, nur lokal auf dem Laptop.
+- Stimmen anderer werden nur verglichen und sofort verworfen.
+- Die Erkennung dient nur der Einordnung und ist nie eine Freigabe für Wichtiges. Das bestätigt Marvin per Telegram.
+- Software vorher nach Checkliste prüfen. Treffsicherheit testen, auch mit einer abgespielten Aufnahme von Marvin.
+- Unsicher, ob es Marvin ist, heißt weiterhin: fremde Person, keine Aufträge, nichts speichern.
 
 **8.2 Verhalten:**
 - ausweichen, mal höflich, mal launisch, je nach Laune
