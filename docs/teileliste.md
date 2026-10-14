@@ -23,7 +23,9 @@ Grundlage: Design Körper „Schlaubi“ Version 1. **Gehirn: Marvins alter Lapt
 | Laden | USB-C-Einbaubuchse oder kurzes Durchführungskabel | 5–10 € | S | |
 | Kleinteile | Kabel, Schrauben, Abstandshalter, Lichtleiter, Pufferkondensator | 15–30 € | S | |
 | Gehäuse | Holzrahmen aus Marvins Bestand, Seiten aus Acrylglas opal weiß, matt/satiniert, 3 mm (Zuschnitt, für Hinterleuchtung) | 10–25 € | S | Marvins Variante 13.10.2026 |
-| **Summe Version 1** | | **ca. 158–254 €** | | |
+| Klima-Sensor | BME280 (Temperatur, Luftfeuchte, Luftdruck), I2C | ca. 4–11 € | S | Ergänzung 14.10.2026. BerryBase-Preis nicht gefunden, andere Händler ca. 3,70–11,45 € |
+| Licht-Sensor | BH1750 (GY-302), I2C | ca. 2,40 € | R | Ergänzung 14.10.2026, BerryBase (Preis indirekt gefunden, im Shop prüfen) |
+| **Summe Version 1** | | **ca. 164–267 €** | | |
 
 **Gestrichen gegenüber dem ersten Entwurf:** UPS HAT (C) (Akku zu klein, ca. 1 Stunde), Pico 2 W (ohne Motoren nicht nötig, bleibt Option).
 
@@ -31,7 +33,6 @@ Grundlage: Design Körper „Schlaubi“ Version 1. **Gehirn: Marvins alter Lapt
 
 | Teil | Vorschlag | Preis | Art |
 |---|---|---|---|
-| Klima-Sensor | BME280 | 5–11 € | R |
 | Abstands-Sensor | VL53L1X | 5–18 € | R |
 | Mikrocontroller | Raspberry Pi Pico 2 W | 7,50 € | R |
 | Display (Version 2) | kleines rundes oder eckiges SPI-Display | offen | – |

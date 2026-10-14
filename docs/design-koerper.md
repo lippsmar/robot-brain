@@ -57,7 +57,8 @@ Details und Preise: `docs/teileliste.md`.
 - RGB-LED (WS2812) und Piezo-Summer
 - Akku: Powerbank ca. 10.000 mAh mit Durchladen (Pass-Through), USB-C
 - Ein-Aus-Schalter, USB-C-Ladebuchse oder -Kabel nach außen
-- Optional, nicht in Version 1: Klimasensor BME280, Abstandssensor VL53L1X, Display
+- **Sensoren (Ergänzung 14.10.2026, Marvins Entscheidung):** Klimasensor BME280 (Temperatur, Luftfeuchte, Luftdruck) und Lichtsensor BH1750 (Helligkeit in Lux), beide über I2C. Der Temperatursensor sitzt an einer Lüftungsöffnung, weg von Pi und Modem, sonst misst er deren Abwärme.
+- Optional, nicht in Version 1: Abstandssensor VL53L1X, CO₂-Sensor, Display
 
 **Akku-Begründung:** geschätzt 2,5–4 W Verbrauch, für 6 Stunden 15–24 Wh, also etwa 5.000–7.500 mAh. Eine fertige Powerbank mit Schutzschaltung ist sicherer als ein Eigenbau-Akku aus Einzelzellen. Der echte Verbrauch wird vor dem Akku-Kauf gemessen.
 
