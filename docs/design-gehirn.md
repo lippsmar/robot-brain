@@ -108,6 +108,15 @@ Das Gehirn ist Schlaubis Denken und Gedächtnis. Es läuft auf einem alten Lapto
 5. **Alter Laptop fällt aus:** Sicherung und Wiederherstellung auf einem zweiten Laptop einmal komplett proben.
 6. **Verzögerung im Gespräch** vom Würfel über LTE, Laptop und Claude zurück: Messen, Ziel legt der Plan fest.
 
+## 11a. Mitgedacht für später: MCP-Schnittstelle (Version 2)
+Entscheidung 14.10.2026: Die MCP-Schnittstelle kommt erst, wenn Schlaubi zu Hause läuft. Version 1 wird aber so gebaut, dass sie später leicht dazukommt. Idee und Entscheidungen stehen in Notion unter „Idee: MCP-Schnittstelle für den Würfel“.
+- **Würfel-Dienst und Gedächtnisdienst** bekommen feste, klar beschriebene Funktionen, z. B. `listen`, `photo`, `led`, `sound`, `status` sowie `recall` und `remember`. Später werden sie nur noch als MCP-Werkzeuge verpackt.
+- Der **Charakter** steht in einer eigenen Datei und nicht verstreut im Code. Später wird er als MCP-Vorlage angeboten.
+- Der Würfel-Dienst gibt **nie Audio** an ein Sprachmodell weiter, nur lokal erkannten Text.
+- Der Würfel schaltet die LED selbst ein, bevor er aufnimmt.
+- Jede Eintragung ins Gedächtnis trägt eine Herkunft mit Gerät bzw. Host.
+- Eine Warteschlange für Einträge, die erst später übertragen werden, ist im Gedächtnisdienst vorgesehen. Später nutzen Host-Laptops sie ohne Verbindung. Eine lokale Kopie des Gedächtnisses auf anderen Laptops gibt es nicht.
+
 ## 12. Offene Punkte (blockieren das Design nicht)
 - Laptop-Bestandsaufnahme und Auswahl (Marvin zu Hause)
 - Such-API-Anbieter wählen und prüfen
