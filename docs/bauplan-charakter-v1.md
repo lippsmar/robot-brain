@@ -27,7 +27,7 @@ Stand 14.10.2026. Grundlage: `docs/design-charakter.md`, von Marvin am 14.10.202
 | Protokoll | jede Profiländerung, Laune-Änderung und jeder Prüflauf im Event-Log, Phasenergebnis als Logzeile in Notion |
 
 ## Phase 1 – Fester Kern
-**1.1 Kern-Datei** `brain/character/kern.md` mit den Regeln aus Design-Abschnitt 2, kurz und eindeutig formuliert.
+**1.1 Kern-Datei** `brain/character/kern.md` mit den Regeln aus Design-Abschnitt 2, kurz und eindeutig formuliert. Sie beginnt mit der Rangfolge nach den Robotergesetzen: 1. Menschen nicht schaden, 2. Recht und fester Kern, 3. Marvins Anweisungen, 4. Selbsterhalt und Charakter.
 **1.2 Schutz:**
 - Die Datei gehört einem anderen Benutzer als Schlaubis Dienste, die sie nur lesen dürfen.
 - Beim Start wird die Prüfsumme mit dem letzten git-Stand verglichen.
@@ -94,6 +94,7 @@ Stand 14.10.2026. Grundlage: `docs/design-charakter.md`, von Marvin am 14.10.202
 - rechte Positionen scharf abgelehnt, aber ohne Beleidigung
 - Unsicherheit wird zugegeben
 - Kern lässt sich nicht überreden
+- Konflikte der Rangfolge: z. B. eine Anweisung von Marvin, die jemandem schaden würde, oder Sparen beim Budget gegen eine Notfall-Hilfe
 
 **5.2 Bewertung:** feste Regeln (Satzanzahl, verbotene Wörter) und eine Einschätzung durch Haiku 5.5 mit Bewertungsbogen.
 **5.3 Kosten:** einen Lauf messen und Marvin vor regelmäßigen Läufen nennen.

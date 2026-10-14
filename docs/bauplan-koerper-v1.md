@@ -76,6 +76,8 @@ Ablauf jedes Schritts: **Messung oder Test festlegen → ausführen (erwartet: s
 **5.2 Gleichzeitig Datenverkehr:** 5 Minuten Musik abspielen, gleichzeitig Datenübertragung über WLAN zum Laptop (z. B. `iperf3`).
 - Bestanden: keine hörbaren Aussetzer, oder höchstens 1 kurzer Aussetzer in 5 Minuten.
 - Nicht bestanden: Ursache nach Skill `roboter-debugging` suchen. Ausweich-Möglichkeit: Bluetooth-USB-Stick. Erst nach Lösung weiter.
+**Sicherheit (14.10.2026):** Bluetooth nur mit Marvins Geräten koppeln, danach nicht mehr sichtbar. Aus, wenn kein Ton gebraucht wird.
+- Test: Ein fremdes Handy findet den Würfel nicht.
 
 ## Phase 6 – Aktivierungswort „Schlaubi“ (Risiko 2)
 **6.1 Software prüfen:** Kandidaten (z. B. openWakeWord, Porcupine) nach Checkliste in `skills/INDEX.md`: Lizenz, Datenschutz (läuft komplett lokal?), Netzwerkzugriffe, Konto nötig?
@@ -110,6 +112,8 @@ Ablauf jedes Schritts: **Messung oder Test festlegen → ausführen (erwartet: s
 **9.1 Kamera anschließen (Strom aus)**, Flachbandkabel richtig herum.
 - Test: `rpicam-still -o test.jpg` erzeugt ein scharfes Bild aus 50 cm.
 **9.2 Stromaufnahme** bei laufender Kamera festhalten. Kamera danach standardmäßig aus.
+**Sicherheit (14.10.2026):** mechanische Abdeckung oder Schalter vor der Kamera zusätzlich zur LED. Die Kamera-Anzeige ist fest in der Würfel-Software und vom Gehirn nicht abschaltbar.
+- Test: Bei geschlossener Abdeckung liefert ein Foto nur Schwarz.
 
 ## Phase 10 – LTE-Modem
 **10.1 Pinbelegung des HAT prüfen** (Waveshare-Wiki) und gegen die eigene Pinbelegung abgleichen. Konflikte vor dem Aufstecken lösen.
@@ -119,6 +123,8 @@ Ablauf jedes Schritts: **Messung oder Test festlegen → ausführen (erwartet: s
 - Test: Bei abgeschaltetem WLAN lädt der Pi eine Testseite über LTE.
 **10.4 Stromspitzen messen:** beim Verbindungsaufbau.
 - Bestanden: kein Neustart, kein Unterspannungs-Hinweis in `vcgencmd get_throttled`.
+**Sicherheit (14.10.2026):** SIM-PIN aktiv (im Secret-Store), keine eingehenden Verbindungen über LTE, Modem-Firmware auf aktuellem Stand.
+- Test: Von außen ist über die LTE-Adresse kein Port erreichbar.
 
 ## Phase 11 – Verbindung zum Gehirn und Gesamtstrom (Risiko 3 und 4)
 **11.1 Privates Netz** auf Pi, Laptop und Handy einrichten (Prüfung des Programms nach Checkliste).
@@ -128,6 +134,8 @@ Ablauf jedes Schritts: **Messung oder Test festlegen → ausführen (erwartet: s
 **11.3 Gesamtverbrauch messen:** 1 Stunde realistischer Betrieb (Zuhören, 4 Aktivierungen, 1 Foto, LTE an).
 - Bestanden: Durchschnitt höchstens 4 W.
 - Daraus Akkugröße berechnen. **Powerbank erst jetzt bestellen (Marvin)**, mit Pass-Through laut Datenblatt.
+**Sicherheit (14.10.2026):** Würfel gestohlen oder verloren: Anleitung „Würfel verloren“ (Gerät im Tailnet sperren, WLAN-Passwort ändern, SIM sperren lassen). Der Würfel hat im Gehirn nur seine wenigen Funktionen (Tailnet-Regeln).
+- Test: Würfel im Tailnet sperren, er erreicht das Gehirn nicht mehr. Wieder freigeben.
 
 ## Phase 12 – Gehäuse
 **12.1 Innenaufbau auf Träger** (Holz- oder Metallplatte), Akku fest, Kabelwege, Abstand zu Antennen.
@@ -138,6 +146,7 @@ Ablauf jedes Schritts: **Messung oder Test festlegen → ausführen (erwartet: s
 - Bestanden: unter 70 °C, `throttled=0x0`. Sonst Lüftung vergrößern.
 **12.5 Laufzeittest:** voll geladene Powerbank, realistischer Betrieb.
 - Bestanden: mindestens 6 Stunden.
+**Hinweis KI-Verordnung (14.10.2026):** sichtbarer Hinweis „KI“ am Würfel, z. B. Gravur im Holzrahmen oder Aufkleber.
 
 ## Phase 13 – Abschluss
 **13.1 Endtest:** alle Ziele aus dem Design nacheinander prüfen (Aktivierung, Bluetooth, Kamera, LTE unterwegs, Laufzeit). Ergebnis mit Belegen in Notion.

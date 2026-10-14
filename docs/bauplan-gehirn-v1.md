@@ -64,11 +64,17 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
 **3.2 Automatische Sicherheitsupdates** (unattended-upgrades).
 **3.3 SSH:** Passwort-Login und Root-Login aus.
 - Test: Portscan von einem anderen Gerät im Heimnetz (`nmap`) zeigt nur Port 22. SSH mit Passwort wird abgelehnt.
+**3.4 Anmeldeversuche abwehren** (Sicherheit, 14.10.2026): fail2ban oder ein gleichwertiges Programm, nach Checkliste geprüft.
+- Test: Fünf falsche SSH-Anmeldungen von einem Testgerät führen zur Sperre.
+**3.5 GitHub (Marvin):** Zwei-Faktor-Anmeldung, Secret-Scanning und Schutz des main-Zweigs im Repo einschalten.
+- Test: Ein absichtlich eingecheckter Test-Schlüssel wird gemeldet. Danach wird er aus der Historie entfernt.
 
 ## Phase 4 – Privates Netz
 **4.1 Tailscale prüfen** nach Checkliste (Lizenz, Telemetrie, Datenweitergabe). Falls schon in Körper-Phase 11.1 geschehen, entfällt das hier.
 **4.2 Einrichten** auf Laptop und Handy. Das Konto legt Marvin an.
 - Test: Das Handy erreicht den Laptop über Tailscale im Mobilnetz. Ohne Tailscale ist er von außen nicht erreichbar.
+**4.3 Rechte im Tailnet** (Sicherheit, 14.10.2026): Regeln (ACL), nach denen der Würfel nur die Würfel-Anbindung des Gehirns erreicht und das Handy nur Bedienoberfläche und Telegram-Bedienung. Geräteschlüssel kurzlebig.
+- Test: Vom Würfel aus ist SSH zum Laptop gesperrt, die Würfel-Anbindung erreichbar.
 
 ## Phase 5 – Sicherung (vor allen Daten)
 **5.1 Sicherungsprogramm wählen und prüfen** (z. B. restic oder BorgBackup) nach Checkliste.
@@ -96,6 +102,10 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
   - Die Bedienoberfläche ist vom Handy über Tailscale erreichbar.
 **6.5 Secret-Store festlegen** (z. B. systemd-creds oder die Secret-Referenzen von OpenClaw), nach Prüfung.
 - Test: Kein Secret steht im Klartext in Repo, Compose-Datei oder Logs (Suche mit `grep`).
+**6.6 Ausgehender Verkehr nur zu bekannten Zielen** (Sicherheit, 14.10.2026): Allowlist für Anthropic-API, Telegram, mail.de, Such-API und Update-Quellen. Alles andere wird geblockt und geloggt.
+- Test: Ein Aufruf an eine fremde Adresse aus dem Container scheitert und steht im Log.
+**6.7 Schwachstellen-Scan** der Container und Python-Pakete (z. B. Trivy, pip-audit, vorher nach Checkliste prüfen), wöchentlich.
+- Test: Der Scan läuft, und das Ergebnis kommt bei kritischen Funden per Telegram.
 
 ## Phase 7 – Claude-API und Budget
 **7.1 API-Key (Marvin):** in der Anthropic Console anlegen, Prepaid-Guthaben aufladen, Monatslimit 30 $ setzen. Den Schlüssel trägt Marvin selbst in den Secret-Store ein.
@@ -109,6 +119,8 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
 - Test: Marvin bekommt eine Antwort. Ein zweites Konto bekommt keine Antwort, und der Versuch steht im Log.
 
 **→ Zwischenstand:** Schlaubi kann per Telegram schreiben (Text, ohne Gedächtnis).
+**8.3 Regeln für Telegram** (Sicherheit, 14.10.2026): Bot-Chats sind nicht Ende-zu-Ende-verschlüsselt. Schlaubi schickt keine sensiblen Inhalte über Telegram (Gesundheit, Passwörter, Dokumente Dritter) und weist darauf hin, wenn Marvin so etwas schickt. Der Bot-Token lässt sich in einer Minute erneuern (Anleitung).
+- Test: Eine Anfrage nach einem sensiblen Dokument wird nicht per Telegram beantwortet, sondern mit Hinweis verschoben.
 
 ## Phase 9 – Sprachdienst (lokal)
 **9.1 whisper.cpp und Piper** mit fester Version aus dem Quellcode bauen. Das Modell wird nach Messung aus 1.4 gewählt. Für Piper die Stimme thorsten high.
@@ -173,6 +185,10 @@ Voraussetzung: Marvin hat das mail.de-Konto angelegt und das Passwort selbst in 
 **14.2 Neustart-Test:** Netzteil ziehen, bis der Akku leer ist, dann wieder anstecken.
 - Bestanden: Alle Dienste laufen nach dem Entsperren (Entscheidungspunkt A) wieder, ohne Datenverlust.
 **14.3 Ausfallmeldung:** Gehirn aus, der Würfel zeigt es per LED. Kommt das Gehirn wieder, meldet es den Ausfall per Telegram.
+**14.4 Überwachung** (Sicherheit, 14.10.2026): Warnung per Telegram bei ungewöhnlichen Zugriffen, neuen Geräten im Tailnet und Kostenspitzen.
+**14.5 Notfallplan** `docs/notfallplan.md`: Schlüssel sperren (API, Telegram, Tailscale, Mail), Laptop vom Netz nehmen, aus Sicherung neu aufsetzen. Wiederherstellungsschlüssel offline aufbewahren (Marvin).
+- Test: Notfallplan einmal durchspielen (ohne echte Sperre), Zeit notieren.
+**14.6 Updates aus der Selbstoptimierung:** nur als Commit mit Review und bestandenen Tests, nie direkt auf dem laufenden System.
 
 ## Phase 15 – Wiederherstellungs-Probe (Risiko 5)
 **15.1** Auf einem zweiten Laptop das Grundsystem nach Phase 2 bis 6 aufsetzen und Schlaubis Daten aus der Sicherung wiederherstellen.

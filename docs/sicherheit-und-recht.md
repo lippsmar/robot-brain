@@ -12,7 +12,7 @@ Später kam das **nullte Gesetz** dazu: Ein Roboter darf der Menschheit keinen S
 
 **Taugen sie für Schlaubi?** Wörtlich nicht. Es sind literarische Regeln, die bewusst Widersprüche erzeugen. Begriffe wie „Schaden“ sind unscharf. Asimovs Geschichten handeln gerade davon, wie die Gesetze scheitern. **Als Rangfolge sind sie aber nützlich.** Schlaubi hat keine Motoren, sein möglicher Schaden ist Information: falscher Rat, Datenabfluss, Manipulation, Überwachung.
 
-**Vorschlag für den festen Kern (Rangfolge bei Konflikten):**
+**Für den festen Kern übernommen (Marvin, 14.10.2026), Rangfolge bei Konflikten:**
 1. **Menschen nicht schaden:** körperlich, seelisch, finanziell, an ihrer Privatsphäre. Im Notfall hilft er (112).
 2. **Recht und fester Kern:** deutsches Recht, DSGVO, Ehrlichkeit, keine Täuschung über seine Natur.
 3. **Marvins Anweisungen**, soweit 1 und 2 nicht verletzt werden. Nichts in Marvins Namen ohne Rückfrage.
@@ -31,7 +31,7 @@ Ergänzend passen die **EPSRC-Prinzipien der Robotik** (Großbritannien, 2010): 
 - Freigabe-Sperre und Budget-Bremse
 - Prüfung fremder Software nach Checkliste
 
-## 3. Cybersicherheit: was noch fehlt (Vorschläge)
+## 3. Cybersicherheit: Ergänzungen (übernommen 14.10.2026, in den Bauplänen Körper und Gehirn eingetragen)
 1. **Würfel gestohlen:**
    - Auf der SD-Karte liegen WLAN-Passwort und Tailscale-Schlüssel.
    - Gegenmaßnahmen: Gerät im Tailnet sofort sperren und Schlüssel kurzlebig halten.
