@@ -121,7 +121,7 @@ Entscheidung 14.10.2026: Die MCP-Schnittstelle kommt erst, wenn Schlaubi zu Haus
 ## 11b. Anbieterunabhängig (Entscheidung 15.10.2026)
 - Schlaubi läuft mit jedem Modell, das man hat: europäische Plattformen bevorzugt, auch US-API-Keys und freie Modelle lokal.
 - **Anbieter-Schicht:** OpenClaw unterstützt viele Anbieter direkt. Für alle anderen gibt es eine OpenAI-kompatible Anbindung. Ein lokales Gateway (z. B. LiteLLM, vor Nutzung nach Checkliste prüfen) kann Anbieter bündeln, Budgets pro Anbieter halten und bei Ausfall umschalten.
-- **Modellrollen** statt fester Namen (Recherche, Gespräch, schwierige Fragen). Die Zuordnung steht in der Config.
+- **Modellrollen** statt fester Namen (Recherche, Gespräch, schwierige Fragen). Die Zuordnung steht in der Config. **Version 1 startet mit dem Anthropic-API-Key** (Marvin, 15.10.2026).
 - **Steuereinheit:** Jede Aktion eines Modells prüft das Gehirn gegen Kern, Rechte, Budget und Datenschutz. Das gilt unabhängig vom Modell.
 - **Modell-Zulassung:** Erst nach bestandenen Prüffragen darf ein Modell Schlaubi steuern.
 
