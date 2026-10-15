@@ -134,7 +134,7 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
 ## Phase 10 – Gedächtnis
 **10.1 LanceDB prüfen** nach Checkliste.
 **10.2 Quelle:** Tabelle für Einträge in SQLite (nur anhängen) mit Quelle, Zeit, Konfidenz, Schema-Version und `pii`. Dazu Themenseiten in Markdown.
-**10.2a Schnittstelle (für spätere MCP-Anbindung):** Der Gedächtnisdienst bietet feste Funktionen (`recall`, `remember`, Interessenprofil, Themenseiten), schreibt zu jedem Eintrag die Herkunft (Gerät oder Host) und hat eine Warteschlange für Einträge, die später übertragen werden.
+**10.2a Schnittstelle (für spätere MCP-Anbindung):** Der Gedächtnisdienst bietet feste Funktionen (`recall`, `remember`, Interessenprofil, Themenseiten), schreibt zu jedem Eintrag die Herkunft (Gerät oder Host), dazu die Felder `teilbar` (Standard nein), Beitragender und Vertrauenswert für das spätere Wissen-Teilen (Version 2) und hat eine Warteschlange für Einträge, die später übertragen werden.
 **10.3 Indizes:** sqlite-vec mit FTS5 (Hybridsuche) und LanceDB aus derselben Quelle. Embeddings lokal mit fastembed. Ein Befehl baut jeden Index komplett neu auf.
 **10.4 Quellen-Bewertung:** Stufen A bis D, Konfidenz, Bestätigungen, lernende Bewertung, „disputed“.
 **10.5 Pflege:** tägliche Konsolidierung (Gespräche zu Wissen, Themenseiten), wöchentliche Aufräumrunde, Fristen mit Merk-Schutz, Liste „Soll das bleiben?“.

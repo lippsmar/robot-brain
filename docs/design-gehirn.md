@@ -115,6 +115,7 @@ Entscheidung 14.10.2026: Die MCP-Schnittstelle kommt erst, wenn Schlaubi zu Haus
 - Der Würfel-Dienst gibt **nie Audio** an ein Sprachmodell weiter, nur lokal erkannten Text.
 - Der Würfel schaltet die LED selbst ein, bevor er aufnimmt.
 - Jede Eintragung ins Gedächtnis trägt eine Herkunft mit Gerät bzw. Host.
+- **Für „Wissen teilen“ (Version 2, Entscheidung 15.10.2026):** Jeder Eintrag hat von Anfang an ein Feld `teilbar` (Standard: nein). Dazu kommen Felder für Beitragende (Person oder fremder Schlaubi) und einen Vertrauenswert. Später sehen Gäste und andere Schlaubis nur Einträge mit `teilbar: ja`.
 - Eine Warteschlange für Einträge, die erst später übertragen werden, ist im Gedächtnisdienst vorgesehen. Später nutzen Host-Laptops sie ohne Verbindung. Eine lokale Kopie des Gedächtnisses auf anderen Laptops gibt es nicht.
 
 ## 12. Offene Punkte (blockieren das Design nicht)
