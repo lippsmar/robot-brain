@@ -101,7 +101,7 @@ Hardware: WS2812-Ring hinter mattweißem Acryl und Piezo-Summer. Alles ist im Pr
 - Hört zu: blau, Dauerlicht, Doppelton aufwärts
 - Denkt: blau-violettes Lauflicht
 - Spricht: weiß-blau, pulsiert mit der Sprache
-- Kamera an: hell weiß, zwei Klicks
+- Kamera an (seit 15.10.2026: Livebild übers Handy): hell weiß, zwei Klicks
 - Recherche: schwaches wanderndes Violett
 - Fertig oder Update bereit: kurz grün mit leisem Doppelton
 - Keine Verbindung zum Gehirn: orange blinkend mit absteigendem Ton

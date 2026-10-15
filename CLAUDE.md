@@ -39,7 +39,7 @@ Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marv
 ## 6. Datenschutz und Kamera
 - Lokale Datenhaltung, verschlüsselte Laufwerke, keine Telemetrie, VPN, möglichst wenig persönliche Daten an die API.
 - Marvins Stimme bleibt lokal: Audio geht nie an Cloud-Dienste, auch nicht als Rückfall. Nur erkannter Text geht an die Claude-API (Entscheidung 13.10.2026).
-- Kamerabilder dürfen zur Auswertung an die Claude-API, nur wenn Marvin etwas zeigt, ohne Metadaten (Entscheidung 13.10.2026).
+- Kamerabilder dürfen zur Auswertung an die Claude-API, nur wenn Marvin etwas zeigt, ohne Metadaten (Entscheidung 13.10.2026). Seit 15.10.2026 keine Kamera im Würfel: Die Augen sind das Handy als Livebild über eine Seite des Gehirns (nur Tailscale), an Claude nur Einzelbilder auf Frage.
 - Kameras und Mikrofone erkennbar, keine verdeckten Aufnahmen, Aufnahmen von Personen nur mit Einwilligung. Personenbezogene Daten mit `pii: true`.
 
 ## 7. Offene Punkte
@@ -50,10 +50,11 @@ Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marv
 - [x] Retention-Fristen pro Datentyp mit Merk-Schutz (13.10.2026, Notion „Design Gehirn“)
 - [ ] Freigabe-Policy für physische Aktionen
 - [x] Separates Google-Testkonto statt privatem Account (13.10.2026). Anlegen: Marvin
-- [x] Monatsbudget API-Key: höchstens 20 € (15.10.2026). Aufteilung als Vorschlag eingetragen
+- [x] Monatsbudget API-Key: höchstens 20 € (15.10.2026). Aufteilung bestätigt
 - [ ] SIM-Anbieter wählen: höchstens 10 € im Monat, 3–5 GB, beim Kauf aktuell vergleichen (E-Mail: mail.de FreeMail, Konto legt Marvin an)
 - [x] Design Körper Version 1 freigegeben (13.10.2026, `docs/design-koerper.md`)
 - [x] Bauplan Körper Version 1 bestätigt (13.10.2026)
+- [x] Änderung Körper: Abstand statt Kamera, Livebild übers Handy, freigegeben (15.10.2026)
 - [x] Design Gehirn Version 1 freigegeben (13.10.2026, `docs/design-gehirn.md`)
 - [x] Bauplan Gehirn Version 1 bestätigt (13.10.2026, `docs/bauplan-gehirn-v1.md`)
 - [x] Design Charakter Version 1 freigegeben (14.10.2026, `docs/design-charakter.md`)

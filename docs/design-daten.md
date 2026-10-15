@@ -24,7 +24,7 @@ Schlaubi soll seine Umgebung so gut wie möglich verstehen, Muster in Marvins Al
 - Gesammelt wird **immer, wenn der Würfel an ist**.
 
 ## 3. Nicht-Ziele (Version 1)
-- **Bilder in der Datensammlung:** kommen später. Die Kamera bleibt in Version 1 nur bei Bedarf an.
+- **Bilder in der Datensammlung:** kommen später. Seit 15.10.2026 hat der Würfel keine Kamera, Bilder kommen nur als Livebild übers Handy und werden nicht gesammelt. Neu: Der Abstandssensor liefert Anwesenheit (an/weg) und eine Minutenzusammenfassung, `pii: true`.
 - **Gespräche anderer:** Sie werden weder mitgehört noch ausgewertet, auch nicht anonymisiert (§ 201 StGB). Das ist eine feste Grenze.
 - **Keine Stimmprofile Fremder**, keine Emotionserkennung aus Stimmen.
 - **Kein Verkauf von Daten** ohne eigene Entscheidung (siehe Abschnitt 8).

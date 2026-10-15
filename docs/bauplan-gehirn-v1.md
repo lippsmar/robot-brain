@@ -152,10 +152,15 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
 ## Phase 11 – Würfel-Anbindung und Gespräch
 **11.1 Dienst** für den Würfel über Tailscale: nimmt Ton und Bild an, liefert Text und Ton zurück. Ersetzt den Test-Dienst aus Körper-Phase 11.2. Der Dienst bekommt feste Funktionen (`listen`, `photo`, `led`, `sound`, `status`), damit er später als MCP-Server verpackt werden kann. Audio geht nie an ein Sprachmodell. Der Charakter liegt in einer eigenen Datei.
 **11.2 Bilder:** Metadaten entfernen (EXIF, Ort), dann an Claude. Speichern nur bei „merken“.
+**11.4 Livebild vom Handy (Änderung 15.10.2026):** eigener kleiner Dienst, getrennt von OpenClaw, nur über Tailscale mit HTTPS erreichbar (z. B. `tailscale serve`), nie öffentlich. Nur Geräte von Marvin (Tailscale-Identität prüfen).
+- Die Seite holt die Kamera im Browser erst nach Marvins Erlaubnis, zeigt groß „Live“ und meldet dem Würfel „Livebild an“ (hell weiß).
+- Seite zu, Bildschirm aus oder Verbindung weg: Livebild endet sofort. Ohne Frage endet es nach 10 Minuten. Fällt die Verbindung zum Würfel aus, beendet das Gehirn das Livebild.
+- Das Livebild bleibt im privaten Netz. An Claude geht nur ein Einzelbild, wenn Marvin fragt oder zeigt („Schau mal“ oder Knopf), verkleinert, als neu gerendertes Bild ohne Metadaten. Nichts wird gespeichert, außer bei „merken“.
+- Test: Seite auf dem Handy öffnen: Livebild läuft, Würfel weiß, „Live“ sichtbar. Seite schließen: Würfel innerhalb von 2 Sekunden nicht mehr weiß. Von einem fremden Gerät ohne Tailscale ist die Seite nicht erreichbar. Gesendetes Bild ohne EXIF. Nach 10 Minuten ohne Frage endet das Livebild.
 **11.3 Gesprächsablauf:** Ton → Text → Gedächtnis abrufen → Claude → Antwort ins Gedächtnis → Piper → Würfel. Ohne Bluetooth-Gerät antwortet Schlaubi als Text per Telegram.
 - Test (Risiko 6):
   - Zeit vom Ende der Frage bis zum Beginn der Antwort messen. Ziel: höchstens 4 Sekunden über WLAN, höchstens 6 Sekunden über LTE.
-  - Eine gezeigte Testkarte wird beschrieben. Das gesendete Bild enthält keine EXIF-Daten.
+  - Eine übers Handy gezeigte Testkarte wird beschrieben. Das gesendete Bild enthält keine EXIF-Daten.
   - Ein Gespräch ohne Kopfhörer kommt als Telegram-Text an.
 
 **→ Zwischenstand:** Schlaubi spricht mit Marvin über den Würfel.

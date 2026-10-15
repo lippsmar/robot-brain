@@ -62,7 +62,7 @@ Ergänzend passen die **EPSRC-Prinzipien der Robotik** (Großbritannien, 2010): 
    - Sprechererkennung lässt sich mit Aufnahmen täuschen.
    - Sie dient nur der Einordnung („spricht Marvin?“), nie als Freigabe für Wichtiges.
    - Wichtiges bestätigt Marvin per Telegram.
-9. **Kamera:** eine mechanische Abdeckung oder ein Schalter als zusätzlicher Schutz neben der LED.
+9. **Kamera:** eine mechanische Abdeckung oder ein Schalter als zusätzlicher Schutz neben der LED. Seit 15.10.2026 hat der Würfel keine Kamera mehr. Das Livebild vom Handy endet, sobald die Seite zu ist, und ist nur über Tailscale erreichbar.
 10. **Überwachung:**
     - fail2ban oder Ähnliches gegen Anmeldeversuche
     - Warnung bei ungewöhnlichen Zugriffen oder Kostenspitzen

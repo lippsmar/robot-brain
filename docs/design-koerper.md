@@ -10,7 +10,7 @@ Schlaubi ist ein sprechender Würfel für Schreibtisch und unterwegs. Marvin unt
 - Gespräch per Stimme: zuhören über das eigene Mikrofon, antworten über Bluetooth-Kopfhörer oder Bluetooth-Box.
 - Ohne Bluetooth-Gerät antwortet Schlaubi als Text über Telegram.
 - Fernzugriff per Telegram und per E-Mail (eigene Adresse bei mail.de).
-- Dinge zeigen: Kamera vorne, Bild geht zur Auswertung ans Gehirn.
+- Dinge zeigen: über die Handy-Kamera als Livebild (Änderung 15.10.2026). Am Würfel ein Abstandssensor statt Kamera.
 - Mobil: 4–6 Stunden ohne Steckdose (Büro, Café).
 - Verbindung zum Gehirn (Marvins alter Laptop zu Hause) über WLAN oder die eigene SIM, immer über ein privates Netz.
 
@@ -52,7 +52,7 @@ Schlaubi ist ein sprechender Würfel für Schreibtisch und unterwegs. Marvin unt
 Details und Preise: `docs/teileliste.md`.
 - Raspberry Pi Zero 2 WH, microSD
 - LTE-Modem Waveshare SIM7600E-H (mit Antennen)
-- Kamera: Raspberry Pi Camera Module 3 mit Mini-CSI-Kabel
+- ~~Kamera~~ entfällt, dafür Abstandssensor VL53L8CX (Änderung 15.10.2026)
 - Mikrofon: INMP441 (I2S)
 - RGB-LED (WS2812) und Piezo-Summer
 - Akku: Powerbank ca. 10.000 mAh mit Durchladen (Pass-Through), USB-C
@@ -68,7 +68,7 @@ Details und Preise: `docs/teileliste.md`.
 Folgen:
 - Die LED leuchtet durch den milchigen Kunststoff: Der ganze Würfel glüht in der Zustandsfarbe. Dafür statt einer einzelnen LED einen kleinen WS2812-Ring oder -Streifen (ca. 8–12 LEDs) innen.
 - Kunststoff lässt Funk durch, die Antennen dürfen hinter jeder Kunststoffseite liegen. Metall nur am Rahmen oder Boden, nie vor Antennen.
-- Kamera braucht ein klares Fenster oder ein Loch in der Frontplatte, Mikrofon ein paar kleine Löcher.
+- Der Abstandssensor braucht ein kleines klares Fenster in der Frontplatte, das Mikrofon ein paar kleine Löcher.
 - Lüftung über Schlitze im Rahmen oder Boden, Acryl isoliert Wärme.
 - Rahmen innen als Träger für die Elektronik, eine Seite abnehmbar (z. B. mit Magneten oder Schrauben).
 
@@ -76,7 +76,7 @@ Ursprünglicher Vorschlag (Alternative):
 - Holzwürfel 10 cm, z. B. Nussbaum oder Eiche, Metall als Akzent (Boden, Kanten oder Kühlblech).
 - Antennen nur an Holzseiten, nie hinter Metall (Metall blockiert Funk).
 - LED hinter dünn ausgefrästem Holz oder einem kleinen Lichtleiter: unsichtbar, bis Schlaubi zuhört.
-- Öffnungen: Kamera vorne, Mikrofon-Löcher, USB-C, Lüftungsschlitze. Vorne Platz für das Display in Version 2.
+- Öffnungen: Fenster für den Abstandssensor vorne, Mikrofon-Löcher, USB-C, Lüftungsschlitze. Vorne Platz für das Display in Version 2.
 - Innenleben auf einem herausnehmbaren Träger, Akku fest fixiert.
 - Kein 3D-Druck nötig, Kleinteile als Fertigteile.
 
@@ -96,7 +96,7 @@ Diese Punkte werden zuerst geprüft, bevor das Gehäuse gebaut wird:
 - Software für das Aktivierungswort auswählen und prüfen (Lizenz, Datenschutz)
 - Holzart und Metall-Akzent festlegen
 
-## 11. Änderung 15.10.2026: Abstand statt Kamera, Augen vom Smartphone (in Klärung)
+## 11. Änderung 15.10.2026: Abstand statt Kamera, Augen vom Smartphone (freigegeben 15.10.2026)
 Marvins Entscheidung: Der Würfel braucht keine eigene Kamera. Die Augen übernimmt das Smartphone, am Würfel sitzt ein Abstandssensor. 3D-Kamera, exotische Sensoren und mehr Zubehör-Schnittstellen sind mögliche Features für später (`docs/zukunft-features.md`).
 
 - **Entfällt:** Camera Module 3 und Mini-CSI-Kabel, die Kamera-Öffnung in der Front und die mechanische Kamera-Abdeckung.
@@ -112,4 +112,4 @@ Marvins Entscheidung: Der Würfel braucht keine eigene Kamera. Die Augen überni
   - Personen im Bild nur mit Einwilligung, wie bisher.
   - Wird nur von Marvins Gerät im Tailscale-Netz angenommen (Tailscale-Identität prüfen), nie öffentlich.
 - **Kosten:** Version 1 ca. 155–251 € statt 166–269 € (Teileliste).
-- **Status:** Design Körper Version 1 war freigegeben. Diese Änderung braucht eine neue Freigabe, bevor Bauplan und Teileliste endgültig angepasst werden.
+- **Status:** Von Marvin am 15.10.2026 freigegeben, mit den Annahmen. Bauplan Körper (Phase 9), Bauplan Gehirn (11.4) und Teileliste sind angepasst.
