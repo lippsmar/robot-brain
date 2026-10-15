@@ -290,3 +290,11 @@ def test_anchors_reveal_a_completely_rewritten_log(log, tmp_path, clock):
 def test_head_of_an_empty_log(log):
     assert log.head() == (-1, GENESIS)
     assert log.verify(anchors=[log.head()]).ok
+
+
+@settings(max_examples=100, deadline=None)
+@given(data=st.dictionaries(st.text(max_size=8), json_values, max_size=6))
+def test_the_hash_does_not_depend_on_key_order(data):
+    """Determinism: the same event written with another key order must keep its hash."""
+    reordered = dict(reversed(list(data.items())))
+    assert event_hash(data) == event_hash(reordered)

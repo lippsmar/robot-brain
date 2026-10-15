@@ -397,3 +397,14 @@ def test_columns_have_strict_types(memory, tmp_path):
             " VALUES ('u', 'x', 'fact', 'x', 'x', 'x', 'x', 'entry/1.0', 'hoch')"
         )
     raw.close()
+
+
+@settings(max_examples=200, deadline=None)
+@given(text=st.text(max_size=40))
+def test_normalizing_twice_changes_nothing(text):
+    """Idempotence of the spelling normalizer (property catalog: normalizers)."""
+    from brain.memory import normalize_german
+
+    once = normalize_german(text)
+    assert normalize_german(once) == once
+    assert not set("äöüß") & set(once)

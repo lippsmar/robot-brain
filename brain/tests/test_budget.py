@@ -262,3 +262,25 @@ def test_stop_is_never_passed_when_checking_with_an_estimate(tmp_path_factory, t
         if guard.check("conversation", estimate_usd=estimate).allowed:
             guard.record("conversation", "claude-sonnet-5-5", {"input_tokens": 0, "output_tokens": output_tokens})
     assert guard.status()["pots"]["total"]["spent_eur"] <= 1.0 + 1e-9
+
+
+usage_parts = st.builds(
+    Usage,
+    input=st.integers(0, 50_000),
+    output=st.integers(0, 50_000),
+    cache_write_5m=st.integers(0, 20_000),
+    cache_write_1h=st.integers(0, 20_000),
+    cache_read=st.integers(0, 20_000),
+    web_search=st.integers(0, 5),
+    web_fetch=st.integers(0, 5),
+)
+
+
+@settings(max_examples=200, deadline=None)
+@given(a=usage_parts, b=usage_parts)
+def test_costs_add_up_exactly(a, b):
+    """Additivity: two calls cost exactly as much as one call with both usages (same rate card)."""
+    prices = PriceTable.from_file(CONFIG_DIR / "prices.toml")
+    both = Usage(**{name: getattr(a, name) + getattr(b, name) for name in a.__dataclass_fields__})
+    for model in ("claude-opus-5-5", "claude-sonnet-5-5"):
+        assert prices.cost_nano(model, a) + prices.cost_nano(model, b) == prices.cost_nano(model, both)
