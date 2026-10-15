@@ -127,3 +127,23 @@ Ergänzend passen die **EPSRC-Prinzipien der Robotik** (Großbritannien, 2010): 
 - [Stibbe: The AI Act’s Transparency Obligations](https://stibbe.com/publications-and-insights/the-ai-acts-transparency-obligations-rules-scope-and-timeline)
 - [Latenode Community: Telegram-Bots und Ende-zu-Ende-Verschlüsselung](https://community.latenode.com/t/are-telegram-bot-conversations-protected-with-end-to-end-encryption/23991) (Forenbeitrag, mit offizieller Telegram-Doku abgleichen)
 - Verordnung (EU) 2024/1689 (AI Act) und Verordnung (EU) 2016/679 (DSGVO), Texte auf EUR-Lex
+
+## 7. Nur mit dem Claude-Abo? (Prüfung 15.10.2026)
+Marvin möchte keine zusätzlichen Kosten, nur sein Claude-Abo. Dokumentierte Lage:
+- **Abo-Login in fremder Software (z. B. OpenClaw):** laut Rechtsseite von Claude Code nicht vorgesehen. OAuth ist für die gewöhnliche Nutzung von Claude Code und Anthropics eigenen Apps gedacht. Produkte sollen API-Keys nutzen.
+- **Sicher mit dem Abo möglich:**
+  - Claude Code, auch vom Handy über Remote Control (Sitzung auf dem eigenen Laptop)
+  - Routines: geplante Cloud-Sitzungen, höchstens stündlich, Forschungsvorschau
+  - Claude-Apps. Eigene MCP-Server lokal nur in Claude Desktop. Entfernte Connectors müssen aus dem Internet erreichbar sein, was mit unserer Regel „nur privates Netz“ kollidiert.
+- **Grauzone:**
+  - Laut Hilfeartikel (Stand 7.10.2026) laufen Agent SDK, `claude -p` und Drittanbieter-Apps über die Abo-Limits.
+  - Die Verbraucherbedingungen schränken automatisierten Zugriff („Bot, Skript“) ohne API-Key aber ein, und die Rechtsseite nennt „gewöhnliche, individuelle Nutzung“.
+  - Ob eine dauerhafte Sprachschleife oder ein Telegram-Bot darunter fällt, ist nicht dokumentiert.
+- **Max- und Team-Pläne** bekommen seit 7.10.2026 monatliches API-Guthaben für Agent SDK, `claude -p`, die Claude-API und Managed Agents. Die Höhe stand nicht im Artikel. Pro wird nicht genannt.
+- **Quellen:**
+  - https://code.claude.com/docs/en/legal-and-compliance
+  - https://support.claude.com/en/articles/15036540
+  - https://www.anthropic.com/legal/consumer-terms
+  - https://code.claude.com/docs/en/routines.md
+  - https://code.claude.com/docs/en/remote-control.md
+  - https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp
