@@ -11,13 +11,13 @@ Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. St
 | [roboter-testumgebung](roboter-testumgebung/SKILL.md) | aktiv | Testphase mit separatem Google-Testkonto |
 | [adobe-oss-agent-tools](adobe-oss-agent-tools/SKILL.md) | aktiv | Prüfverfahren für Adobe-Nachbauten (die Tools selbst sind noch ungeprüft) |
 | [roboter-retro](roboter-retro/SKILL.md) | aktiv in Claude seit 13.10.2026 | Rückblick auf Sitzungen, Verbesserungen an Regeln, Skills und Prüfungen |
-| [photocraft-agent](photocraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | Photoshop-Nachbau steuern |
-| [vectorcraft-agent](vectorcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | Illustrator-Nachbau steuern |
-| [filmcraft-agent](filmcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | Premiere-Pro-Nachbau steuern |
-| [lightcraft-agent](lightcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | Lightroom-Nachbau steuern |
-| [effectcraft-agent](effectcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | After-Effects-Nachbau steuern |
-| [pdfcraft-agent](pdfcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | Acrobat-Pro-Nachbau steuern |
-| [designcraft-agent](designcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | InDesign-Nachbau steuern |
+| [photocraft-agent](photocraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026, einsatzbereit getestet 15.10.2026 (Version 0.9.0), neue Fassung hochzuladen | Photoshop-Nachbau steuern |
+| [vectorcraft-agent](vectorcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026, einsatzbereit getestet 15.10.2026 (Version 0.11.0), neue Fassung hochzuladen | Illustrator-Nachbau steuern |
+| [filmcraft-agent](filmcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026, einsatzbereit getestet 15.10.2026 (Version 0.8.0), neue Fassung hochzuladen | Premiere-Pro-Nachbau steuern |
+| [lightcraft-agent](lightcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026, einsatzbereit getestet 15.10.2026 (Version 0.8.0), neue Fassung hochzuladen | Lightroom-Nachbau steuern |
+| [effectcraft-agent](effectcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026, einsatzbereit getestet 15.10.2026 (Version 0.10.0), neue Fassung hochzuladen | After-Effects-Nachbau steuern |
+| [pdfcraft-agent](pdfcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026, einsatzbereit getestet 15.10.2026 (Version 0.8.0), neue Fassung hochzuladen | Acrobat-Pro-Nachbau steuern |
+| [designcraft-agent](designcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026, einsatzbereit getestet 15.10.2026 (Version 0.8.0), neue Fassung hochzuladen | InDesign-Nachbau steuern |
 | [prompt-engineering](prompt-engineering/SKILL.md) | aktiv in Claude seit 15.10.2026 | Prompts, Skills, Werkzeugbeschreibungen schreiben und prüfen, modellagnostisch. Grundlage: Anthropics Prompt-Audit-Leitfaden |
 
 ## Geplante Roboter-Skills (noch nicht geschrieben)
@@ -45,6 +45,7 @@ Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. St
 | mattpocock/skills: retro (MIT) | geprüft 13.10.2026, als roboter-retro angepasst | Rückblick auf Coding-Sitzungen, braucht writing-for-agents |
 | corca-ai/claude-plugins: cwf:retro (MIT) | abgelehnt 13.10.2026 | Braucht ganzes CWF-Framework mit Hooks bei jeder Eingabe, 37 Skripte, optional Slack-Webhook |
 | storytold: PhotoCraft 0.9.0 (15.10.2026 nachgeprüft: reqwest/hyper nur als Build-Abhängigkeit des Windows-Drucks über sigstore, unter Linux nicht enthalten) und VectorCraft 0.11.0 (14.10.2026 nachgeprüft: keine HTTP-Client-Bibliothek). Ursprünglich: VectorCraft, FilmCraft, LightCraft, EffectCraft, PdfCraft, DesignCraft (MIT/Apache-2.0) | alle 7 gezielt geprüft 13.10.2026, bedingt geeignet | Übersicht im Skill adobe-oss-agent-tools. Korrektur: PhotoCraft hat doch eine Ordnerbeschränkung (Read-/Write-Root). Ohne Beschränkung: FilmCraft, LightCraft, DesignCraft |
+| storytold: PDFCraft 0.8.0, DesignCraft 0.8.0, EffectCraft 0.10.0, LightCraft 0.8.0, FilmCraft 0.8.0 | nachgeprüft und getestet 15.10.2026 in der Cloud-Sandbox | Netzwerk-Bibliotheken nur in Desktop-Apps oder optionalen Download-Teilen; LightCraft-CLI enthält Modell-Download (nur nach Freigabe). DesignCraft, LightCraft, FilmCraft weiter ohne Ordnerbeschränkung: nur über `tools/craft/craft-sandbox.sh` (bubblewrap, kein Netz, nur Arbeitsordner) |
 | openclaw/openclaw 2026.10.2 (MIT, OpenClaw Foundation) | gezielt geprüft 13.10.2026, bedingt geeignet | Gehirn-Software. Pflicht: Ports nur an 127.0.0.1, Telemetrie aus, keine Abo-Session-Keys, Hardened Baseline, kein Docker-Socket. Details: `docs/pruefung-openclaw.md` |
 | Everything Claude Code (affaan-m) | nicht komplett installieren | Überschneidet sich mit Memory Core, viele Hooks |
 | Awesome Claude Code (hesreallyhim) | Nachschlagequelle | Linkliste, jeden Fund einzeln prüfen |

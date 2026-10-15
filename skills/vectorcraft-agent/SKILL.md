@@ -5,13 +5,30 @@ description: "VectorCraft (Illustrator-Nachbau, Open Source) per MCP oder CLI al
 
 # VectorCraft für Agenten
 
-Nachbau von Adobe Illustrator aus der ArtCraft-Reihe, keine Adobe-Software. Quelle: github.com/storytold/vectorcraft, Lizenz MIT oder Apache-2.0 (Copyright 2026 ArtCraft Team and the VectorCraft contributors). Geprüft am 13.10.2026 (Version 0.10.0, Commit 0d0ea35), Status laut Projekt: in aktiver Entwicklung. Befehle unten stammen aus der Doku des Repos; bei Abweichungen gilt die aktuelle Doku bzw. `--help`.
+Nachbau von Adobe Illustrator aus der ArtCraft-Reihe, keine Adobe-Software. Quelle: github.com/storytold/vectorcraft, Lizenz MIT oder Apache-2.0 (Copyright 2026 ArtCraft Team and the VectorCraft contributors). Geprüft am 13.10.2026 (Version 0.10.0, Commit 0d0ea35), nachgeprüft und getestet am 15.10.2026 (Version 0.11.0), Status laut Projekt: in aktiver Entwicklung. Befehle unten stammen aus der Doku des Repos; bei Abweichungen gilt die aktuelle Doku bzw. `--help`.
 
 ## Prüfergebnis
 - Quelltext nicht vollständig gelesen (sehr groß), gezielt geprüft: keine Telemetrie. Steuerkanal (`--control`) nur auf 127.0.0.1, laut Doku **ohne Token**: Jedes Programm auf dem Rechner kann die laufende App dann steuern. App deshalb nur bei Bedarf mit `--control` starten, sonst headless arbeiten.
 - Ordnerbeschränkung für Agenten: Ja: `--automation-read-root` und `--automation-write-root`.
 
+## Einsatzbereit (geprüft und getestet am 15.10.2026)
+Version 0.11.0, Commit 0a33cff, Lizenz weiter MIT oder Apache-2.0. Aus dem Quellcode gebaut in der Cloud-Sandbox, getestet nur an Kopien.
+- **Netz:** Keine HTTP-Client-Bibliothek in den Abhängigkeiten.
+- **Getestet:**
+  - MCP headless mit Roots: Würfel-Illustration (14.10.2026) und Layout der Bilderreihe mit `file.new`, `file.place`, `draw_shape`, `add_text`, `transform`, `export` (15.10.2026). Hinweis: `bounds` aus `inspect_document` ist ein Objekt mit `x`, `y`, `width`, `height`
+- **Bauen** (auf dem Gehirn-Laptop erst nach Marvins Freigabe):
+  ```sh
+  git clone --depth 1 https://github.com/storytold/vectorcraft.git && cd vectorcraft && cargo build --release -p vectorcraft-cli   # Ergebnis: target/release/vectorcraft-cli
+  ```
+- **Sandbox:** Zusätzlich empfohlen: in der Sandbox starten (`scripts/craft-sandbox.sh`), dann ohne Netz und ohne Zugriff auf das Home-Verzeichnis.
+  ```sh
+  vectorcraft-cli mcp --automation-read-root /arbeit/vektor --automation-write-root /arbeit/vektor/ausgabe
+  ```
+  `craft-sandbox.sh ARBEITSORDNER PROGRAMM [ARGUMENTE]`. Braucht `bubblewrap` (Debian: `apt install bubblewrap`). Pfade sind innen dieselben wie außen. Ergebnisse landen nur im Arbeitsordner.
+- **In Claude Code registrieren** (erst nach Freigabe): `claude mcp add vectorcraft -- /pfad/zu/craft-sandbox.sh /arbeit/… /pfad/zu/vectorcraft-cli mcp …`
+
 ## Starten
+Beispiele ohne Sandbox-Präfix. Im Betrieb `craft-sandbox.sh ARBEITSORDNER` davorsetzen (bei Apps ohne Ordnerbeschränkung Pflicht).
 ```sh
 # ohne App, nur Engine
 vectorcraft-cli mcp --headless --automation-read-root /arbeit/vektor --automation-write-root /arbeit/vektor/ausgabe
@@ -20,7 +37,6 @@ vectorcraft-cli mcp --connect 127.0.0.1:7979 --automation-read-root /arbeit/vekt
 ```
 Ohne Flag versucht der Server 127.0.0.1:7979 und fällt sonst auf headless zurück. Lieber den Modus fest angeben.
 
-In Claude Code registrieren (erst nach Freigabe): `claude mcp add vectorcraft -- /pfad/zu/vectorcraft-cli mcp …` mit denselben Optionen wie oben.
 
 ## Gemeinsame MCP-Werkzeuge
 `command_list` (Befehle finden, mit `filter`), `command_run` (`id`, `params`), `command_batch` (`steps`, stoppt beim ersten Fehler, kein Rollback), `doc_inspect` (Dokument ansehen), `render_preview` (PNG-Vorschau zur Kontrolle). Vor jedem Befehl mit `command_list` die genaue ID und die Parameter nachschlagen, nichts raten.

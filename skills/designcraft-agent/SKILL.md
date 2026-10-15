@@ -5,13 +5,31 @@ description: "DesignCraft (InDesign-Nachbau, Open Source) per MCP oder CLI als A
 
 # DesignCraft für Agenten
 
-Nachbau von Adobe InDesign aus der ArtCraft-Reihe, keine Adobe-Software. Quelle: github.com/storytold/designcraft, Lizenz MIT oder Apache-2.0 (Copyright 2026 ArtCraft Team and the DesignCraft contributors). Geprüft am 13.10.2026 (Version 0.7.1, Commit e862e0a), Status laut Projekt: frühe Version. Befehle unten stammen aus der Doku des Repos; bei Abweichungen gilt die aktuelle Doku bzw. `--help`.
+Nachbau von Adobe InDesign aus der ArtCraft-Reihe, keine Adobe-Software. Quelle: github.com/storytold/designcraft, Lizenz MIT oder Apache-2.0 (Copyright 2026 ArtCraft Team and the DesignCraft contributors). Geprüft am 13.10.2026 (Version 0.7.1, Commit e862e0a), nachgeprüft und getestet am 15.10.2026 (Version 0.8.0), Status laut Projekt: frühe Version. Befehle unten stammen aus der Doku des Repos; bei Abweichungen gilt die aktuelle Doku bzw. `--help`.
 
 ## Prüfergebnis
 - Quelltext nicht vollständig gelesen (sehr groß), gezielt geprüft: keine Telemetrie. Steuerkanal (`--control`) nur auf 127.0.0.1, laut Doku **ohne Token**: Jedes Programm auf dem Rechner kann die laufende App dann steuern. App deshalb nur bei Bedarf mit `--control` starten, sonst headless arbeiten.
-- Ordnerbeschränkung für Agenten: **Nein.** Server kann alles lesen und schreiben, was der Benutzer darf.
+- Ordnerbeschränkung für Agenten: **Nein** (auch in Version 0.8.0). Server kann alles lesen und schreiben, was der Benutzer darf. Abhilfe: Sandbox, siehe unten.
+
+## Einsatzbereit (geprüft und getestet am 15.10.2026)
+Version 0.8.0, Commit d07cbbe, Lizenz weiter MIT oder Apache-2.0. Aus dem Quellcode gebaut in der Cloud-Sandbox, getestet nur an Kopien.
+- **Netz:** Im Lockfile und im gebauten `designcraft-cli` keine Netzwerk-Bibliothek gefunden.
+- **Getestet:**
+  - `run --sample --export sample.pdf`: 4 Seiten als PDF geschrieben
+  - MCP: startet, 25 Werkzeuge (u. a. `list_commands`, `execute`, `batch`, `inspect_document`, `set_story_text`, `new_document`)
+- **Bauen** (auf dem Gehirn-Laptop erst nach Marvins Freigabe):
+  ```sh
+  git clone --depth 1 https://github.com/storytold/designcraft.git && cd designcraft && cargo build --release -p designcraft-cli   # Ergebnis: target/release/designcraft-cli
+  ```
+- **Sandbox:** **Pflicht: nur in der Sandbox starten** (`scripts/craft-sandbox.sh`), weil die App keine eigene Ordnerbeschränkung hat. Die Sandbox (bubblewrap) sperrt das Netz und gibt nur den Arbeitsordner frei. Geprüft: kein Netz, Home-Verzeichnis unsichtbar.
+  ```sh
+  craft-sandbox.sh /arbeit/layout designcraft-cli mcp
+  ```
+  `craft-sandbox.sh ARBEITSORDNER PROGRAMM [ARGUMENTE]`. Braucht `bubblewrap` (Debian: `apt install bubblewrap`). Pfade sind innen dieselben wie außen. Ergebnisse landen nur im Arbeitsordner.
+- **In Claude Code registrieren** (erst nach Freigabe): `claude mcp add designcraft -- /pfad/zu/craft-sandbox.sh /arbeit/… /pfad/zu/designcraft-cli mcp …`
 
 ## Starten
+Beispiele ohne Sandbox-Präfix. Im Betrieb `craft-sandbox.sh ARBEITSORDNER` davorsetzen (bei Apps ohne Ordnerbeschränkung Pflicht).
 ```sh
 # ohne App
 designcraft-cli mcp
@@ -19,7 +37,6 @@ designcraft-cli mcp
 designcraft-cli mcp --connect 7979
 ```
 
-In Claude Code registrieren (erst nach Freigabe): `claude mcp add designcraft -- /pfad/zu/designcraft-cli mcp …` mit denselben Optionen wie oben.
 
 ## Besonderheiten
 - **Keine Ordnerbeschränkung** gefunden: nur in Container oder Benutzerkonto mit ausschließlich Kopien. `place_image` und `open_document` lesen jeden angegebenen Pfad.

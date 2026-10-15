@@ -5,13 +5,31 @@ description: "EffectCraft (After Effects-Nachbau, Open Source) per MCP oder CLI 
 
 # EffectCraft für Agenten
 
-Nachbau von Adobe After Effects aus der ArtCraft-Reihe, keine Adobe-Software. Quelle: github.com/storytold/effectcraft, Lizenz MIT oder Apache-2.0 (Copyright 2026 ArtCraft Team and the EffectCraft contributors). Geprüft am 13.10.2026 (Version 0.9.2, Commit 549e9d8), Status laut Projekt: jung, ändert sich schnell. Befehle unten stammen aus der Doku des Repos; bei Abweichungen gilt die aktuelle Doku bzw. `--help`.
+Nachbau von Adobe After Effects aus der ArtCraft-Reihe, keine Adobe-Software. Quelle: github.com/storytold/effectcraft, Lizenz MIT oder Apache-2.0 (Copyright 2026 ArtCraft Team and the EffectCraft contributors). Geprüft am 13.10.2026 (Version 0.9.2, Commit 549e9d8), nachgeprüft und getestet am 15.10.2026 (Version 0.10.0), Status laut Projekt: jung, ändert sich schnell. Befehle unten stammen aus der Doku des Repos; bei Abweichungen gilt die aktuelle Doku bzw. `--help`.
 
 ## Prüfergebnis
 - Quelltext nicht vollständig gelesen (sehr groß), gezielt geprüft: keine Telemetrie. Steuerkanal (`--control`) nur auf 127.0.0.1, laut Doku **ohne Token**: Jedes Programm auf dem Rechner kann die laufende App dann steuern. App deshalb nur bei Bedarf mit `--control` starten, sonst headless arbeiten.
 - Ordnerbeschränkung für Agenten: Ja: `--automation-read-root` und `--automation-write-root`.
 
+## Einsatzbereit (geprüft und getestet am 15.10.2026)
+Version 0.10.0, Commit 05955c0, Lizenz weiter MIT oder Apache-2.0. Aus dem Quellcode gebaut in der Cloud-Sandbox, getestet nur an Kopien.
+- **Netz:** Im Lockfile und im gebauten `effectcraft-cli` keine Netzwerk-Bibliothek gefunden.
+- **Getestet:**
+  - `--demo render-frame --time 1 --max-side 960`: Bild geschrieben
+  - MCP mit beiden Roots: startet, 27 Werkzeuge (u. a. `list_commands`, `execute_command`, `get_comp`, `get_layer`, `get_property`)
+- **Bauen** (auf dem Gehirn-Laptop erst nach Marvins Freigabe):
+  ```sh
+  git clone --depth 1 https://github.com/storytold/effectcraft.git && cd effectcraft && cargo build --release -p effectcraft-cli   # Ergebnis: target/release/effectcraft-cli
+  ```
+- **Sandbox:** Zusätzlich empfohlen: in der Sandbox starten (`scripts/craft-sandbox.sh`), dann ohne Netz und ohne Zugriff auf das Home-Verzeichnis.
+  ```sh
+  craft-sandbox.sh /arbeit/effekte effectcraft-cli mcp --automation-read-root /arbeit/effekte --automation-write-root /arbeit/effekte/ausgabe
+  ```
+  `craft-sandbox.sh ARBEITSORDNER PROGRAMM [ARGUMENTE]`. Braucht `bubblewrap` (Debian: `apt install bubblewrap`). Pfade sind innen dieselben wie außen. Ergebnisse landen nur im Arbeitsordner.
+- **In Claude Code registrieren** (erst nach Freigabe): `claude mcp add effectcraft -- /pfad/zu/craft-sandbox.sh /arbeit/… /pfad/zu/effectcraft-cli mcp …`
+
 ## Starten
+Beispiele ohne Sandbox-Präfix. Im Betrieb `craft-sandbox.sh ARBEITSORDNER` davorsetzen (bei Apps ohne Ordnerbeschränkung Pflicht).
 ```sh
 effectcraft-cli mcp --automation-read-root /arbeit/effekte --automation-write-root /arbeit/effekte/ausgabe
 # mit laufender App (vorher: effectcraft --control 9877)
@@ -20,7 +38,6 @@ effectcraft-cli mcp --bridge 9877 --automation-read-root /arbeit/effekte --autom
 effectcraft-cli render --comp Main --out main.mp4
 ```
 
-In Claude Code registrieren (erst nach Freigabe): `claude mcp add effectcraft -- /pfad/zu/effectcraft-cli mcp …` mit denselben Optionen wie oben.
 
 ## Gemeinsame MCP-Werkzeuge
 `command_list` (Befehle finden, mit `filter`), `command_run` (`id`, `params`), `command_batch` (`steps`, stoppt beim ersten Fehler, kein Rollback), `doc_inspect` (Dokument ansehen), `render_preview` (PNG-Vorschau zur Kontrolle). Vor jedem Befehl mit `command_list` die genaue ID und die Parameter nachschlagen, nichts raten.

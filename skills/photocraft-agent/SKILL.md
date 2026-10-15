@@ -5,13 +5,30 @@ description: "PhotoCraft (Photoshop-Nachbau, Open Source) per MCP oder CLI als A
 
 # PhotoCraft für Agenten
 
-Nachbau von Adobe Photoshop aus der ArtCraft-Reihe, keine Adobe-Software. Quelle: github.com/storytold/photocraft, Lizenz MIT oder Apache-2.0 (Copyright 2026 ArtCraft Team and the PhotoCraft contributors). Geprüft am 13.10.2026 (Version 0.8.2, Commit 6f85054), Status laut Projekt: early alpha. Befehle unten stammen aus der Doku des Repos; bei Abweichungen gilt die aktuelle Doku bzw. `--help`.
+Nachbau von Adobe Photoshop aus der ArtCraft-Reihe, keine Adobe-Software. Quelle: github.com/storytold/photocraft, Lizenz MIT oder Apache-2.0 (Copyright 2026 ArtCraft Team and the PhotoCraft contributors). Geprüft am 13.10.2026 (Version 0.8.2, Commit 6f85054), nachgeprüft und getestet am 15.10.2026 (Version 0.9.0), Status laut Projekt: early alpha. Befehle unten stammen aus der Doku des Repos; bei Abweichungen gilt die aktuelle Doku bzw. `--help`.
 
 ## Prüfergebnis
 - Quelltext nicht vollständig gelesen (sehr groß), gezielt geprüft: keine Telemetrie, keine HTTP-Client-Bibliothek. Steuerkanal nur auf 127.0.0.1, mit Token und Größen- und Zeitlimits.
 - Ordnerbeschränkung für Agenten: Ja: `--automation-read-root` und `--automation-write-root`.
 
+## Einsatzbereit (geprüft und getestet am 15.10.2026)
+Version 0.9.0, Commit 7bb10a7, Lizenz weiter MIT oder Apache-2.0. Aus dem Quellcode gebaut in der Cloud-Sandbox, getestet nur an Kopien.
+- **Netz:** Netzwerk-Bibliothek nur im Windows-Build, im Linux-`photocraft-cli` keine.
+- **Getestet:**
+  - `run` mit Kurven, Dynamik, Fotofilter, Vignette, Unscharf maskieren und Filmkorn: Feinschliff der Bilderreihe Schlaubi (15.10.2026), Rezept in `tools/bilderreihe/finalize.sh`
+- **Bauen** (auf dem Gehirn-Laptop erst nach Marvins Freigabe):
+  ```sh
+  git clone --depth 1 https://github.com/storytold/photocraft.git && cd photocraft && cargo build --release -p photocraft-cli   # Ergebnis: target/release/photocraft-cli
+  ```
+- **Sandbox:** Zusätzlich empfohlen: in der Sandbox starten (`scripts/craft-sandbox.sh`), dann ohne Netz und ohne Zugriff auf das Home-Verzeichnis.
+  ```sh
+  photocraft-cli mcp --automation-read-root /arbeit/bilder --automation-write-root /arbeit/bilder/ausgabe
+  ```
+  `craft-sandbox.sh ARBEITSORDNER PROGRAMM [ARGUMENTE]`. Braucht `bubblewrap` (Debian: `apt install bubblewrap`). Pfade sind innen dieselben wie außen. Ergebnisse landen nur im Arbeitsordner.
+- **In Claude Code registrieren** (erst nach Freigabe): `claude mcp add photocraft -- /pfad/zu/craft-sandbox.sh /arbeit/… /pfad/zu/photocraft-cli mcp …`
+
 ## Starten
+Beispiele ohne Sandbox-Präfix. Im Betrieb `craft-sandbox.sh ARBEITSORDNER` davorsetzen (bei Apps ohne Ordnerbeschränkung Pflicht).
 ```sh
 photocraft-cli mcp --automation-read-root /arbeit/bilder --automation-write-root /arbeit/bilder/ausgabe
 ```
@@ -24,7 +41,6 @@ photocraft-cli batch --actions aktionen.json --in ./eingang --out ./ausgabe
 photocraft-cli batch --help
 ```
 
-In Claude Code registrieren (erst nach Freigabe): `claude mcp add photocraft -- /pfad/zu/photocraft-cli mcp …` mit denselben Optionen wie oben.
 
 ## Gemeinsame MCP-Werkzeuge
 `command_list` (Befehle finden, mit `filter`), `command_run` (`id`, `params`), `command_batch` (`steps`, stoppt beim ersten Fehler, kein Rollback), `doc_inspect` (Dokument ansehen), `render_preview` (PNG-Vorschau zur Kontrolle). Vor jedem Befehl mit `command_list` die genaue ID und die Parameter nachschlagen, nichts raten.
