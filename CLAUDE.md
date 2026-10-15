@@ -11,10 +11,10 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 - **Vorschlag zur Hardware (offen):** Microcontroller für Not-Aus, Watchdog und Sensorik, Raspberry Pi Zero 2 W für LTE-Modem, Mail und Kommunikation. Das Gehirn (OpenClaw, Vektorspeicher, Embeddings) läuft auf Marvins altem Laptop als Heimserver (Entscheidung 13.10.2026, Eignung noch prüfen).
 - **Wissensspeicher:** SQLite mit sqlite-vec und FTS5 (Hybridsuche), dazu LanceDB als Vergleich und Ersatz. Kleine ONNX-Embeddings über fastembed.
 - **Energie:** Akku mit USB-C-Laden über ein UPS-HAT. Dauerbetrieb braucht ein Netzteil.
-- **Details** (SIM-Modem, Modelle, Embeddings, OpenClaw-Absicherung, Handy-Zugriff, Adobe-Nachbauten): `docs/projektstart-details.md`. Teileliste: `docs/teileliste.md`. Design des Körpers „Schlaubi“: `docs/design-koerper.md`. Design des Gehirns: `docs/design-gehirn.md`. Design des Charakters: `docs/design-charakter.md`. Design Datensammlung: `docs/design-daten.md`. OpenClaw-Prüfung: `docs/pruefung-openclaw.md`. Sicherheit und Recht: `docs/sicherheit-und-recht.md`.
+- **Details** (SIM-Modem, Modelle, Embeddings, OpenClaw-Absicherung, Handy-Zugriff, Adobe-Nachbauten): `docs/projektstart-details.md`. Teileliste: `docs/teileliste.md`. Design des Körpers „Schlaubi“: `docs/design-koerper.md`. Design des Gehirns: `docs/design-gehirn.md`. Design des Charakters: `docs/design-charakter.md`. Design Datensammlung: `docs/design-daten.md`. OpenClaw-Prüfung: `docs/pruefung-openclaw.md`. Sicherheit und Recht: `docs/sicherheit-und-recht.md`. Lessons Learned und Mechanismen für Claude: `docs/claude-optimierung.md`.
 
 ## 3. Arbeitsregeln für Claude Code
-- Vor der Arbeit den Skill `skills/roboter-projekt` befolgen.
+- Vor der Arbeit den Skill `skills/roboter-projekt` befolgen und die Checklisten in `docs/claude-optimierung.md` nutzen.
 - Keine physischen oder irreversiblen Aktionen ohne Freigabe.
 - Nichts in Marvins Namen ohne Rückfrage: keine Nachrichten, Mails, SMS oder Anrufe als Marvin, keine Käufe, Anmeldungen, Zusagen, Termine oder Beiträge für ihn. Lesen, recherchieren und Entwürfe vorbereiten ist erlaubt.
 - Keine Secrets, Zugangsdaten, SIM-PINs oder Tokens in Code, Logs, Notion oder Gedächtnis. Nur Referenzen auf den Secret-Store.
@@ -49,7 +49,7 @@ Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marv
 - [x] Retention-Fristen pro Datentyp mit Merk-Schutz (13.10.2026, Notion „Design Gehirn“)
 - [ ] Freigabe-Policy für physische Aktionen
 - [x] Separates Google-Testkonto statt privatem Account (13.10.2026). Anlegen: Marvin
-- [ ] SIM-Anbieter wählen (E-Mail: mail.de FreeMail, Konto legt Marvin an)
+- [ ] SIM-Anbieter wählen: höchstens 10 € im Monat, 3–5 GB, beim Kauf aktuell vergleichen (E-Mail: mail.de FreeMail, Konto legt Marvin an)
 - [x] Design Körper Version 1 freigegeben (13.10.2026, `docs/design-koerper.md`)
 - [x] Bauplan Körper Version 1 bestätigt (13.10.2026)
 - [x] Design Gehirn Version 1 freigegeben (13.10.2026, `docs/design-gehirn.md`)

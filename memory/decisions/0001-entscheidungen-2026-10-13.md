@@ -60,3 +60,4 @@ Spiegel der Notion-Seite „Entscheidungen und Projektlog“. Nichts löschen, n
 | 15.10.2026 | Wissen teilen: Freunde nutzen Variante A (Gast bei Marvins Schlaubi, über Marvins Budget). Wer einen eigenen Schlaubi will, bekommt Variante B und trägt die Kosten selbst | Beschlossen, Höhe Gäste-Budget offen |
 | 15.10.2026 | Gäste-Budget höchstens 5 $ im Monat (alle Gäste zusammen) innerhalb der 30 $. Annahme Tageslimit 0,20 $ pro Gast, Gäste mit Haiku 5.5 | Beschlossen |
 | 15.10.2026 | Wissen teilen kommt in Version 2 zusammen mit der MCP-Schnittstelle. In Version 1 mitgedacht: Feld `teilbar` (Standard nein), Beitragender und Vertrauenswert pro Gedächtnis-Eintrag | Beschlossen (Version 2) |
+| 15.10.2026 | SIM-Karte für den Würfel: höchstens 10 € im Monat. Bedarf grob 1–2 GB, Ziel 3–5 GB. Auswahl beim Kauf in Deutschland nach aktuellem Vergleich (Prepaid, SMS, LTE-Bänder des SIM7600E-H, Nutzung in Geräten laut AGB erlaubt) | Beschlossen, Anbieter offen |
