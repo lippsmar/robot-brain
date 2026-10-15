@@ -57,3 +57,4 @@ Spiegel der Notion-Seite „Entscheidungen und Projektlog“. Nichts löschen, n
 | 14.10.2026 | Idee Wissen und Fähigkeiten teilen: zuerst mit Freunden, später mit zahlenden Kunden. Austausch zwischen mehreren Schlaubis gewünscht | Beschlossen, Design in Klärung |
 | 14.10.2026 | Bauplan Datensammlung Version 1 bestätigt | Beschlossen |
 | 14.10.2026 | Wissen teilen: beides. Freunde sprechen als eingeladene Gäste mit Marvins Schlaubi (nur teilbares Wissen, keine Aktionen) und bekommen eigene Schlaubis, die teilbares Wissen austauschen (signiert, Quarantäne, Skills nie automatisch) | Beschlossen, Design in Klärung |
+| 15.10.2026 | Wissen teilen: Freunde nutzen Variante A (Gast bei Marvins Schlaubi, über Marvins Budget). Wer einen eigenen Schlaubi will, bekommt Variante B und trägt die Kosten selbst | Beschlossen, Höhe Gäste-Budget offen |
