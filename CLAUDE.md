@@ -27,10 +27,10 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 - Bei Konflikt mit allgemeinen Skills (z. B. Superpowers) gelten die roboter-Skills und die Freigabe-Sperre.
 
 ## 4. Token und Budget
-- Der laufende Roboter nutzt einen API-Key aus der Anthropic Console mit Prepaid-Guthaben und monatlichem Ausgabenlimit.
-- Die Abo-Anmeldung (OAuth) von Claude Pro oder Max wird nicht in OpenClaw oder anderen Drittanbieter-Tools verwendet. Das Abo dient der Entwicklung in Claude Code.
+- **Anbieterunabhängig (Entscheidung 15.10.2026):** Schlaubi läuft mit jedem Modell, das man hat. Bevorzugt europäische Infrastruktur (z. B. IONOS, STACKIT, Mistral, Langdock), möglich sind auch API-Keys großer US-Anbieter und freie Modelle lokal. Für den laufenden Betrieb immer ein API-Key oder lokales Modell mit Prepaid bzw. Ausgabenlimit. Ein Modell muss vorher die Prüffragen bestehen.
+- Abo-Anmeldungen (OAuth) von Claude Pro/Max oder anderen Anbietern werden nicht in OpenClaw oder anderen Drittanbieter-Tools verwendet. Abos nutzt man nur über die offiziellen Apps des Anbieters (z. B. später als Host über MCP). Das Claude-Abo dient der Entwicklung in Claude Code.
 - Selbsterhalt: Budget überwachen, bei knappem Stand Sparmodus und Marvin zum Nachladen auffordern. Dazu Sparen (lokales Modell, Cache), Zuarbeit für Einnahmen (Marvin verkauft) und Belohnung durch Marvin. Immer nach deutschem Recht, Einnahmen sind Marvins Einnahmen, Veröffentlichen und Verkaufen nur mit Freigabe (Details: Notion „Design Gehirn“).
-- Modellwahl: Haiku für Hintergrundrecherche, Sonnet oder Opus für Gespräche. Modellname steht in der Config, beim Start die Models-API abfragen und neue Modelle melden.
+- Modellwahl über Rollen statt Namen: günstiges Modell für Hintergrundrecherche, starkes Modell für Gespräche, Spitzenmodell für schwierige Fragen. Die Zuordnung zu Anbieter und Modell steht in der Config (Start: Haiku, Sonnet, Opus). Beim Start die verfügbaren Modelle abfragen und neue melden.
 
 ## 5. Testphase
 Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marvin anlegt (Entscheidung 13.10.2026). Kein Zugriff auf Marvins privates Google-Konto. Regeln: `skills/roboter-testumgebung`.

@@ -118,6 +118,13 @@ Entscheidung 14.10.2026: Die MCP-Schnittstelle kommt erst, wenn Schlaubi zu Haus
 - **Für „Wissen teilen“ (Version 2, Entscheidung 15.10.2026):** Jeder Eintrag hat von Anfang an ein Feld `teilbar` (Standard: nein). Dazu kommen Felder für Beitragende (Person oder fremder Schlaubi) und einen Vertrauenswert. Später sehen Gäste und andere Schlaubis nur Einträge mit `teilbar: ja`.
 - Eine Warteschlange für Einträge, die erst später übertragen werden, ist im Gedächtnisdienst vorgesehen. Später nutzen Host-Laptops sie ohne Verbindung. Eine lokale Kopie des Gedächtnisses auf anderen Laptops gibt es nicht.
 
+## 11b. Anbieterunabhängig (Entscheidung 15.10.2026)
+- Schlaubi läuft mit jedem Modell, das man hat: europäische Plattformen bevorzugt, auch US-API-Keys und freie Modelle lokal.
+- **Anbieter-Schicht:** OpenClaw unterstützt viele Anbieter direkt. Für alle anderen gibt es eine OpenAI-kompatible Anbindung. Ein lokales Gateway (z. B. LiteLLM, vor Nutzung nach Checkliste prüfen) kann Anbieter bündeln, Budgets pro Anbieter halten und bei Ausfall umschalten.
+- **Modellrollen** statt fester Namen (Recherche, Gespräch, schwierige Fragen). Die Zuordnung steht in der Config.
+- **Steuereinheit:** Jede Aktion eines Modells prüft das Gehirn gegen Kern, Rechte, Budget und Datenschutz. Das gilt unabhängig vom Modell.
+- **Modell-Zulassung:** Erst nach bestandenen Prüffragen darf ein Modell Schlaubi steuern.
+
 ## 12. Offene Punkte (blockieren das Design nicht)
 - Laptop-Bestandsaufnahme und Auswahl (Marvin zu Hause)
 - Such-API-Anbieter wählen und prüfen
