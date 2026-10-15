@@ -1,22 +1,25 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "event/1.0",
+  "$id": "event/1.1",
   "title": "Event-Log-Eintrag",
+  "description": "1.1 (2026-10-15): Typen budget.usage, budget.alert, memory.write und die Hash-Kette (prev, hash) ergaenzt.",
   "type": "object",
-  "required": ["id", "seq", "ts", "source", "type", "schema"],
+  "required": ["id", "seq", "ts", "source", "type", "schema", "prev", "hash"],
   "properties": {
     "id": {"type": "string"},
     "seq": {"type": "integer", "minimum": 0},
     "ts": {"type": "string", "format": "date-time"},
     "source": {"type": "string"},
     "device_id": {"type": "string"},
-    "type": {"enum": ["sensor.reading", "device.discovered", "device.command", "device.state", "agent.action", "agent.decision", "comm.sms", "comm.mail", "vision.capture", "system.health", "safety.alert", "error"]},
+    "type": {"enum": ["sensor.reading", "device.discovered", "device.command", "device.state", "agent.action", "agent.decision", "comm.sms", "comm.mail", "vision.capture", "system.health", "safety.alert", "error", "budget.usage", "budget.alert", "memory.write"]},
     "intent": {"type": "string"},
     "payload": {"type": "object"},
     "result": {"type": "string"},
     "latency_ms": {"type": "number", "minimum": 0},
     "confidence": {"type": "number", "minimum": 0, "maximum": 1},
     "pii": {"type": "boolean"},
-    "schema": {"const": "event/1.0"}
+    "prev": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "schema": {"const": "event/1.1"}
   }
 }

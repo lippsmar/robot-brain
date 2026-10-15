@@ -1,0 +1,544 @@
+"""Memory core: append-only SQLite store with provenance and full-text search.
+
+Rules from the Memory Core and Bauplan Gehirn 10.2/10.2a:
+- Entries are never changed. Corrections are new entries that replace the old one.
+- Status changes (keep, archived, disputed, confirmed, replaced) are appended as marks.
+- `forget` archives. Physical deletion needs Marvin's approval and is recorded
+  (without content) in `deletion_approvals`; protected entries need an explicit override.
+- Every entry carries source, rating A-D, confidence, origin (device or host), pii,
+  shareable, contributor and trust (prepared for sharing knowledge in version 2).
+- Search uses two FTS5 indexes, whole words and word parts (trigrams, for German
+  compound words), merged with reciprocal rank fusion. Vector search joins later.
+- Entries from other hosts wait in an inbox until they are accepted or rejected.
+"""
+
+import json
+import re
+import sqlite3
+import uuid
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from pathlib import Path
+
+from brain.eventlog import format_ts
+from brain.secrets_guard import find_secret, find_secret_in_text
+
+SCHEMA_VERSION = "entry/1.0"
+DB_VERSION = 1
+RRF_K = 60
+STATUS_MARKS = ("archived", "disputed", "confirmed", "replaced", "active")
+VISIBLE = ("active", "confirmed", "disputed")
+SCOPES = ("marvin", "guest")
+APPROVERS = ("marvin",)
+_INBOX_FIELDS = {
+    "content",
+    "kind",
+    "source",
+    "source_rating",
+    "confidence",
+    "tags",
+    "pii",
+    "shareable",
+    "contributor",
+    "trust",
+}
+
+_SCHEMA = """
+CREATE TABLE IF NOT EXISTS entries (
+    id INTEGER PRIMARY KEY,
+    uid TEXT NOT NULL UNIQUE,
+    ts TEXT NOT NULL,
+    kind TEXT NOT NULL,
+    content TEXT NOT NULL,
+    source TEXT NOT NULL,
+    source_rating TEXT CHECK (source_rating IN ('A', 'B', 'C', 'D')),
+    confidence REAL CHECK (confidence BETWEEN 0 AND 1),
+    origin TEXT NOT NULL,
+    pii INTEGER NOT NULL DEFAULT 0 CHECK (pii IN (0, 1)),
+    shareable INTEGER NOT NULL DEFAULT 0 CHECK (shareable IN (0, 1)),
+    contributor TEXT,
+    trust REAL CHECK (trust BETWEEN 0 AND 1),
+    tags TEXT NOT NULL DEFAULT '[]',
+    replaces TEXT,
+    schema_version TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS marks (
+    id INTEGER PRIMARY KEY,
+    uid TEXT NOT NULL,
+    ts TEXT NOT NULL,
+    mark TEXT NOT NULL CHECK (mark IN ('keep', 'archived', 'disputed', 'confirmed', 'replaced', 'active')),
+    reason TEXT
+);
+CREATE INDEX IF NOT EXISTS marks_uid ON marks (uid);
+CREATE TABLE IF NOT EXISTS deletion_approvals (
+    id INTEGER PRIMARY KEY,
+    uid TEXT NOT NULL,
+    ts TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    approved_by TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS inbox (
+    id INTEGER PRIMARY KEY,
+    ts TEXT NOT NULL,
+    origin TEXT NOT NULL,
+    payload TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS inbox_results (
+    id INTEGER PRIMARY KEY,
+    inbox_id INTEGER NOT NULL UNIQUE,
+    ts TEXT NOT NULL,
+    result TEXT NOT NULL CHECK (result IN ('accepted', 'rejected')),
+    uid TEXT,
+    reason TEXT
+);
+CREATE VIRTUAL TABLE IF NOT EXISTS entries_words USING fts5(
+    content, tags, content='entries', content_rowid='id',
+    tokenize='unicode61 remove_diacritics 2'
+);
+
+CREATE TRIGGER IF NOT EXISTS entries_no_update BEFORE UPDATE ON entries
+BEGIN SELECT RAISE(ABORT, 'entries are append-only'); END;
+CREATE TRIGGER IF NOT EXISTS entries_guarded_delete BEFORE DELETE ON entries
+WHEN NOT EXISTS (SELECT 1 FROM deletion_approvals WHERE uid = old.uid)
+BEGIN SELECT RAISE(ABORT, 'entries are append-only, deleting needs an approval'); END;
+CREATE TRIGGER IF NOT EXISTS marks_no_update BEFORE UPDATE ON marks
+BEGIN SELECT RAISE(ABORT, 'marks are append-only'); END;
+CREATE TRIGGER IF NOT EXISTS marks_guarded_delete BEFORE DELETE ON marks
+WHEN NOT EXISTS (SELECT 1 FROM deletion_approvals WHERE uid = old.uid)
+BEGIN SELECT RAISE(ABORT, 'marks are append-only, deleting needs an approval'); END;
+CREATE TRIGGER IF NOT EXISTS approvals_no_update BEFORE UPDATE ON deletion_approvals
+BEGIN SELECT RAISE(ABORT, 'deletion_approvals are append-only'); END;
+CREATE TRIGGER IF NOT EXISTS approvals_no_delete BEFORE DELETE ON deletion_approvals
+BEGIN SELECT RAISE(ABORT, 'deletion_approvals are append-only'); END;
+CREATE TRIGGER IF NOT EXISTS inbox_no_update BEFORE UPDATE ON inbox
+BEGIN SELECT RAISE(ABORT, 'inbox is append-only'); END;
+CREATE TRIGGER IF NOT EXISTS inbox_guarded_delete BEFORE DELETE ON inbox
+WHEN NOT EXISTS (SELECT 1 FROM inbox_results WHERE inbox_id = old.id)
+BEGIN SELECT RAISE(ABORT, 'inbox is append-only until an item is processed'); END;
+CREATE TRIGGER IF NOT EXISTS inbox_results_no_update BEFORE UPDATE ON inbox_results
+BEGIN SELECT RAISE(ABORT, 'inbox_results are append-only'); END;
+CREATE TRIGGER IF NOT EXISTS inbox_results_no_delete BEFORE DELETE ON inbox_results
+BEGIN SELECT RAISE(ABORT, 'inbox_results are append-only'); END;
+
+CREATE TRIGGER IF NOT EXISTS entries_index_words AFTER INSERT ON entries BEGIN
+    INSERT INTO entries_words (rowid, content, tags) VALUES (new.id, new.content, new.tags);
+END;
+CREATE TRIGGER IF NOT EXISTS entries_unindex_words AFTER DELETE ON entries BEGIN
+    INSERT INTO entries_words (entries_words, rowid, content, tags) VALUES ('delete', old.id, old.content, old.tags);
+END;
+"""
+
+# Trigram tables need SQLite 3.34; remove_diacritics for trigrams needs 3.45.
+_PARTS_TOKENIZERS = ("trigram remove_diacritics 1", "trigram")
+_PARTS_TRIGGERS = """
+CREATE TRIGGER IF NOT EXISTS entries_index_parts AFTER INSERT ON entries BEGIN
+    INSERT INTO entries_parts (rowid, content) VALUES (new.id, new.content);
+END;
+CREATE TRIGGER IF NOT EXISTS entries_unindex_parts AFTER DELETE ON entries BEGIN
+    INSERT INTO entries_parts (entries_parts, rowid, content) VALUES ('delete', old.id, old.content);
+END;
+"""
+
+
+class MemoryStoreError(Exception):
+    """An entry or operation was rejected."""
+
+
+@dataclass(frozen=True)
+class Hit:
+    uid: str
+    content: str
+    kind: str
+    source: str
+    source_rating: str
+    confidence: float
+    origin: str
+    pii: bool
+    shareable: bool
+    contributor: str
+    trust: float
+    tags: list
+    replaces: str
+    schema_version: str
+    ts: str
+    status: str
+    keep: bool
+    score: float = None
+
+
+def _utc_now():
+    return datetime.now(UTC)
+
+
+class Memory:
+    def __init__(self, path, log=None, origin="gehirn", clock=_utc_now):
+        self._path = Path(path)
+        self._log = log
+        self._origin = origin
+        self._clock = clock
+        self._conn = sqlite3.connect(self._path)
+        self._conn.row_factory = sqlite3.Row
+        for pragma in ("journal_mode = WAL", "synchronous = FULL", "foreign_keys = ON", "secure_delete = ON"):
+            self._conn.execute(f"PRAGMA {pragma}")
+        self._create_schema()
+
+    def close(self):
+        self._conn.close()
+
+    def _create_schema(self):
+        self._conn.executescript(_SCHEMA)
+        exists = self._conn.execute(
+            "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'entries_parts'"
+        ).fetchone()
+        if not exists:
+            for tokenizer in _PARTS_TOKENIZERS:
+                try:
+                    self._conn.execute(
+                        "CREATE VIRTUAL TABLE entries_parts USING fts5("
+                        f"content, content='entries', content_rowid='id', tokenize='{tokenizer}')"
+                    )
+                    break
+                except sqlite3.OperationalError:
+                    continue
+            else:
+                raise MemoryStoreError("SQLite has no FTS5 trigram tokenizer (needs 3.34 or newer)")
+        self._conn.executescript(_PARTS_TRIGGERS)
+        self._conn.execute(f"PRAGMA user_version = {DB_VERSION}")
+
+    # --- helpers --------------------------------------------------------------------
+
+    def _now(self):
+        return format_ts(self._clock())
+
+    def _event(self, op, uid, pii=False, **extra):
+        if self._log is not None:
+            self._log.append("memory.write", {"op": op, "uid": uid, **extra}, intent=f"memory.{op}", pii=bool(pii))
+
+    def _require(self, uid):
+        row = self._conn.execute("SELECT * FROM entries WHERE uid = ?", (uid,)).fetchone()
+        if row is None:
+            raise MemoryStoreError(f"no entry {uid}")
+        return row
+
+    def _status(self, uid):
+        placeholders = ",".join("?" * len(STATUS_MARKS))
+        row = self._conn.execute(
+            f"SELECT mark FROM marks WHERE uid = ? AND mark IN ({placeholders}) ORDER BY id DESC LIMIT 1",
+            (uid, *STATUS_MARKS),
+        ).fetchone()
+        return row["mark"] if row else "active"
+
+    def _keep(self, uid):
+        return self._conn.execute("SELECT 1 FROM marks WHERE uid = ? AND mark = 'keep'", (uid,)).fetchone() is not None
+
+    def _hit(self, row, score=None):
+        return Hit(
+            uid=row["uid"],
+            content=row["content"],
+            kind=row["kind"],
+            source=row["source"],
+            source_rating=row["source_rating"],
+            confidence=row["confidence"],
+            origin=row["origin"],
+            pii=bool(row["pii"]),
+            shareable=bool(row["shareable"]),
+            contributor=row["contributor"],
+            trust=row["trust"],
+            tags=json.loads(row["tags"]),
+            replaces=row["replaces"],
+            schema_version=row["schema_version"],
+            ts=row["ts"],
+            status=self._status(row["uid"]),
+            keep=self._keep(row["uid"]),
+            score=score,
+        )
+
+    def _mark(self, uid, mark, reason=None):
+        self._conn.execute(
+            "INSERT INTO marks (uid, ts, mark, reason) VALUES (?, ?, ?, ?)", (uid, self._now(), mark, reason)
+        )
+
+    @staticmethod
+    def _validate(content, kind, source, source_rating, confidence, trust, tags):
+        if not isinstance(content, str) or not content.strip():
+            raise MemoryStoreError("content must not be empty")
+        if not isinstance(kind, str) or not kind.strip():
+            raise MemoryStoreError("kind must not be empty")
+        if not isinstance(source, str) or not source.strip():
+            raise MemoryStoreError("source must not be empty")
+        if source_rating is not None and source_rating not in ("A", "B", "C", "D"):
+            raise MemoryStoreError("source_rating must be A, B, C or D")
+        for name, value in (("confidence", confidence), ("trust", trust)):
+            if value is not None and not 0 <= value <= 1:
+                raise MemoryStoreError(f"{name} must be between 0 and 1")
+        secret = find_secret_in_text(content) or find_secret({"source": source, "tags": tags})
+        if secret:
+            raise MemoryStoreError(f"secret detected, entry not stored ({secret})")
+
+    def _insert(
+        self,
+        content,
+        kind,
+        source,
+        source_rating=None,
+        confidence=None,
+        tags=None,
+        pii=False,
+        shareable=False,
+        contributor=None,
+        trust=None,
+        origin=None,
+        replaces=None,
+    ):
+        tags = list(tags or [])
+        self._validate(content, kind, source, source_rating, confidence, trust, tags)
+        uid = str(uuid.uuid4())
+        self._conn.execute(
+            "INSERT INTO entries (uid, ts, kind, content, source, source_rating, confidence, origin, pii,"
+            " shareable, contributor, trust, tags, replaces, schema_version)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                uid,
+                self._now(),
+                kind.strip(),
+                content.strip(),
+                source.strip(),
+                source_rating,
+                confidence,
+                origin or self._origin,
+                int(bool(pii)),
+                int(bool(shareable)),
+                contributor,
+                trust,
+                json.dumps(tags, ensure_ascii=False),
+                replaces,
+                SCHEMA_VERSION,
+            ),
+        )
+        return uid
+
+    # --- writing ----------------------------------------------------------------------
+
+    def remember(
+        self,
+        content,
+        *,
+        kind,
+        source,
+        source_rating=None,
+        confidence=None,
+        tags=None,
+        pii=False,
+        shareable=False,
+        contributor=None,
+        trust=None,
+        origin=None,
+    ):
+        """Store a new entry and return its uid."""
+        with self._conn:
+            uid = self._insert(
+                content, kind, source, source_rating, confidence, tags, pii, shareable, contributor, trust, origin
+            )
+        self._event("remember", uid, pii, kind=kind)
+        return uid
+
+    def correct(self, uid, content, *, source, **changes):
+        """Store a corrected version as a new entry; the old one is marked as replaced."""
+        old = self._require(uid)
+        fields = {
+            "kind": old["kind"],
+            "source_rating": old["source_rating"],
+            "confidence": old["confidence"],
+            "tags": json.loads(old["tags"]),
+            "pii": bool(old["pii"]),
+            "shareable": bool(old["shareable"]),
+            "contributor": old["contributor"],
+            "trust": old["trust"],
+        }
+        fields.update(changes)
+        with self._conn:
+            new_uid = self._insert(content, source=source, replaces=uid, **fields)
+            self._mark(uid, "replaced", f"replaced by {new_uid}")
+        self._event("correct", new_uid, fields["pii"], replaces=uid)
+        return new_uid
+
+    def keep(self, uid):
+        """Marvin said "merken": protect the entry from deadlines and deletion."""
+        row = self._require(uid)
+        with self._conn:
+            self._mark(uid, "keep")
+        self._event("keep", uid, row["pii"])
+
+    def forget(self, uid, reason):
+        """Archive an entry. It stays stored and can be found with include_archived."""
+        row = self._require(uid)
+        with self._conn:
+            self._mark(uid, "archived", reason)
+        self._event("forget", uid, row["pii"])
+
+    def restore(self, uid, reason):
+        row = self._require(uid)
+        with self._conn:
+            self._mark(uid, "active", reason)
+        self._event("restore", uid, row["pii"])
+
+    def dispute(self, uid_a, uid_b, reason):
+        """Two entries contradict each other: keep both, mark both as disputed."""
+        rows = [self._require(uid_a), self._require(uid_b)]
+        with self._conn:
+            self._mark(uid_a, "disputed", f"{reason} ({uid_b})")
+            self._mark(uid_b, "disputed", f"{reason} ({uid_a})")
+        for row in rows:
+            self._event("dispute", row["uid"], row["pii"])
+
+    def confirm(self, uid, reason):
+        row = self._require(uid)
+        with self._conn:
+            self._mark(uid, "confirmed", reason)
+        self._event("confirm", uid, row["pii"])
+
+    def delete(self, uid, *, reason, approved_by, override_keep=False):
+        """Physically delete an entry. Only with Marvin's approval; protected entries need override_keep."""
+        if approved_by not in APPROVERS:
+            raise MemoryStoreError("deleting needs Marvin's approval (approved_by='marvin')")
+        row = self._require(uid)
+        if self._keep(uid) and not override_keep:
+            raise MemoryStoreError("entry is marked keep; deleting it needs override_keep=True")
+        with self._conn:
+            self._conn.execute(
+                "INSERT INTO deletion_approvals (uid, ts, reason, approved_by) VALUES (?, ?, ?, ?)",
+                (uid, self._now(), reason, approved_by),
+            )
+            self._conn.execute("DELETE FROM marks WHERE uid = ?", (uid,))
+            self._conn.execute("DELETE FROM entries WHERE uid = ?", (uid,))
+        # merge index segments so deleted terms do not linger, then flush the WAL
+        for table in ("entries_words", "entries_parts"):
+            with self._conn:
+                self._conn.execute(f"INSERT INTO {table} ({table}) VALUES ('optimize')")
+        self._conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        self._event("delete", uid, row["pii"], approved_by=approved_by)
+
+    # --- inbox (entries from other hosts, version 2 prepared) ---------------------------------------
+
+    def enqueue(self, payload, origin):
+        if not isinstance(payload, dict):
+            raise MemoryStoreError("payload must be an object")
+        secret = find_secret(payload)
+        if secret:
+            raise MemoryStoreError(f"secret detected, item not stored ({secret})")
+        with self._conn:
+            cursor = self._conn.execute(
+                "INSERT INTO inbox (ts, origin, payload) VALUES (?, ?, ?)",
+                (self._now(), origin, json.dumps(payload, ensure_ascii=False)),
+            )
+        item = cursor.lastrowid
+        self._event("enqueue", f"inbox:{item}", payload.get("pii", False), origin=origin)
+        return item
+
+    def pending(self):
+        rows = self._conn.execute("SELECT id, ts, origin, payload FROM inbox ORDER BY id").fetchall()
+        return [
+            {"id": r["id"], "ts": r["ts"], "origin": r["origin"], "payload": json.loads(r["payload"])} for r in rows
+        ]
+
+    def _inbox_item(self, item):
+        row = self._conn.execute("SELECT * FROM inbox WHERE id = ?", (item,)).fetchone()
+        if row is None:
+            raise MemoryStoreError(f"no pending inbox item {item}")
+        return row
+
+    def accept(self, item):
+        row = self._inbox_item(item)
+        payload = json.loads(row["payload"])
+        unknown = set(payload) - _INBOX_FIELDS
+        if unknown:
+            raise MemoryStoreError(f"unknown fields {sorted(unknown)}")
+        if "content" not in payload or "kind" not in payload or "source" not in payload:
+            raise MemoryStoreError("content, kind and source are required")
+        with self._conn:
+            uid = self._insert(origin=row["origin"], **payload)
+            self._conn.execute(
+                "INSERT INTO inbox_results (inbox_id, ts, result, uid) VALUES (?, ?, 'accepted', ?)",
+                (item, self._now(), uid),
+            )
+            self._conn.execute("DELETE FROM inbox WHERE id = ?", (item,))
+        self._event("accept", uid, payload.get("pii", False), origin=row["origin"])
+        return uid
+
+    def reject(self, item, reason):
+        row = self._inbox_item(item)
+        with self._conn:
+            self._conn.execute(
+                "INSERT INTO inbox_results (inbox_id, ts, result, reason) VALUES (?, ?, 'rejected', ?)",
+                (item, self._now(), reason),
+            )
+            self._conn.execute("DELETE FROM inbox WHERE id = ?", (item,))
+        self._event("reject", f"inbox:{item}", False, origin=row["origin"])
+
+    # --- reading ------------------------------------------------------------------------
+
+    def get(self, uid):
+        row = self._conn.execute("SELECT * FROM entries WHERE uid = ?", (uid,)).fetchone()
+        return self._hit(row) if row else None
+
+    def deletions(self):
+        rows = self._conn.execute("SELECT uid, ts, reason, approved_by FROM deletion_approvals ORDER BY id")
+        return [dict(row) for row in rows]
+
+    def _ranked(self, table, query, limit):
+        try:
+            rows = self._conn.execute(
+                f"SELECT rowid FROM {table} WHERE {table} MATCH ? ORDER BY bm25({table}) LIMIT ?", (query, limit)
+            ).fetchall()
+        except sqlite3.OperationalError:
+            return []  # a query the tokenizer reduces to nothing
+        return [row["rowid"] for row in rows]
+
+    def recall(self, query, limit=5, scope="marvin", include_archived=False, kind=None):
+        """Find entries for a free-text query. Scope "guest" sees only shareable entries without pii."""
+        if scope not in SCOPES:
+            raise MemoryStoreError(f"unknown scope {scope!r}")
+        terms = re.findall(r"\w+", query or "")
+        if not terms:
+            return []
+        candidates = max(50, limit * 10)
+        word_query = " OR ".join(f'"{t}"*' if len(t) >= 4 else f'"{t}"' for t in terms)
+        rankings = [self._ranked("entries_words", word_query, candidates)]
+        part_terms = [t for t in terms if len(t) >= 3]
+        if part_terms:
+            rankings.append(self._ranked("entries_parts", " OR ".join(f'"{t}"' for t in part_terms), candidates))
+
+        scores = {}
+        for ranking in rankings:
+            for position, rowid in enumerate(ranking, start=1):
+                scores[rowid] = scores.get(rowid, 0.0) + 1.0 / (RRF_K + position)
+
+        hits = []
+        for rowid, score in sorted(scores.items(), key=lambda item: (-item[1], -item[0])):
+            row = self._conn.execute("SELECT * FROM entries WHERE id = ?", (rowid,)).fetchone()
+            if row is None:
+                continue
+            if scope == "guest" and (row["pii"] or not row["shareable"]):
+                continue
+            if kind and row["kind"] != kind:
+                continue
+            hit = self._hit(row, score)
+            if not include_archived and hit.status not in VISIBLE:
+                continue
+            hits.append(hit)
+            if len(hits) >= limit:
+                break
+        return hits
+
+    # --- maintenance --------------------------------------------------------------------
+
+    def check(self):
+        """Daily database check (Bauplan 14.1): SQLite integrity and both search indexes."""
+        integrity = self._conn.execute("PRAGMA integrity_check").fetchone()[0]
+        fts = "ok"
+        for table in ("entries_words", "entries_parts"):
+            try:
+                self._conn.execute(f"INSERT INTO {table} ({table}, rank) VALUES ('integrity-check', 1)")
+            except sqlite3.DatabaseError as error:
+                fts = f"{table}: {error}"
+        return {"integrity": integrity, "fts": fts}

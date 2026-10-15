@@ -109,9 +109,9 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
 - Test: Der Scan läuft, und das Ergebnis kommt bei kritischen Funden per Telegram.
 
 ## Phase 7 – Claude-API und Budget
-**7.1 API-Key (Marvin):** in der Anthropic Console anlegen, Prepaid-Guthaben aufladen, Monatslimit so setzen, dass es höchstens 20 € sind (Console rechnet in US-Dollar). Den Schlüssel trägt Marvin selbst in den Secret-Store ein.
+**7.1 API-Key (Marvin):** in der Anthropic Console anlegen, Prepaid-Guthaben aufladen, Monatslimit so setzen, dass es höchstens 20 € sind (Console rechnet in US-Dollar; Vorschlag 22 $, am 15.10.2026 etwa 19,63 €). Den Schlüssel trägt Marvin selbst in den Secret-Store ein.
 **7.2 Modelle konfigurieren:** Sonnet 5.5 (Gespräch), Opus 5.5 (schwierige Fragen), Haiku 5.5 (Recherche). Beim Start die Models-API abfragen und neue Modelle melden.
-**7.3 Budget-Wächter:** zählt die Kosten pro Aufruf aus den Nutzungsdaten der Antwort. Hält Grenzen und Teilbudget Recherche ein.
+**7.3 Budget-Wächter:** zählt die Kosten pro Aufruf aus den Nutzungsdaten der Antwort. Hält Grenzen und Teilbudget Recherche ein. Code und Tests stehen seit 15.10.2026 in `brain/budget.py` (Preise in `brain/config/prices.toml`, Grenzen in `brain/config/budget.toml`).
 - Test: Eine Testfrage wird beantwortet, die Kosten erscheinen im Event-Log. Mit einem künstlich niedrigen Testlimit greifen Warnung, Sparmodus und Stopp der Reihe nach.
 
 ## Phase 8 – Telegram
@@ -134,7 +134,7 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
 
 ## Phase 10 – Gedächtnis
 **10.1 LanceDB prüfen** nach Checkliste.
-**10.2 Quelle:** Tabelle für Einträge in SQLite (nur anhängen) mit Quelle, Zeit, Konfidenz, Schema-Version und `pii`. Dazu Themenseiten in Markdown.
+**10.2 Quelle:** Tabelle für Einträge in SQLite (nur anhängen) mit Quelle, Zeit, Konfidenz, Schema-Version und `pii`. Dazu Themenseiten in Markdown. Kern mit Volltextsuche (Wörter und Wortteile) seit 15.10.2026 in `brain/memory.py`, Themenseiten folgen.
 **10.2a Schnittstelle (für spätere MCP-Anbindung):** Der Gedächtnisdienst bietet feste Funktionen (`recall`, `remember`, Interessenprofil, Themenseiten), schreibt zu jedem Eintrag die Herkunft (Gerät oder Host), dazu die Felder `teilbar` (Standard nein), Beitragender und Vertrauenswert für das spätere Wissen-Teilen (Version 2) und hat eine Warteschlange für Einträge, die später übertragen werden.
 **10.3 Indizes:** sqlite-vec mit FTS5 (Hybridsuche) und LanceDB aus derselben Quelle. Embeddings lokal mit fastembed. Ein Befehl baut jeden Index komplett neu auf.
 **10.4 Quellen-Bewertung:** Stufen A bis D, Konfidenz, Bestätigungen, lernende Bewertung, „disputed“.
@@ -153,16 +153,16 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
 ## Phase 11 – Würfel-Anbindung und Gespräch
 **11.1 Dienst** für den Würfel über Tailscale: nimmt Ton und Bild an, liefert Text und Ton zurück. Ersetzt den Test-Dienst aus Körper-Phase 11.2. Der Dienst bekommt feste Funktionen (`listen`, `photo`, `led`, `sound`, `status`), damit er später als MCP-Server verpackt werden kann. Audio geht nie an ein Sprachmodell. Der Charakter liegt in einer eigenen Datei.
 **11.2 Bilder:** Metadaten entfernen (EXIF, Ort), dann an Claude. Speichern nur bei „merken“.
-**11.4 Livebild vom Handy (Änderung 15.10.2026):** eigener kleiner Dienst, getrennt von OpenClaw, nur über Tailscale mit HTTPS erreichbar (z. B. `tailscale serve`), nie öffentlich. Nur Geräte von Marvin (Tailscale-Identität prüfen).
-- Die Seite holt die Kamera im Browser erst nach Marvins Erlaubnis, zeigt groß „Live“ und meldet dem Würfel „Livebild an“ (hell weiß).
-- Seite zu, Bildschirm aus oder Verbindung weg: Livebild endet sofort. Ohne Frage endet es nach 10 Minuten. Fällt die Verbindung zum Würfel aus, beendet das Gehirn das Livebild.
-- Das Livebild bleibt im privaten Netz. An Claude geht nur ein Einzelbild, wenn Marvin fragt oder zeigt („Schau mal“ oder Knopf), verkleinert, als neu gerendertes Bild ohne Metadaten. Nichts wird gespeichert, außer bei „merken“.
-- Test: Seite auf dem Handy öffnen: Livebild läuft, Würfel weiß, „Live“ sichtbar. Seite schließen: Würfel innerhalb von 2 Sekunden nicht mehr weiß. Von einem fremden Gerät ohne Tailscale ist die Seite nicht erreichbar. Gesendetes Bild ohne EXIF. Nach 10 Minuten ohne Frage endet das Livebild.
 **11.3 Gesprächsablauf:** Ton → Text → Gedächtnis abrufen → Claude → Antwort ins Gedächtnis → Piper → Würfel. Ohne Bluetooth-Gerät antwortet Schlaubi als Text per Telegram.
 - Test (Risiko 6):
   - Zeit vom Ende der Frage bis zum Beginn der Antwort messen. Ziel: höchstens 4 Sekunden über WLAN, höchstens 6 Sekunden über LTE.
   - Eine übers Handy gezeigte Testkarte wird beschrieben. Das gesendete Bild enthält keine EXIF-Daten.
   - Ein Gespräch ohne Kopfhörer kommt als Telegram-Text an.
+**11.4 Livebild vom Handy (Änderung 15.10.2026):** eigener kleiner Dienst, getrennt von OpenClaw, nur über Tailscale mit HTTPS erreichbar (z. B. `tailscale serve`), nie öffentlich. Nur Geräte von Marvin (Tailscale-Identität prüfen).
+- Die Seite holt die Kamera im Browser erst nach Marvins Erlaubnis, zeigt groß „Live“ und meldet dem Würfel „Livebild an“ (hell weiß).
+- Seite zu, Bildschirm aus oder Verbindung weg: Livebild endet sofort. Ohne Frage endet es nach 10 Minuten. Fällt die Verbindung zum Würfel aus, beendet das Gehirn das Livebild.
+- Das Livebild bleibt im privaten Netz. An Claude geht nur ein Einzelbild, wenn Marvin fragt oder zeigt („Schau mal“ oder Knopf), verkleinert, als neu gerendertes Bild ohne Metadaten. Nichts wird gespeichert, außer bei „merken“.
+- Test: Seite auf dem Handy öffnen: Livebild läuft, Würfel weiß, „Live“ sichtbar. Seite schließen: Würfel innerhalb von 2 Sekunden nicht mehr weiß. Von einem fremden Gerät ohne Tailscale ist die Seite nicht erreichbar. Gesendetes Bild ohne EXIF. Nach 10 Minuten ohne Frage endet das Livebild.
 
 ### Testweg: Handy als Test-Würfel (vor dem Kauf der Hardware, Ergänzung 15.10.2026)
 Ziel: Alle Funktionen des Gehirns mit Marvins Handy ausprobieren, bevor Stufe 2 gekauft wird. Die Testseite ist ein zweiter Nutzer derselben Würfel-Schnittstelle (`listen`, `photo`, `led`, `sound`, `status`). So wird die Schnittstelle schon vor dem echten Würfel geprüft.

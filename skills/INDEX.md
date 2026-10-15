@@ -1,6 +1,6 @@
 # Skill-Katalog
 
-Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. Stand 13.10.2026.
+Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. Stand 15.10.2026.
 
 ## Eigene Skills
 | Skill | Status | Zweck |
@@ -50,6 +50,20 @@ Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. St
 | Everything Claude Code (affaan-m) | nicht komplett installieren | Überschneidet sich mit Memory Core, viele Hooks |
 | Awesome Claude Code (hesreallyhim) | Nachschlagequelle | Linkliste, jeden Fund einzeln prüfen |
 | pm-skills (Alireza Rezvani) | abgelehnt | Jira/Confluence, Skripte, Netzwerk, Lizenz widersprüchlich |
+
+## Python-Pakete für die Entwicklung (`brain/requirements-dev.txt`)
+Geprüft am 15.10.2026 an genau diesen Versionen: Lizenzdatei aus dem Paket gelesen, Quelltext nach Netzwerk-Importen und Telemetrie durchsucht, Binärdateien nach HTTP-Bibliotheken. Regel: feste Version, mindestens 14 Tage alt, Installation nur mit SHA-256-Prüfsummen. Nur für Tests und Code-Prüfung, nicht im laufenden Betrieb.
+
+| Paket | Lizenz | Netz und Telemetrie | Hinweis |
+|---|---|---|---|
+| pytest 9.1.1 | MIT | keine Telemetrie. Netz nur mit `--pastebin` (lädt Testausgabe hoch) | `pastebin` ist in `pyproject.toml` abgeschaltet |
+| hypothesis 6.168.3 | MPL-2.0 | keine Telemetrie. Netz nur mit `GitHubArtifactDatabase`, die wir nicht nutzen | Beispiel-Datenbank lokal in `.hypothesis/` (nicht im Repo) |
+| ruff 0.16.10 | MIT | keine HTTP-Bibliothek im Programm. Das Wort „telemetry“ steht nur im Editor-Protokoll (LSP), nicht für Internet | Code-Prüfung und Formatierung |
+| coverage 7.16.2 | Apache-2.0 | keine. `socket` nur für den Rechnernamen | Testabdeckung |
+| iniconfig 2.3.0, pluggy 1.6.0, packaging 26.3, pygments 2.21.0 | MIT, MIT, Apache-2.0/BSD, BSD-2-Clause | keine Netz-Importe | Abhängigkeiten von pytest. pluggy 1.7.0 und iniconfig 2.3.1 waren jünger als 14 Tage, deshalb ältere Versionen |
+| sortedcontainers 2.4.0 | Apache-2.0 | keine | Abhängigkeit von hypothesis |
+
+Nicht vollständig gelesen (zu groß). Gelesen bzw. durchsucht: Lizenzdateien, alle Python-Dateien per Suche nach `urllib`, `http`, `socket`, `requests`, Telemetrie-Begriffen, die Fundstellen im Detail, Binärdateien per `strings`.
 
 ## Prüfcheckliste für fremde Skills
 - [ ] Quelle und Autor bekannt

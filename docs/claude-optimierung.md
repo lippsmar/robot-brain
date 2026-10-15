@@ -46,6 +46,9 @@ Stand 15.10.2026. Auf Marvins Wunsch geschrieben. Gilt für Claude in Claude Cod
 22. **Nach einer Kontext-Zusammenfassung** zuerst die noch offene Antwort an Marvin senden (Checkliste A).
 23. **Abo- und Nutzungsregeln ändern sich schnell** (Hilfeartikel 7.10.2026). Vor Aussagen dazu die aktuelle offizielle Seite lesen und das Datum nennen.
 24. **Bilder nach Notion:** `create-file-upload`, einmal per `curl` POST senden, dann die `file-upload://`-Quelle in die Seite. Upload-Token nie in Dateien oder Logs.
+25. **Lokale Doku kann von der Live-Seite abweichen.** Sonnet 5.5 Cache-Treffer: 0,10 $ laut offizieller Preisseite, 0,20 $ laut gebündeltem Skill. Mechanismus: Preise und Grenzwerte immer an der offiziellen Live-Seite prüfen, Quelle und Datum in die Config schreiben.
+26. **Tests, die beim ersten Lauf grün sind, beweisen wenig.** Mechanismus: Fehler absichtlich einbauen (`tools/dev/mutation_check.py`). Ein überlebender Fehler zeigte eine echte Lücke (Hash-Kette), dafür kam ein Test dazu.
+27. **Frische Paketversionen meiden.** pluggy 1.7.0 und hypothesis 6.170.0 waren am selben Tag erschienen. Mechanismus: nur Versionen, die mindestens 14 Tage alt sind, Installation nur mit Prüfsummen.
 
 ## 2. Mechanismen (Checklisten)
 

@@ -1,0 +1,46 @@
+# Claude API list prices in US dollars per million tokens (MTok).
+# Source: https://platform.claude.com/docs/en/about-claude/pricing, read 2026-10-15.
+# Prices change. Check the page again before a new month and when a new model
+# appears; update `checked` together with the numbers.
+
+[meta]
+source = "https://platform.claude.com/docs/en/about-claude/pricing"
+checked = "2026-10-15"
+currency = "USD"
+
+# Server tools, billed per request on top of tokens.
+[server_tools]
+web_search = 0.01   # $10 per 1,000 searches
+web_fetch = 0.0     # no extra charge, only the tokens of the fetched content
+
+[models."claude-opus-5-5"]
+input = 4.0
+cache_write_5m = 5.0
+cache_write_1h = 8.0
+cache_read = 0.20
+output = 20.0
+
+[models."claude-sonnet-5-5"]
+input = 2.0
+cache_write_5m = 2.50
+cache_write_1h = 4.0
+cache_read = 0.10
+output = 10.0
+
+[models."claude-haiku-5-5"]
+input = 0.10
+cache_write_5m = 0.125
+cache_write_1h = 0.20
+cache_read = 0.01
+output = 0.50
+
+# Haiku 5.5 has a second rate card for long prompts. The prompt length counts all
+# input tokens of one request, including cache reads and cache writes. A request
+# over the threshold pays these prices for every category.
+[models."claude-haiku-5-5".long_prompt]
+threshold_tokens = 100000
+input = 0.50
+cache_write_5m = 0.625
+cache_write_1h = 1.0
+cache_read = 0.05
+output = 2.50

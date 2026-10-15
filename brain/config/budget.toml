@@ -1,0 +1,28 @@
+# Budget for the running robot (decisions of 2026-10-15, CLAUDE.md section 4).
+# Limits are in euros, the API bills in US dollars, so the guard converts with
+# the rate below. Update the rate about once a month; the guard warns when it
+# is older than max_rate_age_days.
+
+[currency]
+usd_per_eur = 1.1208
+rate_date = "2026-10-15"
+rate_source = "ECB reference rate, https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
+max_rate_age_days = 31
+
+# Monthly limits. Self-optimization is part of research. Conversations are only
+# limited by the total, which leaves them at least total - research.
+[limits_eur]
+total = 20.0
+research = 10.0
+self_optimization = 4.0
+
+# Share of a limit at which a level starts.
+[thresholds]
+warn = 0.80
+save = 0.90
+stop = 1.00
+
+# Assumption: the month is the calendar month in UTC. The Anthropic Console
+# limit is the hard stop on top of this guard.
+[period]
+timezone = "UTC"

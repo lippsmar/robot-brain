@@ -17,3 +17,9 @@ __pycache__/
 *.pyc
 .venv/
 .DS_Store
+
+# Test-Werkzeuge
+.pytest_cache/
+.hypothesis/
+.coverage
+.ruff_cache/

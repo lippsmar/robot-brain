@@ -1,0 +1,30 @@
+[project]
+name = "robot-brain"
+version = "0.1.0"
+description = "Schlaubis Gehirn: Event-Log, Budget-Waechter, Gedaechtnis"
+requires-python = ">=3.13"
+
+[tool.pytest.ini_options]
+testpaths = ["brain/tests"]
+# pastebin would upload test output to the internet; it is switched off
+addopts = "-p no:pastebin -q"
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+include = ["brain/**/*.py"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "RUF"]
+ignore = [
+    "S101",  # assert is how pytest tests are written
+    "S608",  # SQL is built only from fixed table names, values go through parameters
+    "RUF001", "RUF002", "RUF003",  # German text with typographic quotes and umlauts is intended
+]
+
+[tool.ruff.lint.per-file-ignores]
+"brain/tests/*" = ["S105", "S106"]  # fake secrets in tests check that real ones are rejected
+
+[tool.coverage.run]
+source = ["brain"]
+omit = ["brain/tests/*"]
