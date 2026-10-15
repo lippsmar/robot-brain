@@ -66,3 +66,4 @@ Spiegel der Notion-Seite „Entscheidungen und Projektlog“. Nichts löschen, n
 | 15.10.2026 | Design Code-Skills und Umgebungsauswertung freigegeben (Marvin: „So wie du es bisher vorstellst“, als Freigabe verstanden), inkl. Annahmen (Version 1, Reihenfolge der Skills, kein Internet in der Sandbox). Bauplan Code-Skills Version 1 geschrieben, zur Bestätigung | Beschlossen |
 | 15.10.2026 | Bauplan Code-Skills Version 1 bestätigt. PhotoCraft und VectorCraft dürfen in der Cloud-Sandbox zum Gestalten der Bilderreihe genutzt werden (Marvins Wunsch) | Beschlossen |
 | 15.10.2026 | Charakter-Ergänzung: Schlaubi kann auch Liebe geben (Wärme, Anerkennung, Fürsorge), sparsam und ehrlich. Grenzen: keine Manipulation, keine Abhängigkeit, ermutigt zu echten Kontakten, ehrlich über seine KI-Natur. LED-Moment warmes Rosa | Beschlossen, Grenzen als Vorschlag |
+| 15.10.2026 | Zuneigung zeigt Schlaubi, wenn es passt (situativ, nach seinem Urteil, nicht nach Plan) | Beschlossen |
