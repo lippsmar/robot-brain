@@ -42,3 +42,8 @@ def test_unknown_keywords_are_refused():
 )
 def test_validate(schema, value, valid):
     assert (validate(value, schema) == []) is valid
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf")])
+def test_numbers_must_be_finite(value):
+    assert validate(value, {"type": "number"}) != []

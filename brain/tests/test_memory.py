@@ -1,35 +1,12 @@
 """Tests for the memory core (Bauplan Gehirn 10.2 and 10.2a, Memory Core rules)."""
 
 import sqlite3
-from datetime import UTC, datetime, timedelta
 
 import pytest
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
-from brain.eventlog import EventLog
 from brain.memory import Memory, MemoryStoreError
-
-
-class FakeClock:
-    def __init__(self, start=datetime(2026, 10, 15, 12, 0, tzinfo=UTC)):
-        self.now = start
-
-    def __call__(self):
-        return self.now
-
-    def advance(self, **kwargs):
-        self.now += timedelta(**kwargs)
-
-
-@pytest.fixture
-def clock():
-    return FakeClock()
-
-
-@pytest.fixture
-def log(tmp_path, clock):
-    return EventLog(tmp_path / "events", source="test", clock=clock)
 
 
 @pytest.fixture
@@ -408,3 +385,96 @@ def test_normalizing_twice_changes_nothing(text):
     once = normalize_german(text)
     assert normalize_german(once) == once
     assert not set("äöüß") & set(once)
+
+
+# --- findings of the code review (15.10.2026) -----------------------------------------------
+
+
+def test_inbox_items_one_after_another_can_all_be_processed(memory):
+    first = memory.enqueue({"content": "Erste Notiz.", "kind": "note", "source": "marvin"}, origin="host:a")
+    memory.accept(first)
+    second = memory.enqueue({"content": "Zweite Notiz.", "kind": "note", "source": "marvin"}, origin="host:a")
+    assert second != first
+    memory.accept(second)
+    third = memory.enqueue({"content": "Dritte Notiz.", "kind": "note", "source": "marvin"}, origin="host:a")
+    memory.reject(third, reason="doppelt")
+    assert memory.pending() == []
+
+
+def test_the_daily_check_leaves_no_lock_behind(memory, tmp_path, log, clock):
+    memory.remember("Etwas.", kind="note", source="marvin")
+    assert memory.check()["fts"] == "ok"
+    other = Memory(tmp_path / "memory.db", log=log, origin="host:b", clock=clock)
+    other.remember("Von einem zweiten Prozess.", kind="note", source="marvin")  # must not be locked
+    other.close()
+
+
+def test_hidden_entries_do_not_push_visible_ones_out_of_the_search(memory):
+    for n in range(60):
+        memory.remember(f"Licht Licht Licht privat {n}", kind="note", source="marvin", pii=True)
+    shared = memory.remember("Licht im Flur ist kaputt.", kind="fact", source="marvin", shareable=True)
+    assert uids(memory.recall("Licht", scope="guest")) == [shared]
+    assert uids(memory.recall("Licht", kind="fact")) == [shared]
+
+
+def test_archived_entries_do_not_push_active_ones_out_of_the_search(memory):
+    for n in range(60):
+        old = memory.remember(f"Sensor Sensor Sensor alt {n}", kind="note", source="marvin")
+        memory.forget(old, reason="veraltet")
+    active = memory.remember("Sensor für Abstand ist der VL53L8CX.", kind="fact", source="marvin")
+    assert uids(memory.recall("Sensor")) == [active]
+
+
+def test_delete_is_logged_even_when_the_wal_cannot_be_flushed(memory, log, tmp_path):
+    uid = memory.remember("Telefonnummer von Lisa: 0123 456.", kind="note", source="marvin", pii=True)
+    reader = sqlite3.connect(tmp_path / "memory.db")
+    reader.execute("BEGIN")
+    reader.execute("SELECT count(*) FROM entries").fetchone()  # an open read snapshot elsewhere
+    result = memory.delete(uid, reason="Löschwunsch", approved_by="marvin")
+    reader.rollback()
+    reader.close()
+
+    assert result == {"wal_flushed": False}
+    ops = [(e["payload"]["op"], e["payload"].get("wal_flushed")) for e in log.events() if e["type"] == "memory.write"]
+    assert ops[-2:] == [("delete", None), ("compact", False)]
+
+
+def test_a_correction_does_not_inherit_the_old_sources_rating(memory):
+    old = memory.remember(
+        "Der Sensor misst bis 4 m.",
+        kind="fact",
+        source="web:st.com",
+        source_rating="A",
+        confidence=0.95,
+        contributor="host:arbeitslaptop",
+        trust=0.9,
+        tags=["sensor"],
+    )
+    new = memory.get(memory.correct(old, "Der Sensor misst bis 3 m.", source="web:forum"))
+    assert (new.source_rating, new.confidence, new.contributor, new.trust) == (None, None, None, None)
+    assert new.kind == "fact" and new.tags == ["sensor"]
+
+
+def test_a_database_from_another_version_is_not_opened_silently(tmp_path, log, clock):
+    Memory(tmp_path / "memory.db", log=log, clock=clock).close()
+    raw = sqlite3.connect(tmp_path / "memory.db")
+    raw.execute("PRAGMA user_version = 99")
+    raw.close()
+    with pytest.raises(MemoryStoreError, match="migration"):
+        Memory(tmp_path / "memory.db", log=log, clock=clock)
+
+
+def test_decomposed_umlauts_are_found(memory):
+    uid = memory.remember("Kühlung im Gehäuse", kind="note", source="marvin")  # ü as u + combining mark
+    assert uids(memory.recall("Kuehlung")) == [uid]
+
+
+def test_deleted_words_are_gone_from_the_word_index(memory, tmp_path):
+    uid = memory.remember("Lisa wohnt in Mainz.", kind="note", source="marvin", pii=True)
+    memory.delete(uid, reason="Löschwunsch", approved_by="marvin")
+    assert memory.check() == {"integrity": "ok", "fts": "ok"}
+    raw = sqlite3.connect(tmp_path / "memory.db")
+    raw.execute("CREATE VIRTUAL TABLE temp.words_vocab USING fts5vocab(main, entries_words, 'row')")
+    terms = {row[0] for row in raw.execute("SELECT term FROM temp.words_vocab")}
+    raw.close()
+    assert not {"lisa", "mainz"} & terms

@@ -6,6 +6,7 @@ schema change can never be silently ignored.
 """
 
 import json
+import math
 import re
 from datetime import datetime
 from pathlib import Path
@@ -30,7 +31,7 @@ _TYPES = {
     "object": lambda v: isinstance(v, dict),
     "string": lambda v: isinstance(v, str),
     "integer": lambda v: isinstance(v, int) and not isinstance(v, bool),
-    "number": lambda v: isinstance(v, (int, float)) and not isinstance(v, bool),
+    "number": lambda v: isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v),
     "boolean": lambda v: isinstance(v, bool),
 }
 

@@ -1,6 +1,6 @@
 """Tests for the budget guard (Bauplan Gehirn 7.3, CLAUDE.md section 4)."""
 
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -9,19 +9,9 @@ from hypothesis import strategies as st
 
 from brain.budget import BudgetConfig, BudgetGuard, PriceTable, Usage
 from brain.eventlog import EventLog
+from brain.tests.helpers import FakeClock
 
 CONFIG_DIR = Path(__file__).resolve().parents[1] / "config"
-
-
-class FakeClock:
-    def __init__(self, start=datetime(2026, 10, 15, 12, 0, tzinfo=UTC)):
-        self.now = start
-
-    def __call__(self):
-        return self.now
-
-    def advance(self, **kwargs):
-        self.now += timedelta(**kwargs)
 
 
 @pytest.fixture
@@ -32,16 +22,6 @@ def prices():
 @pytest.fixture
 def config():
     return BudgetConfig.from_file(CONFIG_DIR / "budget.toml")
-
-
-@pytest.fixture
-def clock():
-    return FakeClock()
-
-
-@pytest.fixture
-def log(tmp_path, clock):
-    return EventLog(tmp_path / "events", source="test", clock=clock)
 
 
 def small_config(total=1.0, research=0.5, self_opt=0.2, rate=1.0, rate_date="2026-10-15"):
@@ -284,3 +264,72 @@ def test_costs_add_up_exactly(a, b):
     both = Usage(**{name: getattr(a, name) + getattr(b, name) for name in a.__dataclass_fields__})
     for model in ("claude-opus-5-5", "claude-sonnet-5-5"):
         assert prices.cost_nano(model, a) + prices.cost_nano(model, b) == prices.cost_nano(model, both)
+
+
+# --- findings of the code review (15.10.2026) -----------------------------------------------
+
+
+def test_the_guard_stops_before_the_console_limit(config):
+    """Real config: 20 EUR would be 22.42 USD, above the Console limit of 22 USD."""
+    assert config.limit_nano("total") == 22_000_000_000
+    # research leaves at least 10 EUR (11.208 USD) for conversations
+    assert config.limit_nano("research") == 22_000_000_000 - 11_208_000_000
+    assert config.limit_nano("self_optimization") == 4_483_200_000
+
+
+def test_research_always_leaves_the_conversation_minimum(log, prices, clock):
+    config = BudgetConfig(
+        usd_per_eur=1.0,
+        rate_date="2026-10-15",
+        max_rate_age_days=31,
+        limits_eur={"total": 1.0, "research": 0.5, "self_optimization": 0.2},
+        thresholds={"warn": 0.8, "save": 0.9, "stop": 1.0},
+        min_conversation_eur=0.8,
+    )
+    assert config.limit_nano("research") == 200_000_000
+    guard = BudgetGuard(log, prices, config, clock=clock)
+    guard.record("research", "claude-sonnet-5-5", {"input_tokens": 0, "output_tokens": 20_000})  # 0.20 USD
+    assert not guard.check("research").allowed
+    assert guard.check("conversation").allowed
+
+
+def test_a_minimum_that_leaves_nothing_for_research_is_refused():
+    with pytest.raises(ValueError):
+        BudgetConfig(
+            usd_per_eur=1.0,
+            rate_date="2026-10-15",
+            max_rate_age_days=31,
+            limits_eur={"total": 1.0, "research": 0.5, "self_optimization": 0.2},
+            thresholds={"warn": 0.8, "save": 0.9, "stop": 1.0},
+            min_conversation_eur=1.0,
+        )
+
+
+def test_a_broken_budget_event_does_not_hide_later_spending(log, prices, clock):
+    guard = BudgetGuard(log, prices, small_config(), clock=clock)
+    log.append("budget.alert", {"pot": "total", "level": "info"})  # written by a buggy component
+    log.append("budget.usage", {"category": "conversation", "cost_nano_usd": "viel"})
+    guard.record("conversation", "claude-sonnet-5-5", {"input_tokens": 0, "output_tokens": 95_000})  # 0.95 USD
+
+    assert guard.check("conversation").level == "save"
+    assert "malformed_budget_events:2" in guard.status()["warnings"]
+
+
+def test_a_model_without_prices_is_refused_before_the_call(log, prices, clock):
+    guard = BudgetGuard(log, prices, small_config(), clock=clock)
+    decision = guard.check("conversation", model="claude-unknown-9")
+    assert not decision.allowed and "no prices" in decision.reason
+    assert guard.check("conversation", model="claude-sonnet-5-5").allowed
+
+
+def test_an_unknown_model_is_alerted_once_per_month(log, prices, clock):
+    guard = BudgetGuard(log, prices, small_config(), clock=clock)
+    for _ in range(2):
+        guard.record("conversation", "claude-unknown-9", {"input_tokens": 1, "output_tokens": 1})
+    alerts = [e["payload"] for e in log.iter_events(types={"budget.alert"})]
+    assert alerts == [{"pot": "prices", "level": "warn", "model": "claude-unknown-9"}]
+
+
+def test_usage_in_a_foreign_format_is_refused():
+    with pytest.raises(ValueError, match="unknown usage format"):
+        Usage.from_api({"prompt_tokens": 10, "completion_tokens": 5})

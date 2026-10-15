@@ -2,36 +2,14 @@
 
 import json
 import threading
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 
 import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from brain.eventlog import GENESIS, EventLog, EventLogError, event_hash
-
-
-class FakeClock:
-    """Deterministic UTC clock that can be moved forward."""
-
-    def __init__(self, start=datetime(2026, 10, 15, 12, 0, tzinfo=UTC)):
-        self.now = start
-
-    def __call__(self):
-        return self.now
-
-    def advance(self, **kwargs):
-        self.now += timedelta(**kwargs)
-
-
-@pytest.fixture
-def clock():
-    return FakeClock()
-
-
-@pytest.fixture
-def log(tmp_path, clock):
-    return EventLog(tmp_path / "events", source="test", clock=clock)
+from brain.tests.helpers import FakeClock
 
 
 def read_lines(path):
@@ -298,3 +276,46 @@ def test_the_hash_does_not_depend_on_key_order(data):
     """Determinism: the same event written with another key order must keep its hash."""
     reordered = dict(reversed(list(data.items())))
     assert event_hash(data) == event_hash(reordered)
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
+def test_nan_and_infinity_are_rejected(log, tmp_path, value):
+    with pytest.raises(EventLogError):
+        log.append("agent.decision", {}, latency_ms=value)
+    with pytest.raises(EventLogError):
+        log.append("agent.action", {"x": value})
+    assert not (tmp_path / "events" / "2026-10-15.jsonl").exists()
+
+
+def test_a_line_with_nan_counts_as_damaged(log, tmp_path):
+    log.append("agent.action", {"n": 1})
+    path = tmp_path / "events" / "2026-10-15.jsonl"
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write('{"seq": 1, "x": NaN}\n')
+    report = log.verify()
+    assert not report.ok and "line 2" in report.errors[0]
+
+
+def test_verify_can_start_after_removed_old_days(log, clock, tmp_path):
+    first = log.append("agent.action", {"n": 1})
+    clock.advance(days=1)
+    log.append("agent.action", {"n": 2})
+    (tmp_path / "events" / "2026-10-15.jsonl").unlink()  # retention removed the oldest day
+
+    assert not log.verify().ok
+    assert log.verify(start=(first["seq"] + 1, first["hash"])).ok
+
+
+def test_a_cursor_does_not_skip_events_after_a_failing_one(log):
+    for n in range(3):
+        log.append("agent.action", {"n": n})
+    cursor = log.cursor()
+    seen: list[object] = []
+    with pytest.raises(RuntimeError):
+        for event in cursor.read_new():
+            if event["payload"]["n"] == 1 and not seen.count("failed"):
+                seen.append("failed")
+                raise RuntimeError("handler crashed")
+            seen.append(event["payload"]["n"])
+    seen.extend(event["payload"]["n"] for event in cursor.read_new())
+    assert seen == [0, "failed", 1, 2]

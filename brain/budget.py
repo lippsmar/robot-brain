@@ -20,6 +20,7 @@ CATEGORIES = {
     "self_optimization": ("total", "research", "self_optimization"),
 }
 _PRICE_FIELDS = ("input", "cache_write_5m", "cache_write_1h", "cache_read", "output")
+_USAGE_KEYS = ("input_tokens", "output_tokens", "cache_read_input_tokens", "cache_creation_input_tokens")
 
 
 def _utc_now():
@@ -49,6 +50,9 @@ class Usage:
         if hasattr(usage, "model_dump"):
             usage = usage.model_dump()
         usage = usage or {}
+        if usage and not any(key in usage for key in _USAGE_KEYS):
+            # e.g. OpenAI-style prompt_tokens/completion_tokens: refuse instead of booking 0
+            raise ValueError(f"unknown usage format, keys {sorted(usage)}")
         creation = usage.get("cache_creation") or {}
         written = usage.get("cache_creation_input_tokens") or 0
         five = creation.get("ephemeral_5m_input_tokens")
@@ -180,6 +184,8 @@ class BudgetConfig:
     max_rate_age_days: int
     limits_eur: dict
     thresholds: dict
+    console_limit_usd: float | None = None  # the hard limit set in the Anthropic Console
+    min_conversation_eur: float = 0.0  # research may never leave less than this for conversations
 
     def __post_init__(self):
         limits = self.limits_eur
@@ -192,22 +198,40 @@ class BudgetConfig:
         if self.usd_per_eur <= 0:
             raise ValueError("usd_per_eur must be positive")
         date.fromisoformat(self.rate_date)
+        if self.limit_nano("self_optimization") <= 0:
+            raise ValueError("no budget left for research after the conversation minimum")
 
     @classmethod
     def from_file(cls, path):
         data = tomllib.loads(Path(path).read_text(encoding="utf-8"))
         currency = data["currency"]
+        limits = dict(data["limits_eur"])
+        min_conversation = limits.pop("conversation_min", 0.0)
         return cls(
             usd_per_eur=currency["usd_per_eur"],
             rate_date=currency["rate_date"],
             max_rate_age_days=currency["max_rate_age_days"],
-            limits_eur=dict(data["limits_eur"]),
+            limits_eur=limits,
             thresholds=dict(data["thresholds"]),
+            console_limit_usd=data.get("console", {}).get("limit_usd"),
+            min_conversation_eur=min_conversation,
         )
 
+    def _eur_nano(self, eur):
+        return _to_int(Decimal(str(eur)) * Decimal(str(self.usd_per_eur)) * NANO)
+
     def limit_nano(self, pot):
-        usd = Decimal(str(self.limits_eur[pot])) * Decimal(str(self.usd_per_eur))
-        return _to_int(usd * NANO)
+        """Effective limit in nano-dollars. The total never exceeds the Console limit, and research
+        always leaves the conversation minimum free, so the guard stops before the API does."""
+        total = self._eur_nano(self.limits_eur["total"])
+        if self.console_limit_usd is not None:
+            total = min(total, _to_int(Decimal(str(self.console_limit_usd)) * NANO))
+        if pot == "total":
+            return total
+        research = min(self._eur_nano(self.limits_eur["research"]), total - self._eur_nano(self.min_conversation_eur))
+        if pot == "research":
+            return research
+        return min(self._eur_nano(self.limits_eur["self_optimization"]), research)
 
     def to_eur(self, nano):
         return nano / 1e9 / self.usd_per_eur
@@ -235,6 +259,7 @@ class Decision:
     level: str
     allowed: bool
     shares: dict = field(default_factory=dict)
+    reason: str = ""
 
 
 class BudgetGuard:
@@ -244,22 +269,38 @@ class BudgetGuard:
         self._config = config
         self._clock = clock
         self._cursor = log.cursor(since_day=f"{_month_of(clock())}-01")  # only this month is needed
-        self._spent = {}  # month -> pot -> nano-dollars
-        self._alerted = {}  # (month, pot) -> highest level index alerted
+        self._spent: dict[str, dict[str, int]] = {}  # month -> pot -> nano-dollars
+        self._alerted: dict[tuple, int] = {}  # (month, pot) -> highest level index alerted
+        self._malformed = 0
 
     def _refresh(self):
         for event in self._cursor.read_new():
-            month = event.get("ts", "")[:7]
-            payload = event.get("payload", {})
-            if event.get("type") == "budget.usage":
-                pots = CATEGORIES.get(payload.get("category"), ("total",))
-                spent = self._spent.setdefault(month, {})
-                for pot in pots:
-                    spent[pot] = spent.get(pot, 0) + int(payload.get("cost_nano_usd", 0))
-            elif event.get("type") == "budget.alert":
-                key = (month, payload.get("pot"))
-                level = LEVELS.index(payload.get("level", "normal"))
-                self._alerted[key] = max(self._alerted.get(key, 0), level)
+            try:
+                self._apply(event)
+            except (KeyError, TypeError, ValueError, AttributeError):
+                self._malformed += 1  # another component wrote a broken budget event; keep counting
+
+    def _apply(self, event):
+        kind = event.get("type")
+        if kind not in ("budget.usage", "budget.alert"):
+            return
+        month = event["ts"][:7]
+        payload = event["payload"]
+        if kind == "budget.usage":
+            cost = payload["cost_nano_usd"]
+            if not isinstance(cost, int) or isinstance(cost, bool) or cost < 0:
+                raise ValueError("cost_nano_usd must be a non-negative integer")
+            pots = CATEGORIES.get(payload.get("category"), ("total",))
+            spent = self._spent.setdefault(month, {})
+            for pot in pots:
+                spent[pot] = spent.get(pot, 0) + cost
+        else:
+            pot = payload["pot"]
+            if pot == "prices":
+                pot = f"prices:{payload['model']}"
+            level = LEVELS.index(payload["level"])
+            key = (month, pot)
+            self._alerted[key] = max(self._alerted.get(key, 0), level)
 
     def _level(self, share):
         thresholds = self._config.thresholds
@@ -276,9 +317,12 @@ class BudgetGuard:
             raise ValueError(f"unknown budget category {category!r}")
         return CATEGORIES[category]
 
-    def check(self, category, estimate_usd=0.0):
-        """Decide before a call. `estimate_usd` is the worst-case cost of the planned call."""
+    def check(self, category, estimate_usd=0.0, model=None):
+        """Decide before a call. `estimate_usd` is the worst-case cost of the planned call.
+        A model without prices in prices.toml is refused until its prices are entered."""
         pots = self._pots_for(category)
+        if model is not None and model not in self._prices.models:
+            return Decision(level="stop", allowed=False, reason=f"no prices for model {model}")
         self._refresh()
         month = _month_of(self._clock())
         spent = self._spent.get(month, {})
@@ -297,6 +341,7 @@ class BudgetGuard:
         except KeyError:
             nano = self._prices.fallback_cost_nano(usage)
             fallback = True
+            self._alert_unknown_model(model)
         payload = {
             "category": category,
             "model": model,
@@ -330,6 +375,18 @@ class BudgetGuard:
             )
             self._alerted[(month, "rate")] = LEVELS.index("warn")
 
+    def _alert_unknown_model(self, model):
+        self._refresh()
+        month = _month_of(self._clock())
+        key = (month, f"prices:{model}")
+        if self._alerted.get(key, 0) == 0:
+            self._log.append(
+                "budget.alert",
+                {"pot": "prices", "level": "warn", "model": model},
+                intent="budget.unknown_model",
+            )
+            self._alerted[key] = LEVELS.index("warn")
+
     def _alert(self, month, pot, level, spent_nano):
         self._log.append(
             "budget.alert",
@@ -337,7 +394,7 @@ class BudgetGuard:
                 "pot": pot,
                 "level": level,
                 "spent_eur": round(self._config.to_eur(spent_nano), 4),
-                "limit_eur": self._config.limits_eur[pot],
+                "limit_eur": round(self._config.to_eur(self._config.limit_nano(pot)), 4),
             },
             intent=f"budget.{level}",
         )
@@ -352,14 +409,16 @@ class BudgetGuard:
         month = _month_of(self._clock())
         spent = self._spent.get(month, {})
         pots = {}
-        for pot, limit_eur in self._config.limits_eur.items():
+        for pot in self._config.limits_eur:
             nano = spent.get(pot, 0)
             share = nano / self._config.limit_nano(pot)
             pots[pot] = {
                 "spent_eur": self._config.to_eur(nano),
-                "limit_eur": limit_eur,
+                "limit_eur": self._config.to_eur(self._config.limit_nano(pot)),
                 "share": share,
                 "level": self._level(share),
             }
         warnings = ["rate_stale"] if self._rate_is_stale() else []
+        if self._malformed:
+            warnings.append(f"malformed_budget_events:{self._malformed}")
         return {"month": month, "pots": pots, "warnings": warnings}

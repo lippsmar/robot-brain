@@ -16,6 +16,7 @@ import json
 import os
 import re
 import sqlite3
+import unicodedata
 import uuid
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -28,6 +29,10 @@ SCHEMA_VERSION = "entry/1.0"
 DB_VERSION = 1
 RRF_K = 60
 STATUS_MARKS = ("archived", "disputed", "confirmed", "replaced", "active")
+_STATUS_SQL = (
+    "COALESCE((SELECT m.mark FROM marks m WHERE m.uid = e.uid AND m.mark IN"
+    " ('archived', 'disputed', 'confirmed', 'replaced', 'active') ORDER BY m.id DESC LIMIT 1), 'active')"
+)
 VISIBLE = ("active", "confirmed", "disputed")
 SCOPES = ("marvin", "guest")
 APPROVERS = ("marvin",)
@@ -46,7 +51,7 @@ _INBOX_FIELDS = {
 
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS entries (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     uid TEXT NOT NULL UNIQUE,
     ts TEXT NOT NULL,
     kind TEXT NOT NULL,
@@ -65,7 +70,7 @@ CREATE TABLE IF NOT EXISTS entries (
     schema_version TEXT NOT NULL
 ) STRICT;
 CREATE TABLE IF NOT EXISTS marks (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     uid TEXT NOT NULL,
     ts TEXT NOT NULL,
     mark TEXT NOT NULL CHECK (mark IN ('keep', 'archived', 'disputed', 'confirmed', 'replaced', 'active')),
@@ -73,20 +78,20 @@ CREATE TABLE IF NOT EXISTS marks (
 ) STRICT;
 CREATE INDEX IF NOT EXISTS marks_uid ON marks (uid);
 CREATE TABLE IF NOT EXISTS deletion_approvals (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     uid TEXT NOT NULL,
     ts TEXT NOT NULL,
     reason TEXT NOT NULL,
     approved_by TEXT NOT NULL
 ) STRICT;
 CREATE TABLE IF NOT EXISTS inbox (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     ts TEXT NOT NULL,
     origin TEXT NOT NULL,
     payload TEXT NOT NULL
 ) STRICT;
 CREATE TABLE IF NOT EXISTS inbox_results (
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     inbox_id INTEGER NOT NULL UNIQUE,
     ts TEXT NOT NULL,
     result TEXT NOT NULL CHECK (result IN ('accepted', 'rejected')),
@@ -145,8 +150,14 @@ CREATE TRIGGER IF NOT EXISTS entries_unindex_words AFTER DELETE ON entries BEGIN
 END;
 """
 
-# Trigram tables need SQLite 3.34; remove_diacritics for trigrams needs 3.45.
-_PARTS_TOKENIZERS = ("trigram remove_diacritics 1", "trigram")
+# Trigram tables need SQLite 3.34; remove_diacritics for trigrams needs 3.45 (Debian 13 has 3.46).
+_PARTS_TOKENIZER: str | None
+if sqlite3.sqlite_version_info >= (3, 45, 0):
+    _PARTS_TOKENIZER = "trigram remove_diacritics 1"
+elif sqlite3.sqlite_version_info >= (3, 34, 0):
+    _PARTS_TOKENIZER = "trigram"
+else:
+    _PARTS_TOKENIZER = None
 _PARTS_TRIGGERS = """
 CREATE TRIGGER IF NOT EXISTS entries_index_parts AFTER INSERT ON entries BEGIN
     INSERT INTO entries_parts (rowid, content) VALUES (new.id, new.content);
@@ -163,7 +174,7 @@ def normalize_german(text):
     "Straße" and "Strasse", "Kühlung" and "Kuehlung" become the same word. The word-part
     index keeps the original text (with diacritics folded), so "Kuhlung" is found as well.
     """
-    folded = text.casefold()  # also turns ß into ss
+    folded = unicodedata.normalize("NFC", text).casefold()  # NFC joins decomposed umlauts, casefold turns ß into ss
     return folded.replace("ä", "ae").replace("ö", "oe").replace("ü", "ue")
 
 
@@ -223,24 +234,19 @@ class Memory:
         self._conn.close()
 
     def _create_schema(self):
-        self._conn.executescript(_SCHEMA)
-        exists = self._conn.execute(
-            "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'entries_parts'"
-        ).fetchone()
-        if not exists:
-            for tokenizer in _PARTS_TOKENIZERS:
-                try:
-                    self._conn.execute(
-                        "CREATE VIRTUAL TABLE entries_parts USING fts5("
-                        f"content, content='entries', content_rowid='id', tokenize='{tokenizer}')"
-                    )
-                    break
-                except sqlite3.OperationalError:
-                    continue
-            else:
-                raise MemoryStoreError("SQLite has no FTS5 trigram tokenizer (needs 3.34 or newer)")
-        self._conn.executescript(_PARTS_TRIGGERS)
-        self._conn.execute(f"PRAGMA user_version = {DB_VERSION}")
+        version = self._conn.execute("PRAGMA user_version").fetchone()[0]
+        if version not in (0, DB_VERSION):
+            raise MemoryStoreError(f"database version {version}, code expects {DB_VERSION}: a migration is needed")
+        if _PARTS_TOKENIZER is None:
+            raise MemoryStoreError(f"SQLite {sqlite3.sqlite_version} has no FTS5 trigram tokenizer (needs 3.34)")
+        self._conn.executescript(
+            _SCHEMA
+            + "CREATE VIRTUAL TABLE IF NOT EXISTS entries_parts USING fts5("
+            + f"content, content='entries', content_rowid='id', tokenize='{_PARTS_TOKENIZER}');"
+            + _PARTS_TRIGGERS
+        )
+        if version == 0:
+            self._conn.execute(f"PRAGMA user_version = {DB_VERSION}")
 
     # --- helpers --------------------------------------------------------------------
 
@@ -381,17 +387,16 @@ class Memory:
         return uid
 
     def correct(self, uid, content, *, source, **changes):
-        """Store a corrected version as a new entry; the old one is marked as replaced."""
+        """Store a corrected version as a new entry; the old one is marked as replaced.
+
+        Kind, tags, pii and shareable describe the topic and are taken over. Rating, confidence,
+        contributor and trust describe the old source and are not: the correction has its own."""
         old = self._require(uid)
         fields = {
             "kind": old["kind"],
-            "source_rating": old["source_rating"],
-            "confidence": old["confidence"],
             "tags": json.loads(old["tags"]),
             "pii": bool(old["pii"]),
             "shareable": bool(old["shareable"]),
-            "contributor": old["contributor"],
-            "trust": old["trust"],
         }
         fields.update(changes)
         with self._conn:
@@ -449,12 +454,22 @@ class Memory:
             )
             self._conn.execute("DELETE FROM marks WHERE uid = ?", (uid,))
             self._conn.execute("DELETE FROM entries WHERE uid = ?", (uid,))
-        # merge index segments so deleted terms do not linger, then flush the WAL
-        for table in ("entries_words", "entries_parts"):
-            with self._conn:
-                self._conn.execute(f"INSERT INTO {table} ({table}) VALUES ('optimize')")
-        self._conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
         self._event("delete", uid, row["pii"], approved_by=approved_by)
+        flushed = self._compact()
+        self._event("compact", uid, row["pii"], wal_flushed=flushed)
+        return {"wal_flushed": flushed}
+
+    def _compact(self):
+        """Merge index segments so deleted terms do not linger, then write the WAL into the database
+        and empty it. Returns False if another reader kept old pages alive (try again later)."""
+        try:
+            for table in ("entries_words", "entries_parts"):
+                with self._conn:
+                    self._conn.execute(f"INSERT INTO {table} ({table}) VALUES ('optimize')")
+            busy, _log_pages, _done = self._conn.execute("PRAGMA wal_checkpoint(TRUNCATE)").fetchone()
+        except sqlite3.OperationalError:
+            return False
+        return busy == 0
 
     # --- inbox (entries from other hosts, version 2 prepared) ---------------------------------------
 
@@ -523,14 +538,18 @@ class Memory:
         rows = self._conn.execute("SELECT uid, ts, reason, approved_by FROM deletion_approvals ORDER BY id")
         return [dict(row) for row in rows]
 
-    def _ranked(self, table, query, limit):
+    def _ranked(self, table, query, limit, where, params):
+        """Ids of matching entries, best first. Scope, kind and status are filtered inside the
+        query, so hidden entries can never push visible ones out of the candidate list."""
         try:
             rows = self._conn.execute(
-                f"SELECT rowid FROM {table} WHERE {table} MATCH ? ORDER BY bm25({table}) LIMIT ?", (query, limit)
+                f"SELECT e.id AS id FROM {table} JOIN entries e ON e.id = {table}.rowid"
+                f" WHERE {table} MATCH ?{where} ORDER BY bm25({table}) LIMIT ?",
+                (query, *params, limit),
             ).fetchall()
         except sqlite3.OperationalError:
             return []  # a query the tokenizer reduces to nothing
-        return [row["rowid"] for row in rows]
+        return [row["id"] for row in rows]
 
     def recall(self, query, limit=5, scope="marvin", include_archived=False, kind=None):
         """Find entries for a free-text query. Scope "guest" sees only shareable entries without pii."""
@@ -540,12 +559,22 @@ class Memory:
         if not terms:
             return []
         candidates = max(50, limit * 10)
+        where, params = "", []
+        if scope == "guest":
+            where += " AND e.pii = 0 AND e.shareable = 1"
+        if kind:
+            where += " AND e.kind = ?"
+            params.append(kind)
+        if not include_archived:
+            visible = ", ".join(f"'{status}'" for status in VISIBLE)
+            where += f" AND {_STATUS_SQL} IN ({visible})"
         word_terms = re.findall(r"\w+", normalize_german(query))
         word_query = " OR ".join(f'"{t}"*' if len(t) >= 4 else f'"{t}"' for t in word_terms)
-        rankings = [self._ranked("entries_words", word_query, candidates)]
+        rankings = [self._ranked("entries_words", word_query, candidates, where, params)]
         part_terms = [t for t in terms if len(t) >= 3]
         if part_terms:
-            rankings.append(self._ranked("entries_parts", " OR ".join(f'"{t}"' for t in part_terms), candidates))
+            part_query = " OR ".join(f'"{t}"' for t in part_terms)
+            rankings.append(self._ranked("entries_parts", part_query, candidates, where, params))
 
         scores: dict[int, float] = {}
         for ranking in rankings:
@@ -553,20 +582,9 @@ class Memory:
                 scores[rowid] = scores.get(rowid, 0.0) + 1.0 / (RRF_K + position)
 
         hits = []
-        for rowid, score in sorted(scores.items(), key=lambda item: (-item[1], -item[0])):
+        for rowid, score in sorted(scores.items(), key=lambda item: (-item[1], -item[0]))[:limit]:
             row = self._conn.execute("SELECT * FROM entries WHERE id = ?", (rowid,)).fetchone()
-            if row is None:
-                continue
-            if scope == "guest" and (row["pii"] or not row["shareable"]):
-                continue
-            if kind and row["kind"] != kind:
-                continue
-            hit = self._hit(row, score)
-            if not include_archived and hit.status not in VISIBLE:
-                continue
-            hits.append(hit)
-            if len(hits) >= limit:
-                break
+            hits.append(self._hit(row, score))
         return hits
 
     # --- maintenance --------------------------------------------------------------------
@@ -577,7 +595,8 @@ class Memory:
         fts = "ok"
         for table in ("entries_words", "entries_parts"):
             try:
-                self._conn.execute(f"INSERT INTO {table} ({table}, rank) VALUES ('integrity-check', 1)")
+                with self._conn:  # the check is written as an INSERT; end its transaction again
+                    self._conn.execute(f"INSERT INTO {table} ({table}, rank) VALUES ('integrity-check', 1)")
             except sqlite3.DatabaseError as error:
                 fts = f"{table}: {error}"
         return {"integrity": integrity, "fts": fts}

@@ -32,7 +32,8 @@ class EventLogError(Exception):
 
 
 def canonical(data):
-    return json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    """Stable JSON bytes for hashing and writing. NaN and Infinity are not JSON and raise ValueError."""
+    return json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False).encode("utf-8")
 
 
 def event_hash(event_without_hash):
@@ -68,6 +69,8 @@ class Cursor:
         self._offsets = {}
 
     def read_new(self):
+        """Yield complete new lines as events. The position moves on only after the caller has
+        taken an event, so an error while handling one event does not skip the ones after it."""
         for path in sorted(self._directory.glob("*.jsonl")):
             if self._since_day and path.stem < self._since_day:
                 continue
@@ -78,16 +81,21 @@ class Cursor:
             end = data.rfind(b"\n")
             if end < 0:
                 continue
-            self._offsets[path.name] = offset + end + 1
-            for line in data[: end + 1].splitlines():
+            for line in data[: end + 1].splitlines(keepends=True):
                 event = _parse(line)
                 if event is not None:
                     yield event
+                offset += len(line)
+                self._offsets[path.name] = offset
+
+
+def _reject_constant(name):
+    raise ValueError(f"{name} is not valid JSON")
 
 
 def _parse(line):
     try:
-        event = json.loads(line)
+        event = json.loads(line, parse_constant=_reject_constant)
     except (ValueError, UnicodeDecodeError):
         return None
     return event if isinstance(event, dict) else None
@@ -137,7 +145,10 @@ class EventLog:
         for name in _OPTIONAL_FIELDS:
             if fields.get(name) is not None:
                 event[name] = fields[name]
-        event["hash"] = event_hash(event)
+        try:
+            event["hash"] = event_hash(event)
+        except ValueError as error:
+            raise EventLogError(f"not valid JSON (NaN or Infinity?): {error}") from error
         errors = validate(event, self._schema)
         if errors:
             raise EventLogError("; ".join(errors))
@@ -222,15 +233,17 @@ class EventLog:
                     return found["seq"], found["hash"]
         return -1, GENESIS
 
-    def verify(self, anchors=()):
+    def verify(self, anchors=(), start=(0, GENESIS)):
         """Check every line: valid JSON, schema, own hash, link to the previous event, sequence.
 
         `anchors` are (seq, hash) pairs from head() kept outside the log. Without anchors a
-        shortened log (last events removed) cannot be told apart from a complete one."""
+        shortened log (last events removed) cannot be told apart from a complete one.
+        `start` is (seq, prev) of the first event that is still kept. After old day files were
+        removed (retention), pass the seq and hash recorded when they were removed."""
         errors = []
         seen = {}
         count = 0
-        expected_seq, expected_prev = 0, GENESIS
+        expected_seq, expected_prev = start
         for path in sorted(self.directory.glob("*.jsonl")):
             with path.open("rb") as handle:
                 for number, line in enumerate(handle, start=1):

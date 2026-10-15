@@ -15,6 +15,13 @@ max_rate_age_days = 31
 total = 20.0
 research = 10.0
 self_optimization = 4.0
+conversation_min = 10.0   # research never takes more than total - conversation_min
+
+# Hard limit set by Marvin in the Anthropic Console (US dollars). The guard uses the
+# smaller of this and the euro total, so it stops before the API refuses calls.
+# 22 USD = about 19.63 EUR at 1.1208; research then gets at most about 9.63 EUR.
+[console]
+limit_usd = 22.0
 
 # Share of a limit at which a level starts.
 [thresholds]

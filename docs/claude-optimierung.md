@@ -49,6 +49,8 @@ Stand 15.10.2026. Auf Marvins Wunsch geschrieben. Gilt für Claude in Claude Cod
 25. **Lokale Doku kann von der Live-Seite abweichen.** Sonnet 5.5 Cache-Treffer: 0,10 $ laut offizieller Preisseite, 0,20 $ laut gebündeltem Skill. Mechanismus: Preise und Grenzwerte immer an der offiziellen Live-Seite prüfen, Quelle und Datum in die Config schreiben.
 26. **Tests, die beim ersten Lauf grün sind, beweisen wenig.** Mechanismus: Fehler absichtlich einbauen (`tools/dev/mutation_check.py`). Ein überlebender Fehler zeigte eine echte Lücke (Hash-Kette), dafür kam ein Test dazu.
 27. **Frische Paketversionen meiden.** pluggy 1.7.0 und hypothesis 6.170.0 waren am selben Tag erschienen. Mechanismus: nur Versionen, die mindestens 14 Tage alt sind, Installation nur mit Prüfsummen.
+28. **Grüne Tests und überlebende Fehler reichen nicht.** Die eingebaute Code-Prüfung (`/code-review`) fand danach noch 14 echte Fehler (Eingang hängt, Sperre bleibt offen, Budget verliert Ausgaben). Mechanismus: nach jedem Code-Baustein `/code-review` laufen lassen, jeden Befund mit Test und eingebautem Fehler absichern.
+29. **Prüfer können sich auf veraltete Doku stützen.** Die Code-Prüfung hielt den Sonnet-Cache-Preis für falsch, gestützt auf die lokale Doku; die offizielle Preisseite bestätigt den Wert im Code. Mechanismus: jeden Befund gegen die Primärquelle prüfen, abgelehnte Befunde mit Beleg nennen.
 
 ## 2. Mechanismen (Checklisten)
 
