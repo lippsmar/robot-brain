@@ -27,7 +27,7 @@ python3 -m venv .venv
 .venv/bin/python tools/dev/mutation_check.py    # erkennen die Tests eingebaute Fehler?
 ```
 
-Stand 15.10.2026: 101 Tests grün, Abdeckung 97 %, alle 15 eingebauten Fehler werden erkannt.
+Stand 15.10.2026: 104 Tests grün, Abdeckung 97 %, alle 18 eingebauten Fehler werden erkannt.
 
 ## Regeln für den Code
 - Erst der Test, dann der Code. Fertig ist etwas erst, wenn ein frischer Testlauf es belegt.

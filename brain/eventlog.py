@@ -61,12 +61,15 @@ class VerifyReport:
 class Cursor:
     """Reads events that were appended since the last call, across files and processes."""
 
-    def __init__(self, directory):
+    def __init__(self, directory, since_day=None):
         self._directory = Path(directory)
+        self._since_day = since_day
         self._offsets = {}
 
     def read_new(self):
         for path in sorted(self._directory.glob("*.jsonl")):
+            if self._since_day and path.stem < self._since_day:
+                continue
             offset = self._offsets.get(path.name, 0)
             with path.open("rb") as handle:
                 handle.seek(offset)
@@ -93,6 +96,7 @@ class EventLog:
     def __init__(self, directory, source, schema_path=DEFAULT_SCHEMA, clock=_utc_now):
         self.directory = Path(directory)
         self.directory.mkdir(parents=True, exist_ok=True)
+        self.directory.chmod(0o700)  # events can contain personal data: only Schlaubi's account
         self.source = source
         self._schema = load_schema(schema_path)
         self._clock = clock
@@ -141,7 +145,7 @@ class EventLog:
     def _write(self, event):
         path = self.directory / f"{event['ts'][:10]}.jsonl"
         line = canonical(event) + b"\n"
-        with path.open("ab") as handle:
+        with _open_private(path) as handle:
             handle.write(line)
             handle.flush()
             os.fsync(handle.fileno())
@@ -179,8 +183,9 @@ class EventLog:
 
     # --- reading ----------------------------------------------------------------------
 
-    def cursor(self):
-        return Cursor(self.directory)
+    def cursor(self, since_day=None):
+        """Incremental reader; `since_day` (YYYY-MM-DD) skips older files."""
+        return Cursor(self.directory, since_day)
 
     def iter_events(self, types=None, start=None, end=None):
         """Yield valid events in file order, optionally filtered by type and time [start, end)."""
@@ -244,13 +249,18 @@ class _FileLock:
         self._handle = None
 
     def __enter__(self):
-        self._handle = open(self._path, "a+b")
+        self._handle = _open_private(self._path)
         fcntl.flock(self._handle, fcntl.LOCK_EX)
         return self
 
     def __exit__(self, *exc):
         fcntl.flock(self._handle, fcntl.LOCK_UN)
         self._handle.close()
+
+
+def _open_private(path):
+    """Open for appending; a new file is readable and writable only by the owner."""
+    return os.fdopen(os.open(path, os.O_WRONLY | os.O_APPEND | os.O_CREAT, 0o600), "ab")
 
 
 def _ends_torn(path):

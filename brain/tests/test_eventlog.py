@@ -238,3 +238,16 @@ def test_any_payloads_round_trip_and_verify(tmp_path_factory, payloads):
 
     assert [e["payload"] for e in log.events()] == payloads
     assert log.verify().ok
+
+
+def test_log_files_are_only_readable_by_the_owner(log, tmp_path):
+    log.append("agent.action", {})
+    assert (tmp_path / "events").stat().st_mode & 0o777 == 0o700
+    assert (tmp_path / "events" / "2026-10-15.jsonl").stat().st_mode & 0o777 == 0o600
+
+
+def test_a_cursor_can_start_at_a_day(log, clock):
+    log.append("agent.action", {"n": 1})
+    clock.advance(days=1)
+    log.append("agent.action", {"n": 2})
+    assert [e["payload"]["n"] for e in log.cursor(since_day="2026-10-16").read_new()] == [2]

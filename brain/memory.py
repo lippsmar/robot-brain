@@ -13,6 +13,7 @@ Rules from the Memory Core and Bauplan Gehirn 10.2/10.2a:
 """
 
 import json
+import os
 import re
 import sqlite3
 import uuid
@@ -173,6 +174,8 @@ def _utc_now():
 class Memory:
     def __init__(self, path, log=None, origin="gehirn", clock=_utc_now):
         self._path = Path(path)
+        if not self._path.exists():
+            os.close(os.open(self._path, os.O_CREAT | os.O_RDWR, 0o600))  # only Schlaubi's account
         self._log = log
         self._origin = origin
         self._clock = clock

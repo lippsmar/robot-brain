@@ -243,7 +243,7 @@ class BudgetGuard:
         self._prices = prices
         self._config = config
         self._clock = clock
-        self._cursor = log.cursor()
+        self._cursor = log.cursor(since_day=f"{_month_of(clock())}-01")  # only this month is needed
         self._spent = {}  # month -> pot -> nano-dollars
         self._alerted = {}  # (month, pot) -> highest level index alerted
 

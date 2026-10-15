@@ -351,3 +351,8 @@ def test_inbox_refuses_secrets_and_non_objects(memory):
         memory.enqueue(["keine", "Liste"], origin="host:x")
     with pytest.raises(MemoryStoreError, match="no pending"):
         memory.accept(999)
+
+
+def test_the_database_file_is_only_readable_by_the_owner(memory, tmp_path):
+    memory.remember("Privat.", kind="note", source="marvin")
+    assert (tmp_path / "memory.db").stat().st_mode & 0o777 == 0o600
