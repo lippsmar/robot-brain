@@ -1,6 +1,6 @@
 # Design Code-Skills und Umgebungsauswertung – Version 1
 
-Stand 15.10.2026. **Zur Freigabe durch Marvin.** Spiegel der Notion-Seite „Idee: Code schreiben und Umgebung auswerten“. Mit der Freigabe bestätigt Marvin auch die Annahmen in Abschnitt 9.
+Stand 15.10.2026. **Freigegeben von Marvin am 15.10.2026** („So wie du es bisher vorstellst“), mit den Annahmen in Abschnitt 9. Bauplan: `docs/bauplan-code-umgebung-v1.md`. Spiegel der Notion-Seite „Design Code-Skills und Umgebungsauswertung“.
 
 ## 1. Zweck
 Schlaubi schreibt und führt selbst Code aus, um Aufgaben zu lösen und seine Umgebung auszuwerten. Beispiele: Sensordaten analysieren, Muster finden, Diagramme und Berichte erstellen, kleine Werkzeuge bauen. Später trainiert er damit eigene kleine Modelle.
