@@ -14,8 +14,9 @@ Grundlage: Design Körper „Schlaubi“ Version 1. **Gehirn: Marvins alter Lapt
 | Speicherkarte | microSD 32–64 GB, A1/A2 | 10–20 € | S | Markenkarte |
 | LTE-Modem | Waveshare SIM7600E-H 4G HAT (Europa-Bänder) | 72,90–99,00 € | R | Botland 72,90 €, Tinytronics 75,00 €, welectron 99,00 €. Antennen dabei |
 | Akku | Powerbank ca. 10.000 mAh mit Pass-Through | 0 € | – | **Marvin hat Powerbanks.** Kapazität, Größe und Pass-Through in Phase 11 prüfen. Nur falls keine passt: 25–40 € |
-| Kamera | Raspberry Pi Camera Module 3 (75° oder 120°) | 30–45 € | R | geizhals.at 40,00 € (120°), älter ca. 31 € (75°) |
-| Kamerakabel | Mini-CSI-Kabel für Pi Zero | ca. 3 € | S | Zero hat kleineren Kamera-Anschluss |
+| ~~Kamera~~ | ~~Raspberry Pi Camera Module 3~~ | entfällt | – | Marvin 15.10.2026: Abstand statt Kamera, Augen vom Smartphone. Änderung zur Freigabe |
+| ~~Kamerakabel~~ | ~~Mini-CSI-Kabel~~ | entfällt | – | siehe Kamera |
+| Abstandssensor | VL53L8CX (ST), 8×8 Zonen bis 4 m, I2C, Platine von Pololu (3419) | ca. 22–30 € | R/S | Pololu 24,95–29,95 $ (zwei Preisangaben), Euro umgerechnet geschätzt. Vorschlag 15.10.2026, zur Freigabe |
 | Mikrofon | INMP441 I2S-Modul | ca. 5 € | S | nur Dollarpreis gefunden (4,95 USD) |
 | Status-Licht | WS2812-Ring oder -Streifen, 8–12 LEDs (leuchtet durch den milchigen Kunststoff) | 3–8 € | S | |
 | Summer | Piezo-Summer | ca. 1 € | S | |
@@ -26,7 +27,7 @@ Grundlage: Design Körper „Schlaubi“ Version 1. **Gehirn: Marvins alter Lapt
 | Klima-Sensor | BME280 (Temperatur, Luftfeuchte, Luftdruck), I2C | ca. 4–11 € | S | Ergänzung 14.10.2026. BerryBase-Preis nicht gefunden, andere Händler ca. 3,70–11,45 € |
 | Licht-Sensor | BH1750 (GY-302), I2C | ca. 2,40 € | R | Ergänzung 14.10.2026, BerryBase (Preis indirekt gefunden, im Shop prüfen) |
 | Zuluft-Sensor | BMP280 (GY-BMP280, Temperatur und Luftdruck), I2C | ca. 1,60 € | R | Ergänzung 14.10.2026, BerryBase |
-| **Summe Version 1** | | **ca. 166–269 €** | | |
+| **Summe Version 1** | | **ca. 155–251 €** (vorher 166–269 €; mit Abstandssensor statt Kamera, zur Freigabe) | | |
 
 **Gestrichen gegenüber dem ersten Entwurf:** UPS HAT (C) (Akku zu klein, ca. 1 Stunde), Pico 2 W (ohne Motoren nicht nötig, bleibt Option).
 

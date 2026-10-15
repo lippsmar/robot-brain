@@ -95,3 +95,14 @@ Diese Punkte werden zuerst geprüft, bevor das Gehäuse gebaut wird:
 - Laptop-Eignung prüfen (Modell, RAM, SSD, Akku, Linux)
 - Software für das Aktivierungswort auswählen und prüfen (Lizenz, Datenschutz)
 - Holzart und Metall-Akzent festlegen
+
+## 11. Änderung 15.10.2026: Abstand statt Kamera, Augen vom Smartphone (in Klärung)
+Marvins Entscheidung: Der Würfel braucht keine eigene Kamera. Die Augen übernimmt das Smartphone, am Würfel sitzt ein Abstandssensor. 3D-Kamera, exotische Sensoren und mehr Zubehör-Schnittstellen sind mögliche Features für später (`docs/zukunft-features.md`).
+
+- **Entfällt:** Camera Module 3 und Mini-CSI-Kabel, die Kamera-Öffnung in der Front und die mechanische Kamera-Abdeckung.
+- **Neu (Vorschlag):** VL53L8CX, 8×8 Zonen bis 4 m, vorne hinter einem kleinen Fenster, am Software-I2C (GPIO22/23) zusammen mit BME280 (0x77), BMP280 (0x76) und BH1750 (0x23). Der VL53L8CX nutzt standardmäßig 0x29.
+- **Nutzen:** Merkt, ob jemand vor ihm sitzt, ob sich etwas nähert und wie weit Dinge entfernt sind. Ein grobes 8×8-Tiefenbild, keine Gesichter, keine Bilder.
+- **Risiko (früher Test):** Der Sensor lädt beim Start seine Firmware (ca. 80 kB) über I2C. Am langsamen Software-I2C kann das Sekunden dauern. Messen; notfalls an den Hardware-I2C oder per SPI. (S)
+- **Augen vom Smartphone:** Weg noch offen (Fotos per Telegram, eigene Webseite über Tailscale oder App). Es gilt weiter: Bilder an die Claude-API nur, wenn Marvin etwas zeigt, ohne Metadaten. Die Handy-Kamera zeigt ihre eigene Anzeige. Der Würfel leuchtet zusätzlich hell weiß, solange Schlaubi durch das Handy schaut.
+- **Kosten:** Version 1 ca. 155–251 € statt 166–269 € (Teileliste).
+- **Status:** Design Körper Version 1 war freigegeben. Diese Änderung braucht eine neue Freigabe, bevor Bauplan und Teileliste endgültig angepasst werden.
