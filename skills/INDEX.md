@@ -18,7 +18,7 @@ Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. St
 | [effectcraft-agent](effectcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | After-Effects-Nachbau steuern |
 | [pdfcraft-agent](pdfcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | Acrobat-Pro-Nachbau steuern |
 | [designcraft-agent](designcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026 | InDesign-Nachbau steuern |
-| [prompt-engineering](prompt-engineering/SKILL.md) | neu 15.10.2026, in Claude hochzuladen | Prompts, Skills, Werkzeugbeschreibungen schreiben und prüfen, modellagnostisch. Grundlage: Anthropics Prompt-Audit-Leitfaden |
+| [prompt-engineering](prompt-engineering/SKILL.md) | aktiv in Claude seit 15.10.2026 | Prompts, Skills, Werkzeugbeschreibungen schreiben und prüfen, modellagnostisch. Grundlage: Anthropics Prompt-Audit-Leitfaden |
 
 ## Geplante Roboter-Skills (noch nicht geschrieben)
 | Skill | Kategorie | Zweck | Schnittstelle |
