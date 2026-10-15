@@ -75,7 +75,7 @@ Ergebnis mit Datum in "Skill-Prüfstatus" eintragen. Mit welchem Modell ein Skil
 - ehrlich angeben, was gelesen wurde
 - nur nach Freigabe, isoliert, mit Ordnerbeschränkung
 
-**Kosten:** Betrieb über einen Prepaid-API-Key mit Ausgabenlimit (Weg C, 15.10.2026), Höhe offen. Pro-Abo nur für Entwicklung und Marvins eigene Nutzung, nie in OpenClaw. SIM höchstens 10 € im Monat.
+**Kosten:** Betrieb über einen Prepaid-API-Key mit Ausgabenlimit (Weg C, 15.10.2026), höchstens 10 € im Monat (Entscheidung 15.10.2026; die Console rechnet in US-Dollar, Limit so setzen, dass es unter 10 € bleibt). Recherche höchstens 5 € (Selbstoptimierung 2 €), Marvins Gespräche mindestens 5 €. Pro-Abo nur für Entwicklung und Marvins eigene Nutzung, nie in OpenClaw. SIM höchstens 10 € im Monat.
 
 **Lessons:** Neue Lessons in Notion „Claude – Selbstoptimierung“ (Datenbank „Lessons Learned“) eintragen und `docs/claude-optimierung.md` nachziehen.
 

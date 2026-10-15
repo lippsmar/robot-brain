@@ -29,7 +29,7 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 ## 4. Token und Budget
 - **Anbieterunabhängig (Entscheidung 15.10.2026):** Schlaubi läuft mit jedem Modell, das man hat. Bevorzugt europäische Infrastruktur (z. B. IONOS, STACKIT, Mistral, Langdock), möglich sind auch API-Keys großer US-Anbieter und freie Modelle lokal. Für den laufenden Betrieb immer ein API-Key oder lokales Modell mit Prepaid bzw. Ausgabenlimit. Ein Modell muss vorher die Prüffragen bestehen.
 - Abo-Anmeldungen (OAuth) von Claude Pro/Max oder anderen Anbietern werden nicht in OpenClaw oder anderen Drittanbieter-Tools verwendet. Abos nutzt man nur über die offiziellen Apps des Anbieters (z. B. später als Host über MCP). Das Claude-Abo dient der Entwicklung in Claude Code.
-- **Betrieb (Entscheidung 15.10.2026, Weg C):** Version 1 läuft mit einem kleinen Prepaid-API-Key aus der Anthropic Console mit monatlichem Ausgabenlimit. Höhe offen (Vorschlag 5–10 $). Marvins Claude Pro dient nur der Entwicklung und seiner eigenen Nutzung.
+- **Betrieb (Entscheidung 15.10.2026, Weg C):** Version 1 läuft mit einem kleinen Prepaid-API-Key aus der Anthropic Console mit monatlichem Ausgabenlimit. Limit höchstens 10 € im Monat (Entscheidung 15.10.2026; die Console rechnet in US-Dollar, Limit so setzen, dass es unter 10 € bleibt). Aufteilung (Vorschlag): Recherche höchstens 5 € (davon Selbstoptimierung 40 %, also 2 €), Gespräche mit Marvin mindestens 5 €. Warnung 80 %, Sparmodus 90 %, Stopp 100 %. Marvins Claude Pro dient nur der Entwicklung und seiner eigenen Nutzung.
 - Selbsterhalt: Budget überwachen, bei knappem Stand Sparmodus und Marvin zum Nachladen auffordern. Dazu Sparen (lokales Modell, Cache), Zuarbeit für Einnahmen (Marvin verkauft) und Belohnung durch Marvin. Immer nach deutschem Recht, Einnahmen sind Marvins Einnahmen, Veröffentlichen und Verkaufen nur mit Freigabe (Details: Notion „Design Gehirn“).
 - Modellwahl über Rollen statt Namen: günstiges Modell für Hintergrundrecherche, starkes Modell für Gespräche, Spitzenmodell für schwierige Fragen. Die Zuordnung zu Anbieter und Modell steht in der Config (Start: Haiku, Sonnet, Opus). Beim Start die verfügbaren Modelle abfragen und neue melden.
 
@@ -50,7 +50,7 @@ Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marv
 - [x] Retention-Fristen pro Datentyp mit Merk-Schutz (13.10.2026, Notion „Design Gehirn“)
 - [ ] Freigabe-Policy für physische Aktionen
 - [x] Separates Google-Testkonto statt privatem Account (13.10.2026). Anlegen: Marvin
-- [ ] Monatsbudget für den API-Key festlegen (Weg C, Vorschlag 5–10 $) und Budget-Aufteilung anpassen
+- [x] Monatsbudget API-Key: höchstens 10 € (15.10.2026). Aufteilung als Vorschlag eingetragen
 - [ ] SIM-Anbieter wählen: höchstens 10 € im Monat, 3–5 GB, beim Kauf aktuell vergleichen (E-Mail: mail.de FreeMail, Konto legt Marvin an)
 - [x] Design Körper Version 1 freigegeben (13.10.2026, `docs/design-koerper.md`)
 - [x] Bauplan Körper Version 1 bestätigt (13.10.2026)

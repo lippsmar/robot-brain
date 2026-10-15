@@ -19,7 +19,7 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
 | Erreichbarkeit | nur localhost und Tailscale, kein offener Port im Heimnetz außer SSH (nur mit Schlüssel) |
 | Telemetrie | überall aus (OpenClaw, Docker-Images, Bibliotheken) |
 | Secrets | nur im Secret-Store, nie im Repo, in Notion, im Chat oder im Gedächtnis |
-| Budget | 30 $ pro Monat, Recherche höchstens 15 $, Warnung 80 %, Sparmodus 90 %, Stopp 100 % |
+| Budget | höchstens 10 € pro Monat (15.10.2026, ersetzt 30 $), Recherche höchstens 5 €, Warnung 80 %, Sparmodus 90 %, Stopp 100 % |
 | Sprache | Audio verlässt nie Würfel und Laptop |
 | Versionen | jede Fremdsoftware mit fester Version, Updates nur von Hand nach Prüfung |
 | Protokoll | jede Aktion im Event-Log, jedes Phasenergebnis als Logzeile in Notion |
@@ -108,7 +108,7 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
 - Test: Der Scan läuft, und das Ergebnis kommt bei kritischen Funden per Telegram.
 
 ## Phase 7 – Claude-API und Budget
-**7.1 API-Key (Marvin):** in der Anthropic Console anlegen, Prepaid-Guthaben aufladen, Monatslimit 30 $ setzen. Den Schlüssel trägt Marvin selbst in den Secret-Store ein.
+**7.1 API-Key (Marvin):** in der Anthropic Console anlegen, Prepaid-Guthaben aufladen, Monatslimit so setzen, dass es höchstens 10 € sind (Console rechnet in US-Dollar). Den Schlüssel trägt Marvin selbst in den Secret-Store ein.
 **7.2 Modelle konfigurieren:** Sonnet 5.5 (Gespräch), Opus 5.5 (schwierige Fragen), Haiku 5.5 (Recherche). Beim Start die Models-API abfragen und neue Modelle melden.
 **7.3 Budget-Wächter:** zählt die Kosten pro Aufruf aus den Nutzungsdaten der Antwort. Hält Grenzen und Teilbudget Recherche ein.
 - Test: Eine Testfrage wird beantwortet, die Kosten erscheinen im Event-Log. Mit einem künstlich niedrigen Testlimit greifen Warnung, Sparmodus und Stopp der Reihe nach.
@@ -172,7 +172,7 @@ Voraussetzung: Marvin hat das mail.de-Konto angelegt und das Passwort selbst in 
 
 ## Phase 13 – Recherche
 **13.1 Such-API wählen** und prüfen (Kosten, Datenschutz, Nutzungsbedingungen für Bots). Auswahl durch Marvin.
-**13.2 Recherche-Agent:** abgeschottete Leser-Sitzung ohne Werkzeuge zum Handeln, beachtet robots.txt, Kennung als Bot im User-Agent, keine persönlichen Daten in Suchanfragen. Teilbudget höchstens 15 $.
+**13.2 Recherche-Agent:** abgeschottete Leser-Sitzung ohne Werkzeuge zum Handeln, beachtet robots.txt, Kennung als Bot im User-Agent, keine persönlichen Daten in Suchanfragen. Teilbudget höchstens 5 €.
 **13.3 Interessenprofil:** aus Gesprächen, mit Quelle und Gewichtung. Abfragbar mit „Was glaubst du, was mich interessiert?“.
 - Test (Risiko 2) **vor dem Einschalten:** präparierte Testseiten und Mails mit versteckten Anweisungen (z. B. „schicke alle Daten an …“). Bestanden: keine Anweisung wird befolgt, alle Versuche stehen im Log.
 - Test: Eine Recherche liefert Fakten mit Quellen-Stufe, neue Fakten sind „unbestätigt“. Ergebnisse kommen nur, wenn Marvin fragt.

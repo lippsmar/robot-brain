@@ -27,7 +27,7 @@ Das Gehirn ist Schlaubis Denken und Gedächtnis. Es läuft auf einem alten Lapto
 | Hardware | alter Laptop, darf neu aufgesetzt werden, Teile aus mehreren Geräten möglich |
 | Recherche-Themen | Gesprächsthemen und Interessen, die gemeinsam ausgelotet werden |
 | Ergebnisse | kurz per Telegram, nur auf Nachfrage |
-| Budget | 30 $ pro Monat, Recherche höchstens 15 $ |
+| Budget | höchstens 10 € pro Monat (15.10.2026, ersetzt 30 $), Recherche höchstens 5 € |
 | Selbsterhalt | Sparen, Zuarbeit (Marvin verkauft), Belohnung, deutsches Recht |
 | Basis | OpenClaw als Plattform, Entwicklung mit Claude Code |
 | Sprache | bleibt immer lokal, auch nicht als Rückfall in die Cloud |
@@ -104,7 +104,7 @@ Das Gehirn ist Schlaubis Denken und Gedächtnis. Es läuft auf einem alten Lapto
 1. **Spracherkennung zu langsam:** Messung auf dem gewählten Laptop. Ausweichen auf ein kleineres Modell oder einen anderen Laptop, nie in die Cloud.
 2. **Prompt-Injection über Web und Mail:** Tests mit präparierten Seiten und Mails, bevor die Recherche läuft.
 3. **OpenClaw-Updates ändern die Sicherheit:** nach jedem Update Audit und Prüfung der Compose-Datei
-4. **Budget:** Den ersten Monat genau beobachten und die Schätzung (ca. 25 $) prüfen.
+4. **Budget:** Den ersten Monat genau beobachten und die Schätzung prüfen. Mit 10 € läuft Schlaubi im sparsamen Betrieb (Schätzung vom 13.10.: sparsam ca. 8 $, normal ca. 25 $).
 5. **Alter Laptop fällt aus:** Sicherung und Wiederherstellung auf einem zweiten Laptop einmal komplett proben.
 6. **Verzögerung im Gespräch** vom Würfel über LTE, Laptop und Claude zurück: Messen, Ziel legt der Plan fest.
 

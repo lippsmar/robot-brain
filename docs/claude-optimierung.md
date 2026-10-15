@@ -82,7 +82,7 @@ Stand 15.10.2026. Auf Marvins Wunsch geschrieben. Gilt für Claude in Claude Cod
 - [ ] Ergebnis in `skills/INDEX.md` und Notion „Skill-Prüfstatus“
 
 ### F. Kosten im Blick
-- [ ] Neue Funktion: grobe Kosten pro Monat schätzen und gegen die Budget-Aufteilung halten. Betrieb über einen Prepaid-API-Key (Weg C, 15.10.2026), Höhe des Monatsbudgets offen. Die frühere Aufteilung auf 30 $ ruht bis dahin. SIM höchstens 10 € im Monat.
+- [ ] Neue Funktion: grobe Kosten pro Monat schätzen und gegen die Budget-Aufteilung halten. Betrieb über einen Prepaid-API-Key (Weg C), höchstens 10 € im Monat: Recherche höchstens 5 € (Selbstoptimierung 2 €), Marvins Gespräche mindestens 5 €. SIM höchstens 10 € im Monat.
 
 ## 3. Ideen zur Weiterentwicklung
 - [x] Abschnitt 2 in den Skill `roboter-projekt` übernommen (15.10.2026, Marvins Freigabe).
