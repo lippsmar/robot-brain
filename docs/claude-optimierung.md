@@ -2,6 +2,8 @@
 
 Stand 15.10.2026. Auf Marvins Wunsch geschrieben. Gilt für Claude in Claude Code und im Chat bei der Arbeit am KI-Roboter „Schlaubi“. Ergänzt `CLAUDE.md` und die roboter-Skills, ersetzt sie nicht. Wird nach jedem Rückblick (roboter-retro) fortgeschrieben.
 
+**Eigenes Notion-Projekt seit 15.10.2026:** „Claude – Selbstoptimierung“ (privat, nicht im Robot Brain) mit der Datenbank „Lessons Learned“. Diese Datei ist der Spiegel im Repo. Bei Widerspruch gilt Notion.
+
 ## 1. Lessons Learned (13.–15.10.2026)
 
 ### Zusammenarbeit mit Marvin
@@ -41,13 +43,16 @@ Stand 15.10.2026. Auf Marvins Wunsch geschrieben. Gilt für Claude in Claude Cod
 19. **Warteschleifen mit `pgrep -f`** finden sich selbst und enden nie (VectorCraft-Build). Besser auf eine Datei oder Prozess-ID warten oder die Benachrichtigung des Hintergrundauftrags nutzen.
 20. **Fremden Code nur in der Sandbox bauen**, mit Ordnerbeschränkung (`--automation-read-root/-write-root`) und headless. Das Lesen fremder Doku über das Read-Werkzeug ist unkritischer als `cat` in der Shell. Der Auto-Modus hat Letzteres einmal blockiert.
 21. **Skills, die geändert werden**, gleich als Zip zum Hochladen mitschicken und Marvin sagen, welche alte Version zu ersetzen ist.
+22. **Nach einer Kontext-Zusammenfassung** zuerst die noch offene Antwort an Marvin senden (Checkliste A).
+23. **Abo- und Nutzungsregeln ändern sich schnell** (Hilfeartikel 7.10.2026). Vor Aussagen dazu die aktuelle offizielle Seite lesen und das Datum nennen.
+24. **Bilder nach Notion:** `create-file-upload`, einmal per `curl` POST senden, dann die `file-upload://`-Quelle in die Seite. Upload-Token nie in Dateien oder Logs.
 
 ## 2. Mechanismen (Checklisten)
 
 ### A. Beim Sitzungsstart
 - [ ] `git pull` im Repo, letzter Commit und offene Punkte in `CLAUDE.md` ansehen
 - [ ] Letzte Einträge im Notion-Projektlog lesen
-- [ ] Prüfen, ob eine Frage an Marvin offen ist, und sie nicht vergessen
+- [ ] Prüfen, ob eine Frage an Marvin offen oder eine Antwort noch nicht gesendet ist, und das zuerst erledigen
 
 ### B. Nach jeder Entscheidung von Marvin
 - [ ] Zeile in `memory/decisions/0001-…md` (Datum, Entscheidung, Status)
@@ -77,7 +82,7 @@ Stand 15.10.2026. Auf Marvins Wunsch geschrieben. Gilt für Claude in Claude Cod
 - [ ] Ergebnis in `skills/INDEX.md` und Notion „Skill-Prüfstatus“
 
 ### F. Kosten im Blick
-- [ ] Neue Funktion: grobe Kosten pro Monat schätzen und gegen die Budget-Aufteilung halten. Aufteilung: 30 $ gesamt, Recherche höchstens 15 $ (davon Selbstoptimierung höchstens 6 $), Gäste höchstens 5 $, Marvins Gespräche mindestens 10 $. SIM höchstens 10 € im Monat.
+- [ ] Neue Funktion: grobe Kosten pro Monat schätzen und gegen die Budget-Aufteilung halten. Betrieb über einen Prepaid-API-Key (Weg C, 15.10.2026), Höhe des Monatsbudgets offen. Die frühere Aufteilung auf 30 $ ruht bis dahin. SIM höchstens 10 € im Monat.
 
 ## 3. Ideen zur Weiterentwicklung
 - [x] Abschnitt 2 in den Skill `roboter-projekt` übernommen (15.10.2026, Marvins Freigabe).

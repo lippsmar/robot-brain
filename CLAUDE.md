@@ -11,7 +11,7 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 - **Vorschlag zur Hardware (offen):** Microcontroller für Not-Aus, Watchdog und Sensorik, Raspberry Pi Zero 2 W für LTE-Modem, Mail und Kommunikation. Das Gehirn (OpenClaw, Vektorspeicher, Embeddings) läuft auf Marvins altem Laptop als Heimserver (Entscheidung 13.10.2026, Eignung noch prüfen).
 - **Wissensspeicher:** SQLite mit sqlite-vec und FTS5 (Hybridsuche), dazu LanceDB als Vergleich und Ersatz. Kleine ONNX-Embeddings über fastembed.
 - **Energie:** Akku mit USB-C-Laden über ein UPS-HAT. Dauerbetrieb braucht ein Netzteil.
-- **Details** (SIM-Modem, Modelle, Embeddings, OpenClaw-Absicherung, Handy-Zugriff, Adobe-Nachbauten): `docs/projektstart-details.md`. Teileliste: `docs/teileliste.md`. Design des Körpers „Schlaubi“: `docs/design-koerper.md`. Design des Gehirns: `docs/design-gehirn.md`. Design des Charakters: `docs/design-charakter.md`. Design Datensammlung: `docs/design-daten.md`. Design Code-Skills: `docs/design-code-umgebung.md`. OpenClaw-Prüfung: `docs/pruefung-openclaw.md`. Sicherheit und Recht: `docs/sicherheit-und-recht.md`. Lessons Learned und Mechanismen für Claude: `docs/claude-optimierung.md`.
+- **Details** (SIM-Modem, Modelle, Embeddings, OpenClaw-Absicherung, Handy-Zugriff, Adobe-Nachbauten): `docs/projektstart-details.md`. Teileliste: `docs/teileliste.md`. Design des Körpers „Schlaubi“: `docs/design-koerper.md`. Design des Gehirns: `docs/design-gehirn.md`. Design des Charakters: `docs/design-charakter.md`. Design Datensammlung: `docs/design-daten.md`. Design Code-Skills: `docs/design-code-umgebung.md`. OpenClaw-Prüfung: `docs/pruefung-openclaw.md`. Sicherheit und Recht: `docs/sicherheit-und-recht.md`. Lessons Learned und Mechanismen für Claude: `docs/claude-optimierung.md` (Spiegel des Notion-Projekts „Claude – Selbstoptimierung“). Bilder: `docs/bilder/` (Notion „Bilder: Schlaubi“).
 
 ## 3. Arbeitsregeln für Claude Code
 - Vor der Arbeit den Skill `skills/roboter-projekt` befolgen und die Checklisten in `docs/claude-optimierung.md` nutzen.
@@ -29,6 +29,7 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 ## 4. Token und Budget
 - **Anbieterunabhängig (Entscheidung 15.10.2026):** Schlaubi läuft mit jedem Modell, das man hat. Bevorzugt europäische Infrastruktur (z. B. IONOS, STACKIT, Mistral, Langdock), möglich sind auch API-Keys großer US-Anbieter und freie Modelle lokal. Für den laufenden Betrieb immer ein API-Key oder lokales Modell mit Prepaid bzw. Ausgabenlimit. Ein Modell muss vorher die Prüffragen bestehen.
 - Abo-Anmeldungen (OAuth) von Claude Pro/Max oder anderen Anbietern werden nicht in OpenClaw oder anderen Drittanbieter-Tools verwendet. Abos nutzt man nur über die offiziellen Apps des Anbieters (z. B. später als Host über MCP). Das Claude-Abo dient der Entwicklung in Claude Code.
+- **Betrieb (Entscheidung 15.10.2026, Weg C):** Version 1 läuft mit einem kleinen Prepaid-API-Key aus der Anthropic Console mit monatlichem Ausgabenlimit. Höhe offen (Vorschlag 5–10 $). Marvins Claude Pro dient nur der Entwicklung und seiner eigenen Nutzung.
 - Selbsterhalt: Budget überwachen, bei knappem Stand Sparmodus und Marvin zum Nachladen auffordern. Dazu Sparen (lokales Modell, Cache), Zuarbeit für Einnahmen (Marvin verkauft) und Belohnung durch Marvin. Immer nach deutschem Recht, Einnahmen sind Marvins Einnahmen, Veröffentlichen und Verkaufen nur mit Freigabe (Details: Notion „Design Gehirn“).
 - Modellwahl über Rollen statt Namen: günstiges Modell für Hintergrundrecherche, starkes Modell für Gespräche, Spitzenmodell für schwierige Fragen. Die Zuordnung zu Anbieter und Modell steht in der Config (Start: Haiku, Sonnet, Opus). Beim Start die verfügbaren Modelle abfragen und neue melden.
 
@@ -49,6 +50,7 @@ Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marv
 - [x] Retention-Fristen pro Datentyp mit Merk-Schutz (13.10.2026, Notion „Design Gehirn“)
 - [ ] Freigabe-Policy für physische Aktionen
 - [x] Separates Google-Testkonto statt privatem Account (13.10.2026). Anlegen: Marvin
+- [ ] Monatsbudget für den API-Key festlegen (Weg C, Vorschlag 5–10 $) und Budget-Aufteilung anpassen
 - [ ] SIM-Anbieter wählen: höchstens 10 € im Monat, 3–5 GB, beim Kauf aktuell vergleichen (E-Mail: mail.de FreeMail, Konto legt Marvin an)
 - [x] Design Körper Version 1 freigegeben (13.10.2026, `docs/design-koerper.md`)
 - [x] Bauplan Körper Version 1 bestätigt (13.10.2026)

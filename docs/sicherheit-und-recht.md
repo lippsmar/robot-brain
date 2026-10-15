@@ -147,3 +147,5 @@ Marvin möchte keine zusätzlichen Kosten, nur sein Claude-Abo. Dokumentierte La
   - https://code.claude.com/docs/en/routines.md
   - https://code.claude.com/docs/en/remote-control.md
   - https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp
+
+**Entscheidung 15.10.2026: Weg C.** Schlaubi läuft mit einem kleinen Prepaid-API-Key mit Ausgabenlimit. Das Pro-Abo bleibt für Claude Code und Marvins eigene Nutzung. Damit entfällt die Grauzone. Die Höhe des Monatsbudgets ist noch offen.

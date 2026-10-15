@@ -49,7 +49,7 @@ Ergebnis mit Datum in "Skill-Prüfstatus" eintragen. Mit welchem Modell ein Skil
 - Fehler: Skill roboter-debugging. Erfolg erst melden, wenn ein frischer Test es belegt.
 
 ## 7. Checklisten (aus docs/claude-optimierung.md, 15.10.2026)
-**Sitzungsstart:** Repo aktualisieren (git pull), offene Punkte in CLAUDE.md und die letzten Projektlog-Einträge lesen, offene Frage an Marvin nicht vergessen.
+**Sitzungsstart:** Repo aktualisieren (git pull), offene Punkte in CLAUDE.md und die letzten Projektlog-Einträge lesen, offene Frage an Marvin nicht vergessen, eine noch nicht gesendete Antwort (z. B. nach einer Kontext-Zusammenfassung) zuerst senden.
 
 **Nach jeder Entscheidung von Marvin:**
 - Zeile in `memory/decisions/0001-…md`, in der Notion-ADR-Tabelle und im Projektlog
@@ -75,7 +75,9 @@ Ergebnis mit Datum in "Skill-Prüfstatus" eintragen. Mit welchem Modell ein Skil
 - ehrlich angeben, was gelesen wurde
 - nur nach Freigabe, isoliert, mit Ordnerbeschränkung
 
-**Kosten:** 30 $ gesamt. Recherche höchstens 15 $ (davon Selbstoptimierung höchstens 6 $), Gäste höchstens 5 $, Marvins Gespräche mindestens 10 $. SIM höchstens 10 € im Monat.
+**Kosten:** Betrieb über einen Prepaid-API-Key mit Ausgabenlimit (Weg C, 15.10.2026), Höhe offen. Pro-Abo nur für Entwicklung und Marvins eigene Nutzung, nie in OpenClaw. SIM höchstens 10 € im Monat.
+
+**Lessons:** Neue Lessons in Notion „Claude – Selbstoptimierung“ (Datenbank „Lessons Learned“) eintragen und `docs/claude-optimierung.md` nachziehen.
 
 **Technik-Stolperstellen:**
 - Notion-`old_str` muss eindeutig sein. Titel mit `update_properties` ändern.
