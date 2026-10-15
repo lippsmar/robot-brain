@@ -80,6 +80,6 @@ Stand 15.10.2026. Auf Marvins Wunsch geschrieben. Gilt für Claude in Claude Cod
 - [ ] Neue Funktion: grobe Kosten pro Monat schätzen und gegen die Budget-Aufteilung halten. Aufteilung: 30 $ gesamt, Recherche höchstens 15 $ (davon Selbstoptimierung höchstens 6 $), Gäste höchstens 5 $, Marvins Gespräche mindestens 10 $. SIM höchstens 10 € im Monat.
 
 ## 3. Ideen zur Weiterentwicklung
-- Abschnitt 2 als kurze Ergänzung in den Skill `roboter-projekt` übernehmen (nach Marvins Freigabe), damit die Mechanismen auch im Chat gelten.
+- [x] Abschnitt 2 in den Skill `roboter-projekt` übernommen (15.10.2026, Marvins Freigabe).
 - Nach jedem größeren Schritt `roboter-retro` laufen lassen und neue Lessons hier eintragen.
 - Eine Übersichtsseite „Stand des Projekts“ in Notion, die die offenen Punkte aller Designs und Baupläne bündelt.

@@ -17,7 +17,10 @@ Immer verwenden, wenn es um den KI-Roboter, Robot Brain, Memory Core, OpenClaw, 
 - SIM und Konten laufen auf Marvin. Keine Umgehung von SIM-Registrierung, Identitätsprüfungen oder Bot-Sperren. Der Roboter gibt sich im Netz als Automat zu erkennen und beachtet robots.txt.
 - Keine verdeckten Aufnahmen von Personen. Kamera und Mikrofon erkennbar, Personendaten mit `pii: true`.
 - Keine Secrets, Tokens, PINs in Code, Logs, Notion oder Gedächtnis, nur Referenzen auf den Secret-Store.
-- Physische oder irreversible Aktionen nur mit Freigabe. Not-Aus läuft lokal auf dem Microcontroller.
+- Physische oder irreversible Aktionen nur mit Freigabe. Not-Aus ist in Version 1 der Ein-Aus-Schalter (kein Mikrocontroller).
+- Rangfolge bei Konflikten (fester Kern, 14.10.2026): 1. Menschen nicht schaden, 2. Recht und fester Kern, 3. Marvins Anweisungen, 4. Selbsterhalt und Charakter.
+- Marvins Stimme bleibt lokal. Gespräche anderer werden nie mitgehört oder ausgewertet (§ 201 StGB). Die KI-Frage wird nie verneint.
+- Nichts in Marvins Namen ohne Rückfrage, auch keine Konten: Claude bereitet vor, Marvin legt an.
 - Nichts erfinden. Fehlendes als offen markieren oder nachfragen.
 
 ## 3. Testphase mit separatem Google-Testkonto
@@ -44,3 +47,40 @@ Ergebnis mit Datum in "Skill-Prüfstatus" eintragen. Mit welchem Modell ein Skil
 ## 6. Arbeitsweise bei Entwicklung
 - Neues Feature: erst klären, was gewollt ist (Skill roboter-brainstorming-plan), dann Plan, dann bauen.
 - Fehler: Skill roboter-debugging. Erfolg erst melden, wenn ein frischer Test es belegt.
+
+## 7. Checklisten (aus docs/claude-optimierung.md, 15.10.2026)
+**Sitzungsstart:** Repo aktualisieren (git pull), offene Punkte in CLAUDE.md und die letzten Projektlog-Einträge lesen, offene Frage an Marvin nicht vergessen.
+
+**Nach jeder Entscheidung von Marvin:**
+- Zeile in `memory/decisions/0001-…md`, in der Notion-ADR-Tabelle und im Projektlog
+- betroffene Designs, Baupläne und die Teileliste anpassen, `CLAUDE.md` wenn nötig
+- ersetzte Entscheidungen als ersetzt markieren
+- Commit mit Attribution, Push, Ergebnis prüfen
+
+**Vor jeder Antwort:**
+- Fazit zuerst, kurz und Pixel-tauglich, Deutsch, keine breiten Tabellen
+- Deutung knapper oder mehrdeutiger Antworten ausdrücklich nennen
+- Grenzen mit Grund und Alternative nennen, nie still umgehen
+- Quellen verlinken. R = recherchiert, S = Schätzung, „nicht gefunden“ statt erfinden
+- im Design-Modus genau eine offene Frage
+
+**Neue Idee:**
+- Notion-Seite „Idee: … (in Klärung)“ mit Fakten, Grenzen und Entscheidungsbaum
+- Version 1 oder später? Was muss in Version 1 mitgedacht werden?
+- Recht (DSGVO, § 201 StGB, KI-Verordnung), Sicherheit und Kosten nennen
+- Reihenfolge: Design, Freigabe, Bauplan, Bestätigung
+
+**Fremde Software:**
+- Lizenz, Telemetrie, Netzwerk und Rechte prüfen
+- ehrlich angeben, was gelesen wurde
+- nur nach Freigabe, isoliert, mit Ordnerbeschränkung
+
+**Kosten:** 30 $ gesamt. Recherche höchstens 15 $ (davon Selbstoptimierung höchstens 6 $), Gäste höchstens 5 $, Marvins Gespräche mindestens 10 $. SIM höchstens 10 € im Monat.
+
+**Technik-Stolperstellen:**
+- Notion-`old_str` muss eindeutig sein. Titel mit `update_properties` ändern.
+- Nach großen Einfügungen Umlaute gegenlesen.
+- `git push` bei Fehler wiederholen.
+- Absolute Pfade verwenden.
+- Bei Warteschleifen kein `pgrep -f`.
+
