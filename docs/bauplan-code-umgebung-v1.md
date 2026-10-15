@@ -1,6 +1,6 @@
 # Bauplan Code-Skills und Umgebungsauswertung – Version 1
 
-Stand 15.10.2026. Grundlage: `docs/design-code-umgebung.md`, von Marvin am 15.10.2026 freigegeben („So wie du es bisher vorstellst“), mit den Annahmen in Abschnitt 9. **Dieser Plan wird erst umgesetzt, wenn Marvin ihn bestätigt.**
+Stand 15.10.2026. Grundlage: `docs/design-code-umgebung.md`, von Marvin am 15.10.2026 freigegeben („So wie du es bisher vorstellst“), mit den Annahmen in Abschnitt 9. **Von Marvin am 15.10.2026 bestätigt.**
 
 ## Kopf
 - **Ziel:** Schlaubi schreibt Code für Aufgaben und führt ihn ohne Rückfrage in einer abgeschotteten Sandbox aus. Damit wertet er seine Umgebung aus: Zeitreihen, Kühlung, Geräusche, Muster, Berichte, kleine Werkzeuge.

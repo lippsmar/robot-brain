@@ -59,7 +59,7 @@ Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marv
 - [x] Design Umgebungsbewusstsein und Datensammlung freigegeben (14.10.2026, `docs/design-daten.md`)
 - [x] Bauplan Datensammlung Version 1 bestätigt (14.10.2026, `docs/bauplan-daten-v1.md`)
 - [x] Design Code-Skills und Umgebungsauswertung freigegeben (15.10.2026, `docs/design-code-umgebung.md`)
-- [ ] Bauplan Code-Skills Version 1 bestätigen (`docs/bauplan-code-umgebung-v1.md`)
+- [x] Bauplan Code-Skills Version 1 bestätigt (15.10.2026, `docs/bauplan-code-umgebung-v1.md`)
 - [ ] Gehirn Phase 0: Bestandsaufnahme und Inhalte sichern (Marvin, `docs/checkliste-phase0-gehirn.md`). Löschen noch nicht freigegeben
 - [ ] Phase 1: Teile Stufe 1 bestellen (Marvin, `docs/einkauf-stufe1.md`)
 - [ ] Laptop als Gehirn: Modell, RAM, Speicher, Akkuzustand und Betriebssystem erfassen und Eignung prüfen
