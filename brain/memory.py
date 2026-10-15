@@ -61,15 +61,16 @@ CREATE TABLE IF NOT EXISTS entries (
     trust REAL CHECK (trust BETWEEN 0 AND 1),
     tags TEXT NOT NULL DEFAULT '[]',
     replaces TEXT,
+    search_text TEXT NOT NULL,
     schema_version TEXT NOT NULL
-);
+) STRICT;
 CREATE TABLE IF NOT EXISTS marks (
     id INTEGER PRIMARY KEY,
     uid TEXT NOT NULL,
     ts TEXT NOT NULL,
     mark TEXT NOT NULL CHECK (mark IN ('keep', 'archived', 'disputed', 'confirmed', 'replaced', 'active')),
     reason TEXT
-);
+) STRICT;
 CREATE INDEX IF NOT EXISTS marks_uid ON marks (uid);
 CREATE TABLE IF NOT EXISTS deletion_approvals (
     id INTEGER PRIMARY KEY,
@@ -77,13 +78,13 @@ CREATE TABLE IF NOT EXISTS deletion_approvals (
     ts TEXT NOT NULL,
     reason TEXT NOT NULL,
     approved_by TEXT NOT NULL
-);
+) STRICT;
 CREATE TABLE IF NOT EXISTS inbox (
     id INTEGER PRIMARY KEY,
     ts TEXT NOT NULL,
     origin TEXT NOT NULL,
     payload TEXT NOT NULL
-);
+) STRICT;
 CREATE TABLE IF NOT EXISTS inbox_results (
     id INTEGER PRIMARY KEY,
     inbox_id INTEGER NOT NULL UNIQUE,
@@ -91,12 +92,27 @@ CREATE TABLE IF NOT EXISTS inbox_results (
     result TEXT NOT NULL CHECK (result IN ('accepted', 'rejected')),
     uid TEXT,
     reason TEXT
-);
+) STRICT;
 CREATE VIRTUAL TABLE IF NOT EXISTS entries_words USING fts5(
-    content, tags, content='entries', content_rowid='id',
+    search_text, content='entries', content_rowid='id',
     tokenize='unicode61 remove_diacritics 2'
 );
 
+CREATE TRIGGER IF NOT EXISTS entries_no_replace BEFORE INSERT ON entries
+WHEN EXISTS (SELECT 1 FROM entries WHERE uid = new.uid OR id = new.id)
+BEGIN SELECT RAISE(ABORT, 'entries are append-only, no replace'); END;
+CREATE TRIGGER IF NOT EXISTS marks_no_replace BEFORE INSERT ON marks
+WHEN EXISTS (SELECT 1 FROM marks WHERE id = new.id)
+BEGIN SELECT RAISE(ABORT, 'marks are append-only, no replace'); END;
+CREATE TRIGGER IF NOT EXISTS approvals_no_replace BEFORE INSERT ON deletion_approvals
+WHEN EXISTS (SELECT 1 FROM deletion_approvals WHERE id = new.id)
+BEGIN SELECT RAISE(ABORT, 'deletion_approvals are append-only, no replace'); END;
+CREATE TRIGGER IF NOT EXISTS inbox_no_replace BEFORE INSERT ON inbox
+WHEN EXISTS (SELECT 1 FROM inbox WHERE id = new.id)
+BEGIN SELECT RAISE(ABORT, 'inbox is append-only, no replace'); END;
+CREATE TRIGGER IF NOT EXISTS inbox_results_no_replace BEFORE INSERT ON inbox_results
+WHEN EXISTS (SELECT 1 FROM inbox_results WHERE id = new.id OR inbox_id = new.inbox_id)
+BEGIN SELECT RAISE(ABORT, 'inbox_results are append-only, no replace'); END;
 CREATE TRIGGER IF NOT EXISTS entries_no_update BEFORE UPDATE ON entries
 BEGIN SELECT RAISE(ABORT, 'entries are append-only'); END;
 CREATE TRIGGER IF NOT EXISTS entries_guarded_delete BEFORE DELETE ON entries
@@ -122,10 +138,10 @@ CREATE TRIGGER IF NOT EXISTS inbox_results_no_delete BEFORE DELETE ON inbox_resu
 BEGIN SELECT RAISE(ABORT, 'inbox_results are append-only'); END;
 
 CREATE TRIGGER IF NOT EXISTS entries_index_words AFTER INSERT ON entries BEGIN
-    INSERT INTO entries_words (rowid, content, tags) VALUES (new.id, new.content, new.tags);
+    INSERT INTO entries_words (rowid, search_text) VALUES (new.id, new.search_text);
 END;
 CREATE TRIGGER IF NOT EXISTS entries_unindex_words AFTER DELETE ON entries BEGIN
-    INSERT INTO entries_words (entries_words, rowid, content, tags) VALUES ('delete', old.id, old.content, old.tags);
+    INSERT INTO entries_words (entries_words, rowid, search_text) VALUES ('delete', old.id, old.search_text);
 END;
 """
 
@@ -139,6 +155,16 @@ CREATE TRIGGER IF NOT EXISTS entries_unindex_parts AFTER DELETE ON entries BEGIN
     INSERT INTO entries_parts (entries_parts, rowid, content) VALUES ('delete', old.id, old.content);
 END;
 """
+
+
+def normalize_german(text):
+    """Spelling-tolerant form for the word index: case folded, ß as ss, umlauts as ae/oe/ue.
+
+    "Straße" and "Strasse", "Kühlung" and "Kuehlung" become the same word. The word-part
+    index keeps the original text (with diacritics folded), so "Kuhlung" is found as well.
+    """
+    folded = text.casefold()  # also turns ß into ss
+    return folded.replace("ä", "ae").replace("ö", "oe").replace("ü", "ue")
 
 
 class MemoryStoreError(Exception):
@@ -164,7 +190,7 @@ class Hit:
     ts: str
     status: str
     keep: bool
-    score: float = None
+    score: float | None = None
 
 
 def _utc_now():
@@ -181,7 +207,15 @@ class Memory:
         self._clock = clock
         self._conn = sqlite3.connect(self._path)
         self._conn.row_factory = sqlite3.Row
-        for pragma in ("journal_mode = WAL", "synchronous = FULL", "foreign_keys = ON", "secure_delete = ON"):
+        self._conn.setconfig(sqlite3.SQLITE_DBCONFIG_DEFENSIVE, True)
+        for pragma in (
+            "journal_mode = WAL",  # with synchronous FULL: committed data survives a power loss
+            "synchronous = FULL",
+            "foreign_keys = ON",
+            "secure_delete = ON",  # deleted content is overwritten, not just unlinked
+            "recursive_triggers = ON",  # delete triggers also fire for REPLACE conflicts
+            "trusted_schema = OFF",
+        ):
             self._conn.execute(f"PRAGMA {pragma}")
         self._create_schema()
 
@@ -298,8 +332,8 @@ class Memory:
         uid = str(uuid.uuid4())
         self._conn.execute(
             "INSERT INTO entries (uid, ts, kind, content, source, source_rating, confidence, origin, pii,"
-            " shareable, contributor, trust, tags, replaces, schema_version)"
-            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            " shareable, contributor, trust, tags, replaces, search_text, schema_version)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 uid,
                 self._now(),
@@ -315,6 +349,7 @@ class Memory:
                 trust,
                 json.dumps(tags, ensure_ascii=False),
                 replaces,
+                normalize_german(content) + "\n" + normalize_german(" ".join(map(str, tags))),
                 SCHEMA_VERSION,
             ),
         )
@@ -505,13 +540,14 @@ class Memory:
         if not terms:
             return []
         candidates = max(50, limit * 10)
-        word_query = " OR ".join(f'"{t}"*' if len(t) >= 4 else f'"{t}"' for t in terms)
+        word_terms = re.findall(r"\w+", normalize_german(query))
+        word_query = " OR ".join(f'"{t}"*' if len(t) >= 4 else f'"{t}"' for t in word_terms)
         rankings = [self._ranked("entries_words", word_query, candidates)]
         part_terms = [t for t in terms if len(t) >= 3]
         if part_terms:
             rankings.append(self._ranked("entries_parts", " OR ".join(f'"{t}"' for t in part_terms), candidates))
 
-        scores = {}
+        scores: dict[int, float] = {}
         for ranking in rankings:
             for position, rowid in enumerate(ranking, start=1):
                 scores[rowid] = scores.get(rowid, 0.0) + 1.0 / (RRF_K + position)

@@ -111,11 +111,11 @@ class RateCard:
 @dataclass(frozen=True)
 class ModelPrices:
     card: RateCard
-    long_card: RateCard = None
-    long_threshold: int = None
+    long_card: RateCard | None = None
+    long_threshold: int | None = None
 
     def card_for(self, usage):
-        if self.long_card is not None and usage.prompt_tokens > self.long_threshold:
+        if self.long_card is not None and self.long_threshold is not None and usage.prompt_tokens > self.long_threshold:
             return self.long_card
         return self.card
 

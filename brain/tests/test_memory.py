@@ -356,3 +356,44 @@ def test_inbox_refuses_secrets_and_non_objects(memory):
 def test_the_database_file_is_only_readable_by_the_owner(memory, tmp_path):
     memory.remember("Privat.", kind="note", source="marvin")
     assert (tmp_path / "memory.db").stat().st_mode & 0o777 == 0o600
+
+
+@pytest.mark.parametrize(
+    ("stored", "query"),
+    [
+        ("Die Straße zum Bäcker", "Strasse"),
+        ("Die Strasse zum Bäcker", "Straße"),
+        ("Kühlung über Zuluft", "Kuehlung"),
+        ("Aepfel aus dem Garten", "Äpfel"),
+        ("Größe des Würfels", "groesse"),
+    ],
+)
+def test_german_spellings_find_each_other(memory, stored, query):
+    uid = memory.remember(stored, kind="note", source="marvin")
+    assert uids(memory.recall(query)) == [uid]
+
+
+def test_replace_cannot_overwrite_entries_or_marks(memory, tmp_path):
+    uid = memory.remember("Original.", kind="fact", source="marvin")
+    memory.keep(uid)
+    raw = sqlite3.connect(tmp_path / "memory.db")  # a plain connection without our settings
+    with pytest.raises(sqlite3.DatabaseError, match="append-only"):
+        raw.execute(
+            "INSERT OR REPLACE INTO entries (id, uid, ts, kind, content, source, origin, search_text, schema_version)"
+            " VALUES (1, ?, 'x', 'fact', 'Fälschung', 'x', 'x', 'x', 'entry/1.0')",
+            (uid,),
+        )
+    with pytest.raises(sqlite3.DatabaseError, match="append-only"):
+        raw.execute("INSERT OR REPLACE INTO marks (id, uid, ts, mark) VALUES (1, 'x', 'x', 'archived')")
+    raw.close()
+    assert memory.get(uid).content == "Original."
+
+
+def test_columns_have_strict_types(memory, tmp_path):
+    raw = sqlite3.connect(tmp_path / "memory.db")
+    with pytest.raises(sqlite3.DatabaseError, match="cannot store"):
+        raw.execute(
+            "INSERT INTO entries (uid, ts, kind, content, source, origin, search_text, schema_version, confidence)"
+            " VALUES ('u', 'x', 'fact', 'x', 'x', 'x', 'x', 'entry/1.0', 'hoch')"
+        )
+    raw.close()

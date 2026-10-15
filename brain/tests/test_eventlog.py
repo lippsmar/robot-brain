@@ -251,3 +251,42 @@ def test_a_cursor_can_start_at_a_day(log, clock):
     clock.advance(days=1)
     log.append("agent.action", {"n": 2})
     assert [e["payload"]["n"] for e in log.cursor(since_day="2026-10-16").read_new()] == [2]
+
+
+def test_without_anchors_a_shortened_log_looks_fine(log, tmp_path):
+    """Documents the limit of a hash chain alone; anchors close the gap (next test)."""
+    for n in range(3):
+        log.append("agent.action", {"n": n})
+    path = tmp_path / "events" / "2026-10-15.jsonl"
+    path.write_text("".join(path.read_text(encoding="utf-8").splitlines(keepends=True)[:2]), encoding="utf-8")
+    assert log.verify().ok
+
+
+def test_anchors_reveal_a_shortened_log(log, tmp_path):
+    for n in range(3):
+        log.append("agent.action", {"n": n})
+    anchor = log.head()
+    assert anchor[0] == 2
+    path = tmp_path / "events" / "2026-10-15.jsonl"
+    path.write_text("".join(path.read_text(encoding="utf-8").splitlines(keepends=True)[:2]), encoding="utf-8")
+
+    report = log.verify(anchors=[anchor])
+    assert not report.ok
+    assert "shortened" in report.errors[0]
+
+
+def test_anchors_reveal_a_completely_rewritten_log(log, tmp_path, clock):
+    log.append("agent.action", {"n": 1})
+    anchor = log.head()
+    (tmp_path / "events" / "2026-10-15.jsonl").unlink()
+    log.append("agent.action", {"n": 666})  # a new, internally consistent chain
+
+    assert log.verify().ok
+    report = log.verify(anchors=[anchor])
+    assert not report.ok
+    assert "rewritten" in report.errors[0]
+
+
+def test_head_of_an_empty_log(log):
+    assert log.head() == (-1, GENESIS)
+    assert log.verify(anchors=[log.head()]).ok

@@ -62,6 +62,7 @@ Geprüft am 15.10.2026 an genau diesen Versionen: Lizenzdatei aus dem Paket gele
 | coverage 7.16.2 | Apache-2.0 | keine. `socket` nur für den Rechnernamen | Testabdeckung |
 | iniconfig 2.3.0, pluggy 1.6.0, packaging 26.3, pygments 2.21.0 | MIT, MIT, Apache-2.0/BSD, BSD-2-Clause | keine Netz-Importe | Abhängigkeiten von pytest. pluggy 1.7.0 und iniconfig 2.3.1 waren jünger als 14 Tage, deshalb ältere Versionen |
 | sortedcontainers 2.4.0 | Apache-2.0 | keine | Abhängigkeit von hypothesis |
+| mypy 2.4.0 mit ast-serialize 0.11.2, librt 0.16.0, mypy-extensions 1.1.0, pathspec 1.1.1, typing-extensions 4.16.0 | MIT (mypy, ast-serialize, librt, mypy-extensions), MPL-2.0 (pathspec), PSF-2.0 (typing-extensions) | keine Telemetrie, kein Netz. `urllib` nur für Dateipfad-Umwandlung in Berichten, `socket` nur lokal (Unix-Socket des Hintergrunddienstes), „telemetry“ nur lokale Zeitmessung in eine Datei. Netz nur mit `--install-types`, das wir nicht nutzen | Typprüfung. ast-serialize 0.13.0 war erst 3 Tage alt, deshalb 0.11.2 |
 
 Nicht vollständig gelesen (zu groß). Gelesen bzw. durchsucht: Lizenzdateien, alle Python-Dateien per Suche nach `urllib`, `http`, `socket`, `requests`, Telemetrie-Begriffen, die Fundstellen im Detail, Binärdateien per `strings`.
 

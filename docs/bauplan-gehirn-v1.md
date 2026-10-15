@@ -211,6 +211,7 @@ Voraussetzung: Marvin hat das mail.de-Konto angelegt und das Passwort selbst in 
 ## Phase 14 – Stabilität
 **14.1 Selbstüberwachung:**
 - täglicher Datenbank-Check (`PRAGMA integrity_check`) und Prüfsummen
+- Ergänzung 15.10.2026: täglich den Anker des Event-Logs (`head()`: Nummer und Hash des letzten Eintrags) auf die Sicherungsplatte schreiben und das Log mit allen Ankern prüfen. Ohne Anker fällt ein gekürztes Log nicht auf (Crosby und Wallach 2009)
 - Speicherwächter
 - wöchentlicher Selbsttest mit den Prüffragen und Abgleich der Speicher
 **14.2 Neustart-Test:** Netzteil ziehen, bis der Akku leer ist, dann wieder anstecken.

@@ -15,6 +15,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import BinaryIO
 
 from brain.schema import load_schema, validate
 from brain.secrets_guard import find_secret
@@ -211,9 +212,23 @@ class EventLog:
     def events(self):
         return list(self.iter_events())
 
-    def verify(self):
-        """Check every line: valid JSON, schema, own hash, link to the previous event, sequence."""
+    def head(self):
+        """(seq, hash) of the newest event. Stored outside the log (e.g. on the backup disk) it is
+        an anchor: a later verify(anchors=...) notices if the log was shortened or rewritten."""
+        with self._thread_lock, self._file_lock():
+            for path in reversed(sorted(self.directory.glob("*.jsonl"))):
+                found = _last_valid_event(path)
+                if found:
+                    return found["seq"], found["hash"]
+        return -1, GENESIS
+
+    def verify(self, anchors=()):
+        """Check every line: valid JSON, schema, own hash, link to the previous event, sequence.
+
+        `anchors` are (seq, hash) pairs from head() kept outside the log. Without anchors a
+        shortened log (last events removed) cannot be told apart from a complete one."""
         errors = []
+        seen = {}
         count = 0
         expected_seq, expected_prev = 0, GENESIS
         for path in sorted(self.directory.glob("*.jsonl")):
@@ -237,7 +252,15 @@ class EventLog:
                         errors.append(f"{where} (seq {seq}): chain broken, prev does not match")
                     if isinstance(seq, int):
                         expected_seq = seq + 1
+                        seen[seq] = event.get("hash")
                     expected_prev = event.get("hash", "")
+        for anchor_seq, anchor_hash in anchors:
+            if anchor_seq < 0:
+                continue
+            if anchor_seq not in seen:
+                errors.append(f"anchor seq {anchor_seq}: event missing, the log was shortened")
+            elif seen[anchor_seq] != anchor_hash:
+                errors.append(f"anchor seq {anchor_seq}: hash differs, the log was rewritten")
         return VerifyReport(ok=not errors, count=count, errors=errors)
 
 
@@ -246,16 +269,19 @@ class _FileLock:
 
     def __init__(self, path):
         self._path = path
-        self._handle = None
+        self._handle: BinaryIO | None = None
 
     def __enter__(self):
-        self._handle = _open_private(self._path)
-        fcntl.flock(self._handle, fcntl.LOCK_EX)
+        handle = _open_private(self._path)
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        self._handle = handle
         return self
 
     def __exit__(self, *exc):
-        fcntl.flock(self._handle, fcntl.LOCK_UN)
-        self._handle.close()
+        handle, self._handle = self._handle, None
+        if handle is not None:
+            fcntl.flock(handle, fcntl.LOCK_UN)
+            handle.close()
 
 
 def _open_private(path):
