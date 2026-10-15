@@ -71,7 +71,7 @@ Grundlage: Design Körper „Schlaubi“ Version 1. **Gehirn: Marvins alter Lapt
 | Posten | Preis | Art | Quelle / Hinweis |
 |---|---|---|---|
 | Prepaid-SIM mit SMS und Daten | **höchstens 10 € im Monat** (Marvin, 15.10.2026) | S | Bedarf grob geschätzt 1–2 GB im Monat, Ziel 3–5 GB mit Reserve. Die Preise vom 13.10.2026 (CallYa Start 4,99 €, otelo 4,95 €, ja!mobil 8,99 €) sind unsicher: Laut tariffuxx gibt es 5-Euro-Discountertarife seit April 2026 nicht mehr. Vor dem Kauf in Deutschland aktuell vergleichen. Auf Marvin registriert |
-| Claude-API | höchstens 10 € / Monat (sparsamer Betrieb, Schätzung sparsam ca. 8 $) | R | Prepaid-Limit in der Anthropic Console, Entscheidung 15.10.2026 (ersetzt 30 $) |
+| Claude-API | höchstens 20 € / Monat (Schätzung sparsam ca. 8 $, normal ca. 25 $) | R | Prepaid-Limit in der Anthropic Console, Entscheidung 15.10.2026 (ersetzt 30 $) |
 | E-Mail-Adresse | 0 € | R | mail.de FreeMail (Entscheidung 13.10.2026) |
 | Such-API für Recherche | offen | offen | Anbieter noch nicht gewählt |
 

@@ -180,7 +180,7 @@ Stand 14.10.2026. Grundlage: `docs/design-charakter.md`, von Marvin am 14.10.202
 
 ## Phase 12 – Selbstoptimierung
 Voraussetzung: Gehirn-Phase 13 (Recherche).
-**12.1 Recherche-Anteil:** 40 % des Recherche-Budgets, höchstens 2 € im Monat (bei 10 € Gesamtbudget), mit eigener Kostenstelle.
+**12.1 Recherche-Anteil:** 40 % des Recherche-Budgets, höchstens 4 € im Monat (bei 20 € Gesamtbudget), mit eigener Kostenstelle.
 **12.2 Wöchentlicher Update-Vorschlag** per Telegram:
 - Jeder Punkt nennt: was sich ändert, warum, Quellen, Nutzen, Risiko, Kosten, Test und Rücknahme.
 - Marvin antwortet pro Punkt mit ja, nein oder später.
