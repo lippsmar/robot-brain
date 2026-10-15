@@ -103,6 +103,13 @@ Marvins Entscheidung: Der Würfel braucht keine eigene Kamera. Die Augen überni
 - **Neu (Vorschlag):** VL53L8CX, 8×8 Zonen bis 4 m, vorne hinter einem kleinen Fenster, am Software-I2C (GPIO22/23) zusammen mit BME280 (0x77), BMP280 (0x76) und BH1750 (0x23). Der VL53L8CX nutzt standardmäßig 0x29.
 - **Nutzen:** Merkt, ob jemand vor ihm sitzt, ob sich etwas nähert und wie weit Dinge entfernt sind. Ein grobes 8×8-Tiefenbild, keine Gesichter, keine Bilder.
 - **Risiko (früher Test):** Der Sensor lädt beim Start seine Firmware (ca. 80 kB) über I2C. Am langsamen Software-I2C kann das Sekunden dauern. Messen; notfalls an den Hardware-I2C oder per SPI. (S)
-- **Augen vom Smartphone:** Weg noch offen (Fotos per Telegram, eigene Webseite über Tailscale oder App). Es gilt weiter: Bilder an die Claude-API nur, wenn Marvin etwas zeigt, ohne Metadaten. Die Handy-Kamera zeigt ihre eigene Anzeige. Der Würfel leuchtet zusätzlich hell weiß, solange Schlaubi durch das Handy schaut.
+- **Augen vom Smartphone (Marvin 15.10.2026: „Livebild, wenn ich die Seite öffne“):**
+  - Das Gehirn stellt eine kleine Webseite bereit, nur über Tailscale erreichbar, mit HTTPS (Browser geben die Kamera nur auf sicheren Seiten frei). Keine App nötig.
+  - Öffnet Marvin die Seite und erlaubt die Kamera im Browser, sieht Schlaubi live. Schließt er die Seite oder geht der Bildschirm aus, endet das Livebild sofort.
+  - Anzeige: Der Browser zeigt die Kamera-Nutzung selbst an, die Seite zeigt groß „Live“, der Würfel leuchtet hell weiß.
+  - Annahme: Das Livebild bleibt im privaten Netz beim Gehirn. An die Claude-API geht nur ein Einzelbild, wenn Marvin etwas fragt oder zeigt („Schau mal“ oder Knopf), verkleinert und ohne Metadaten. Dauerndes Auswerten durch Claude würde das Budget von 20 € schnell aufbrauchen.
+  - Annahme: Livebild schaltet sich nach 10 Minuten ohne Frage selbst ab. Nichts wird gespeichert, außer Marvin sagt „merken“.
+  - Personen im Bild nur mit Einwilligung, wie bisher.
+  - Wird nur von Marvins Gerät im Tailscale-Netz angenommen (Tailscale-Identität prüfen), nie öffentlich.
 - **Kosten:** Version 1 ca. 155–251 € statt 166–269 € (Teileliste).
 - **Status:** Design Körper Version 1 war freigegeben. Diese Änderung braucht eine neue Freigabe, bevor Bauplan und Teileliste endgültig angepasst werden.
