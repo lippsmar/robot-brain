@@ -90,7 +90,7 @@ Ablauf jedes Schritts: **Messung oder Test festlegen → ausführen (erwartet: s
 - CPU-Last im Dauerbetrieb unter 50 %, Temperatur unter 70 °C.
 - Nicht bestanden: Ursache suchen, andere Software oder Einstellungen. Erst nach Lösung weiter.
 
-**Entscheidungspunkt 1 (Marvin):** Phase 5 und 6 bestanden? Nur dann Stufe 2 bestellen.
+**Entscheidungspunkt 1 (Marvin):** Phase 5 und 6 bestanden **und Testweg mit dem Handy bestanden** (Bauplan Gehirn 11.5 bis 11.8, Ergänzung 15.10.2026)? Nur dann Stufe 2 bestellen. Stufe 1 (ca. 13–15 €) darf vorher gekauft werden, weil sie die größten Risiken billig prüft.
 
 ## Phase 7 – Bestellung Stufe 2
 **7.1 Teile bestellen (Marvin):** LTE-Modem SIM7600E-H, Abstandssensor VL53L8CX (Pololu 3419), RGB-LED WS2812, Piezo-Summer, Taster, Schalter, USB-C-Buchse, Kleinteile, Pufferkondensator, Sensoren BME280 und BH1750. **Noch keine Powerbank** (erst nach Phase 11).

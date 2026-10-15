@@ -12,6 +12,7 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
 - **Technik:** Debian 13 („trixie“) ohne Desktop, Docker, Python für eigene Dienste, Tailscale. Fremde Programme werden vor der Nutzung nach `skills/INDEX.md` geprüft.
 - **Entwicklung:** Den Code schreibt Claude Code mit Marvins Abo im Repo, testgetrieben, unter `brain/`. Der laufende Betrieb nutzt nur den API-Key.
 - **Zusammenspiel mit dem Körper:** Phase 11 des Körper-Plans nutzt einen einfachen Test-Dienst. Phase 11 dieses Plans ersetzt ihn durch die echte Anbindung.
+- **Reihenfolge (Testweg, 15.10.2026):** Zuerst das Gehirn aufsetzen, dann mit dem Handy als Test-Würfel alles ausprobieren (Schritte 11.5 bis 11.8), erst danach die Würfel-Hardware der Stufe 2 kaufen.
 
 ### Globale Vorgaben
 | Vorgabe | Wert |
@@ -162,6 +163,31 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
   - Zeit vom Ende der Frage bis zum Beginn der Antwort messen. Ziel: höchstens 4 Sekunden über WLAN, höchstens 6 Sekunden über LTE.
   - Eine übers Handy gezeigte Testkarte wird beschrieben. Das gesendete Bild enthält keine EXIF-Daten.
   - Ein Gespräch ohne Kopfhörer kommt als Telegram-Text an.
+
+### Testweg: Handy als Test-Würfel (vor dem Kauf der Hardware, Ergänzung 15.10.2026)
+Ziel: Alle Funktionen des Gehirns mit Marvins Handy ausprobieren, bevor Stufe 2 gekauft wird. Die Testseite ist ein zweiter Nutzer derselben Würfel-Schnittstelle (`listen`, `photo`, `led`, `sound`, `status`). So wird die Schnittstelle schon vor dem echten Würfel geprüft.
+
+**11.5 Testseite:** im selben Dienst wie 11.4, nur über Tailscale mit HTTPS, nur Marvins Geräte.
+- `listen`: Knopf gedrückt halten statt Aktivierungswort. Das Mikrofon schickt Ton nur an den Laptop. Die Spracherkennung des Browsers wird nicht benutzt, weil sie Ton an Google schicken kann. Ton wird nach der Erkennung verworfen.
+- `led`: Bildschirmfarbe nach den Laune-Farben aus dem Charakter. `sound`: Töne über das Handy.
+- `photo`: das Livebild aus 11.4.
+- `status`: Akku, Verbindung (WLAN oder LTE), Antwortzeit.
+- Sensoren, soweit der Browser sie freigibt: Bewegung (hochheben), Licht nur falls verfügbar. Sonst weglassen, kein Ersatz erfinden.
+- Test: Im Netzwerkprotokoll des Laptops kommt Ton nur über Tailscale an, und vom Handy geht kein Ton an andere Adressen.
+
+**11.6 Funktionen durchspielen** (jeweils mit Ergebnis in Notion):
+- Gespräch mit Kopfhörern. Antwortzeit wie 11.3: höchstens 4 Sekunden über WLAN, höchstens 6 Sekunden über LTE (Handy unterwegs).
+- Ohne Kopfhörer: Antwort als Telegram-Text.
+- Laune und Farben, Zuneigung, Ablehnen von Smalltalk, Hessisch über Piper.
+- Gedächtnis: „merken“, später danach fragen. Recherche-Auftrag und Ergebnis auf Nachfrage.
+- Livebild mit Testkarte, Budget-Anzeige, Code-Sandbox mit einer kleinen Auswertung.
+- Test: Jede Funktion aus den Designs Gehirn, Charakter, Daten (ohne Würfel-Sensoren) und Code-Skills ist einmal bestanden oder als Fehler mit Ursache notiert.
+
+**11.7 Aktivierungswort auf dem Handy (optional):** nur wenn Marvin es möchte. Weg z. B. Termux mit lokalem Aktivierungswort, vorher Prüfung nach Checkliste. Alles bleibt auf dem Handy und dem Laptop.
+
+**11.8 Entscheidungspunkt Testweg (Marvin):** Ergebnis aus 11.6 ansehen. Nur wenn das Gehirn mit dem Test-Würfel überzeugt, wird Stufe 2 der Würfel-Hardware gekauft (Bauplan Körper, Entscheidungspunkt 1).
+
+Was der Testweg nicht prüft: Strom, Wärme und Laufzeit des Pi, Sensoren, LED, Summer und Taster am Pi, LTE-Modem mit eigener SIM, Licht durchs Gehäuse. Das bleibt beim Bauplan Körper.
 
 **→ Zwischenstand:** Schlaubi spricht mit Marvin über den Würfel.
 

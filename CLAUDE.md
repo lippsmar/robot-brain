@@ -64,6 +64,7 @@ Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marv
 - [x] Design Code-Skills und Umgebungsauswertung freigegeben (15.10.2026, `docs/design-code-umgebung.md`)
 - [x] Bauplan Code-Skills Version 1 bestätigt (15.10.2026, `docs/bauplan-code-umgebung-v1.md`)
 - [ ] Gehirn Phase 0: Bestandsaufnahme und Inhalte sichern (Marvin, `docs/checkliste-phase0-gehirn.md`). Löschen noch nicht freigegeben
+- [ ] Testweg: Gehirn zuerst, dann Handy als Test-Würfel (Bauplan Gehirn 11.5–11.8), erst danach Stufe 2 kaufen (Entscheidung 15.10.2026)
 - [ ] Phase 1: Teile Stufe 1 bestellen (Marvin, `docs/einkauf-stufe1.md`)
 - [ ] Laptop als Gehirn: Modell, RAM, Speicher, Akkuzustand und Betriebssystem erfassen und Eignung prüfen
 - [ ] Superpowers in Claude Code installieren und Telemetrie abschalten (macht Marvin, siehe `docs/projektstart-details.md`)
