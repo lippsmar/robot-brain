@@ -11,7 +11,7 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 - **Vorschlag zur Hardware (offen):** Microcontroller für Not-Aus, Watchdog und Sensorik, Raspberry Pi Zero 2 W für LTE-Modem, Mail und Kommunikation. Das Gehirn (OpenClaw, Vektorspeicher, Embeddings) läuft auf Marvins altem Laptop als Heimserver (Entscheidung 13.10.2026, Eignung noch prüfen).
 - **Wissensspeicher:** SQLite mit sqlite-vec und FTS5 (Hybridsuche), dazu LanceDB als Vergleich und Ersatz. Kleine ONNX-Embeddings über fastembed.
 - **Energie:** Akku mit USB-C-Laden über ein UPS-HAT. Dauerbetrieb braucht ein Netzteil.
-- **Details** (SIM-Modem, Modelle, Embeddings, OpenClaw-Absicherung, Handy-Zugriff, Adobe-Nachbauten): `docs/projektstart-details.md`. Teileliste: `docs/teileliste.md`. Design des Körpers „Schlaubi“: `docs/design-koerper.md`. Design des Gehirns: `docs/design-gehirn.md`. Design des Charakters: `docs/design-charakter.md`. Design Datensammlung: `docs/design-daten.md`. OpenClaw-Prüfung: `docs/pruefung-openclaw.md`. Sicherheit und Recht: `docs/sicherheit-und-recht.md`. Lessons Learned und Mechanismen für Claude: `docs/claude-optimierung.md`.
+- **Details** (SIM-Modem, Modelle, Embeddings, OpenClaw-Absicherung, Handy-Zugriff, Adobe-Nachbauten): `docs/projektstart-details.md`. Teileliste: `docs/teileliste.md`. Design des Körpers „Schlaubi“: `docs/design-koerper.md`. Design des Gehirns: `docs/design-gehirn.md`. Design des Charakters: `docs/design-charakter.md`. Design Datensammlung: `docs/design-daten.md`. Design Code-Skills: `docs/design-code-umgebung.md`. OpenClaw-Prüfung: `docs/pruefung-openclaw.md`. Sicherheit und Recht: `docs/sicherheit-und-recht.md`. Lessons Learned und Mechanismen für Claude: `docs/claude-optimierung.md`.
 
 ## 3. Arbeitsregeln für Claude Code
 - Vor der Arbeit den Skill `skills/roboter-projekt` befolgen und die Checklisten in `docs/claude-optimierung.md` nutzen.
@@ -58,6 +58,7 @@ Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marv
 - [x] Bauplan Charakter Version 1 bestätigt (14.10.2026, `docs/bauplan-charakter-v1.md`)
 - [x] Design Umgebungsbewusstsein und Datensammlung freigegeben (14.10.2026, `docs/design-daten.md`)
 - [x] Bauplan Datensammlung Version 1 bestätigt (14.10.2026, `docs/bauplan-daten-v1.md`)
+- [ ] Design Code-Skills und Umgebungsauswertung freigeben (`docs/design-code-umgebung.md`)
 - [ ] Gehirn Phase 0: Bestandsaufnahme und Inhalte sichern (Marvin, `docs/checkliste-phase0-gehirn.md`). Löschen noch nicht freigegeben
 - [ ] Phase 1: Teile Stufe 1 bestellen (Marvin, `docs/einkauf-stufe1.md`)
 - [ ] Laptop als Gehirn: Modell, RAM, Speicher, Akkuzustand und Betriebssystem erfassen und Eignung prüfen
