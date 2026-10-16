@@ -11,7 +11,9 @@ in the data lake; deleting those is a separate step that needs Marvin's release 
 16.10.2026).
 
 Thresholds (Annahme 16.10.2026): a pattern needs at least 3 days of data; a place counts for an
-hour when the cube was there on at least half of the days; the battery is low below 20 %;
+hour when the cube was there on at least half of the days; besides that, every named place
+visited on at least 3 days counts, however short the stay (Marvin, 16.10.2026: Café-Besuche),
+"meist werktags" from 75 % of the visits; the battery is low below 20 %;
 today differs from usual by at least 3 dB or 1.5 °C, with at least 3 values today. "Usual" means
 the same hours on the same kind of day (weekday or weekend). All days are local days.
 """
@@ -32,6 +34,7 @@ from brain.zahlen import zahl
 
 MIN_TAGE = 3
 ANTEIL = 0.5
+BESUCH_ANTEIL = 0.75  # share of visits on weekdays (or weekends) to say "meist werktags"
 AKKU_KNAPP = 20.0
 FENSTER_TAGE = 28
 MIN_HEUTE = 3
@@ -41,7 +44,7 @@ VERGLEICH = {
     "zuluft_temp": ("°C", 1, 1.5, "wärmer", "kälter"),
 }
 _GRUPPEN = ("werktags", "am Wochenende")
-_KEY = re.compile(r"ort:(werktags|am Wochenende):.{1,40}|umgebung:.{1,40}|akku:knapp", re.DOTALL)
+_KEY = re.compile(r"ort:(werktags|am Wochenende):.{1,40}|besuch:.{1,40}|umgebung:.{1,40}|akku:knapp", re.DOTALL)
 
 
 class MusterError(Exception):
@@ -114,6 +117,30 @@ def _orte(lake, start, end, zone):
     return result
 
 
+def _besuche(lake, start, end, zone, known):
+    """Places visited on at least MIN_TAGE days, however short the stay (Marvin, 16.10.2026: Café-Besuche)."""
+    first_hour: dict = defaultdict(dict)  # place -> local date -> first local hour
+    for hour, place in lake.places_by_hour(start, end):
+        if place != UNTERWEGS and place not in known:
+            local = _local(hour, zone)
+            first_hour[place].setdefault(local.date(), local.hour)
+    result = []
+    for place in sorted(first_hour):
+        visits = first_hour[place]
+        if len(visits) < MIN_TAGE:
+            continue
+        weekdays = sum(1 for date in visits if date.weekday() < 5)
+        if weekdays >= BESUCH_ANTEIL * len(visits):
+            when = f"meist {_GRUPPEN[0]}"
+        elif len(visits) - weekdays >= BESUCH_ANTEIL * len(visits):
+            when = f"meist {_GRUPPEN[1]}"
+        else:
+            when = "werktags wie am Wochenende, meist"
+        hour = statistics.median_low(visits.values())
+        result.append(Muster(f"besuch:{place}", f"{place}: an {len(visits)} Tagen besucht, {when} gegen {hour} Uhr"))
+    return result
+
+
 def _umgebung(lake, start, end, zone):
     places = sorted({place for _, place in lake.places_by_hour(start, end)} - {UNTERWEGS})
     result = []
@@ -149,11 +176,18 @@ def _akku(lake, start, end, zone):
     return [Muster("akku:knapp", text)]
 
 
-def finde_muster(lake, now, *, tage=FENSTER_TAGE, timezone="Europe/Berlin"):
-    """Patterns from the last `tage` days (daily and weekly run, Bauplan Daten 9.1)."""
+def finde_muster(lake, now, *, tage=FENSTER_TAGE, timezone="Europe/Berlin", ausgeblendet=frozenset()):
+    """Patterns from the last `tage` days (daily and weekly run, Bauplan Daten 9.1), without deleted keys.
+
+    A place with a time-of-day pattern gets no extra visit pattern, also when Marvin deleted the
+    time-of-day pattern: deleting must not make the same place reappear under another key.
+    """
     zone = ZoneInfo(timezone)
     start, end = now - timedelta(days=tage), now
-    return _orte(lake, start, end, zone) + _umgebung(lake, start, end, zone) + _akku(lake, start, end, zone)
+    orte = _orte(lake, start, end, zone)
+    known = {muster.key.split(":", 2)[2] for muster in orte}
+    found = orte + _besuche(lake, start, end, zone, known) + _umgebung(lake, start, end, zone)
+    return [muster for muster in found + _akku(lake, start, end, zone) if muster.key not in ausgeblendet]
 
 
 def heute_vs_sonst(lake, now, ort, *, tage=FENSTER_TAGE, timezone="Europe/Berlin"):
@@ -212,8 +246,7 @@ class MusterListe:
         return {row[0] for row in self._conn.execute("SELECT key FROM geloescht")}
 
     def aktuell(self, lake, now, **options):
-        deleted = self._deleted()
-        return [muster for muster in finde_muster(lake, now, **options) if muster.key not in deleted]
+        return finde_muster(lake, now, ausgeblendet=frozenset(self._deleted()), **options)
 
     @staticmethod
     def _check_key(key):
@@ -243,8 +276,7 @@ class MusterListe:
     def uebersicht(self, lake, now):
         """Answer to "Was weißt du über meinen Alltag?" (Bauplan Daten 9.3)."""
         alle = finde_muster(lake, now)
-        deleted = self._deleted()
-        found = [muster for muster in alle if muster.key not in deleted]
+        found = self.aktuell(lake, now)
         self._event("patterns.shown", {"anzahl": len(found), "geloescht": len(alle) - len(found)})
         if not alle:
             return f"Noch keine Muster. Dafür brauche ich Daten von mindestens {MIN_TAGE} Tagen."

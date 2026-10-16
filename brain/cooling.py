@@ -18,6 +18,14 @@ from brain.zahlen import zahl
 
 WARN_CHIP_C = 70.0
 WINDOW = timedelta(hours=1)
+DRUCK_FENSTER = timedelta(minutes=10)
+# Both sensors sit in the same cube, so after the side-by-side offset their pressure should agree.
+# BMP280 datasheet: relative accuracy ±0.12 hPa, absolute ±1 hPa (soldering can shift the offset).
+# Tolerance 1 hPa over the 10-minute mean (Annahme 16.10.2026; check the BME280 datasheet before use).
+DRUCK_TOLERANZ_HPA = 1.0
+# The hint clears only below 75 % of the tolerance, so a value near the limit does not flip back and forth.
+DRUCK_ENTWARNUNG = 0.75
+_DRUCK_SENSOREN = {"zuluft_druck": "Zuluft (BMP280)", "abluft_druck": "Abluft (BME280)"}
 
 
 @dataclass(frozen=True)
@@ -32,6 +40,8 @@ class CoolingStatus:
     warnung: bool
     gruende: tuple = ()
     hinweis: str = ""
+    druck_differenz: float | None = None  # exhaust minus supply pressure minus offset, mean of 10 minutes
+    sensor_verdacht: bool = False
 
 
 def _utc_now():
@@ -56,7 +66,26 @@ def _slope_per_hour(rows):
     return sum((hour - mean_hour) * (value - mean_value) for hour, value in zip(hours, values, strict=True)) / spread
 
 
-def assess(lake, now, *, warn_at=WARN_CHIP_C, abgleich=0.0):
+def _mean(rows):
+    return sum(row.value for row in rows) / len(rows) if rows else None
+
+
+def _pressure_check(lake, now, druck_abgleich):
+    """(gap, broken): gap of the 10-minute means; broken names a sensor that sends but has no valid value."""
+    start, end = now - DRUCK_FENSTER, now + timedelta(minutes=1)
+    means = {}
+    for channel in _DRUCK_SENSOREN:
+        rows = lake.readings(channel, start, end, quality=None)
+        good = [row for row in rows if row.quality == "ok"]
+        if rows and not good:
+            return None, channel
+        means[channel] = _mean(good)
+    if None in means.values():
+        return None, None
+    return means["abluft_druck"] - means["zuluft_druck"] - druck_abgleich, None
+
+
+def assess(lake, now, *, warn_at=WARN_CHIP_C, abgleich=0.0, druck_abgleich=0.0, druck_toleranz=DRUCK_TOLERANZ_HPA):
     """Cooling status from the good readings of the last hour."""
     start, end = now - WINDOW, now + timedelta(minutes=1)
     chip = lake.readings("chip_temp", start, end)
@@ -73,6 +102,16 @@ def assess(lake, now, *, warn_at=WARN_CHIP_C, abgleich=0.0):
         reasons.append("der Pi drosselt")
     known = (chip_temp, modem_temp, supply, exhaust)
     hint = "" if any(value is not None for value in known) else "keine aktuellen Messwerte"
+    gap, broken = _pressure_check(lake, now, druck_abgleich)
+    suspect = broken is not None or (gap is not None and abs(gap) > druck_toleranz)
+    notes = [hint] if hint else []
+    if broken is not None:
+        notes.append(
+            f"Drucksensor {_DRUCK_SENSOREN[broken]} liefert keine gültigen Werte, ein Klimasensor ist verdächtig"
+        )
+    elif suspect:
+        notes.append(f"Drucksensoren weichen um {zahl(abs(gap), 1)} hPa ab, ein Klimasensor ist verdächtig")
+    hint = "; ".join(notes)
     return CoolingStatus(
         chip_temp,
         modem_temp,
@@ -84,23 +123,47 @@ def assess(lake, now, *, warn_at=WARN_CHIP_C, abgleich=0.0):
         bool(reasons),
         tuple(reasons),
         hint,
+        gap,
+        suspect,
     )
 
 
 class CoolingWatch:
     """Checks the cooling and warns once per hot phase (event log and mood)."""
 
-    def __init__(self, lake, log, *, mood=None, clock=_utc_now, warn_at=WARN_CHIP_C, abgleich=0.0):
+    def __init__(
+        self,
+        lake,
+        log,
+        *,
+        mood=None,
+        clock=_utc_now,
+        warn_at=WARN_CHIP_C,
+        abgleich=0.0,
+        druck_abgleich=0.0,
+        druck_toleranz=DRUCK_TOLERANZ_HPA,
+    ):
         self._lake = lake
         self._log = log
         self._mood = mood
         self._clock = clock
         self._warn_at = warn_at
         self._abgleich = abgleich
+        self._druck_abgleich = druck_abgleich
+        self._druck_toleranz = druck_toleranz
         self._warned = False
+        self._suspected = False
 
     def check(self):
-        status = assess(self._lake, self._clock(), warn_at=self._warn_at, abgleich=self._abgleich)
+        status = assess(
+            self._lake,
+            self._clock(),
+            warn_at=self._warn_at,
+            abgleich=self._abgleich,
+            druck_abgleich=self._druck_abgleich,
+            druck_toleranz=self._druck_toleranz,
+        )
+        self._check_sensors(status)
         if status.warnung and not self._warned:
             payload = {"gruende": list(status.gruende), "chip_temp": status.chip_temp, "drosselung": status.drosselung}
             self._log.append("safety.alert", payload, intent="cooling.warn", result="Warnung an Marvin")
@@ -115,3 +178,15 @@ class CoolingWatch:
             )
             self._warned = False
         return status
+
+    def _check_sensors(self, status):
+        """Report a suspect climate sensor once (to Marvin via safety.alert), and when both agree again."""
+        gap = status.druck_differenz
+        if status.sensor_verdacht and not self._suspected:
+            payload = {"druck_differenz": None if gap is None else round(gap, 2)}
+            self._log.append("safety.alert", payload, intent="cooling.sensor_suspect", result=status.hinweis)
+            self._suspected = True
+        elif self._suspected and gap is not None and abs(gap) <= DRUCK_ENTWARNUNG * self._druck_toleranz:
+            payload = {"druck_differenz": round(status.druck_differenz, 2)}
+            self._log.append("system.health", payload, intent="cooling.sensor_ok", result="Drucksensoren wieder gleich")
+            self._suspected = False

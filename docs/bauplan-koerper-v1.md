@@ -116,7 +116,7 @@ Ablauf jedes Schritts: **Messung oder Test festlegen → ausführen (erwartet: s
 **8a.3 Messen:** Temperatur, Luftfeuchte, Luftdruck und Helligkeit jede Minute an das Gehirn (Data Lake L5, Zeitreihe mit Gerät und Qualität).
 - Test: Werte im Vergleich mit einem Zimmerthermometer und Handy-Helligkeitsmesser plausibel. Taschenlampe auf den Lichtsensor ergibt einen deutlichen Sprung.
 **8a.4 Kühlung messen:** Zuluft (BMP280) und Abluft (BME280) gegenüberstellen, dazu Chip-Temperatur (`vcgencmd`) und Modem-Temperatur (`AT+CPMUTEMP`, in Phase 10 prüfen). Jede Minute ins Gehirn.
-- Test: Vor dem Einbau messen beide Sensoren nebeneinander höchstens 0,5 °C verschieden (sonst Abgleich speichern). Im geschlossenen Würfel nach einer Stunde: Abluft wärmer als Zuluft, Chip unter 70 °C, keine Drosselung.
+- Test: Vor dem Einbau messen beide Sensoren nebeneinander höchstens 0,5 °C verschieden (sonst Abgleich speichern). Dabei auch den Luftdruck beider Sensoren vergleichen und den Unterschied als Druck-Abgleich speichern (Ergänzung 16.10.2026, für Bauplan Daten 3.3). Im geschlossenen Würfel nach einer Stunde: Abluft wärmer als Zuluft, Chip unter 70 °C, keine Drosselung.
 - Warnung an Marvin, wenn die Chip-Temperatur 70 °C erreicht oder der Pi drosselt.
 
 ## Phase 9 – Abstandssensor (Änderung 15.10.2026, ersetzt Kamera)

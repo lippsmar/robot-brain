@@ -39,6 +39,11 @@ Stand 16.10.2026. **Nichts davon ist entschieden.** Marvin hat das mit Gemini nu
 - **Personenbezogenes vor dem API-Aufruf herausfiltern** (dort ADR 5): Den Secrets-Wächter gibt es schon. Eine Namenserkennung (NER) wäre ein neues Modell, vorher nach Checkliste prüfen.
 - **Für später** (in `docs/zukunft-features.md` aufgenommen): Pfeif- und Trillersprache wie R2-D2 über den Summer, NFC-Karten (PN532) zum Umschalten von Modi, Gesten mit dem Abstandssensor, Flüster-Modus je nach Umgebungslautstärke, Signatur der Messblöcke mit Ed25519, Austausch mit anderen Würfeln (Datenschutz klären).
 
+## Stand 16.10.2026 (Marvin)
+- **Klimasensoren-Abgleich über den Luftdruck:** in den Bauplan übernommen (Bauplan Daten 3.3, Körper 8a.4), Code steht in `brain/cooling.py`.
+- **Data Lakehouse:** Marvin findet die Idee gut, weil mit der Zeit viele unstrukturierte Daten anfallen, die schnell abrufbar sein sollen. Noch nicht entschieden, ein Design folgt. Rahmen aus den bisherigen Entscheidungen: lokal auf dem Gehirn-Laptop statt Cloud, Sicherung verschlüsselt zu Hause. Denkbar ist z. B. SQLite für frische Daten, dazu Parquet-Dateien mit einer lokalen Abfrage-Engine wie DuckDB für Archiv und Auswertung. DuckDB müsste vorher nach Checkliste geprüft werden.
+- **Notion als Datenspeicher:** nicht geeignet. Die API erlaubt im Schnitt etwa 3 Anfragen pro Sekunde pro Verbindung (offizielle Doku), die Daten lägen in der Cloud, und Rohdaten bleiben nach Entscheidung lokal. Notion bleibt Projektgedächtnis und Übersicht.
+
 ## Offene Fragen an Marvin
 - Welche dieser Ideen sollen in ein Design kommen?
 - Bleibt es bei lokaler Datenhaltung ohne Cloud-Archiv?

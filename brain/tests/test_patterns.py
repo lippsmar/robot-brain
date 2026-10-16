@@ -379,3 +379,61 @@ def test_the_average_weights_every_value(tmp_path, clock):
         == "Büro: im Schnitt 45 dB (an 3 Tagen)"
     )
     lake.close()
+
+
+def test_short_visits_count_as_a_place(lake):
+    """Marvin, 16.10.2026: a place also counts for short stays, e.g. a café."""
+    lake.name_place("CafeNetz", "Café")
+    for seq, (day, hour) in enumerate(((6, 13), (8, 14), (14, 13)), start=40_000):  # Tue, Thu, Wed; one reading each
+        ts = datetime(2026, 10, day, hour, 30, tzinfo=UTC)
+        lake.ingest("wuerfel-1", seq, ts, {"lautstaerke": 62.0}, wlan="CafeNetz")
+
+    found = texts(finde_muster(lake, NOW))
+
+    assert found["besuch:Café"] == "Café: an 3 Tagen besucht, meist werktags gegen 15 Uhr"
+    assert "besuch:Büro" not in found  # already a pattern by time of day
+
+
+def test_regular_short_visits_also_get_a_time_of_day(lake):
+    lake.name_place("CafeNetz", "Café")
+    for seq, day in enumerate((3, 10, 17), start=40_000):  # three Saturdays, 10 Uhr local
+        lake.ingest("wuerfel-1", seq, datetime(2026, 10, day, 8, 0, tzinfo=UTC), {"lautstaerke": 62.0}, wlan="CafeNetz")
+
+    found = texts(finde_muster(lake, NOW))
+
+    assert found["ort:am Wochenende:Café"] == "Am Wochenende meist 10–11 Uhr: Café (an 3 von 5 Tagen)"
+    assert "besuch:Café" not in found
+
+
+def test_visits_on_mixed_days(tmp_path, clock):
+    lake = DataLake(tmp_path / "mixed.db", clock=clock)
+    lake.name_place("CafeNetz", "Café")
+    for seq, (day, hour) in enumerate(((5, 14), (8, 12), (10, 14), (11, 15)), start=1):  # Mo, Do, Sa, So (UTC)
+        lake.ingest("wuerfel-1", seq, datetime(2026, 10, day, hour, 0, tzinfo=UTC), {"licht": 300}, wlan="CafeNetz")
+
+    found = texts(finde_muster(lake, NOW))
+
+    assert found["besuch:Café"] == "Café: an 4 Tagen besucht, werktags wie am Wochenende, meist gegen 16 Uhr"
+    lake.close()
+
+
+def test_a_visit_pattern_can_be_deleted(lake, liste):
+    lake.name_place("CafeNetz", "Café")
+    for seq, (day, hour) in enumerate(((6, 13), (8, 14), (14, 13)), start=40_000):
+        lake.ingest("wuerfel-1", seq, datetime(2026, 10, day, hour, 30, tzinfo=UTC), {"licht": 300}, wlan="CafeNetz")
+
+    liste.loeschen("besuch:Café", vermerk="Marvin per Telegram")
+
+    assert "besuch:Café" not in texts(liste.aktuell(lake, NOW))
+    assert "Café: an 3 Tagen" not in liste.uebersicht(lake, NOW)
+
+
+def test_deleting_the_time_pattern_does_not_bring_the_place_back_as_a_visit(lake, liste):
+    lake.name_place("CafeNetz", "Café")
+    for seq, day in enumerate((3, 10, 17), start=40_000):
+        lake.ingest("wuerfel-1", seq, datetime(2026, 10, day, 8, 0, tzinfo=UTC), {"licht": 300}, wlan="CafeNetz")
+
+    liste.loeschen("ort:am Wochenende:Café", vermerk="Test")
+
+    found = texts(liste.aktuell(lake, NOW))
+    assert not any(key in found for key in ("ort:am Wochenende:Café", "besuch:Café"))

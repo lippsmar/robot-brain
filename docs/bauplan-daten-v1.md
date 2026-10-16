@@ -2,7 +2,7 @@
 
 Stand 14.10.2026. Grundlage: `docs/design-daten.md`, von Marvin am 14.10.2026 freigegeben. **Von Marvin am 14.10.2026 bestätigt.**
 
-**Stand Code (16.10.2026):** Die Teile auf dem Gehirn sind gebaut und getestet, mit Daten aus Tests statt vom Würfel: Data Lake (7, 6.1, 8.2) in `brain/datalake.py`, Kühlung (3) in `brain/cooling.py`, Zustand (6.2) in `brain/context.py`, Muster (9.1–9.3) in `brain/patterns.py`. Die Tests mit echten Daten (z. B. „nach zwei Wochen drei zutreffende Muster“) folgen, sobald der Würfel oder das Handy als Test-Würfel Daten liefert. Schwellen und Tageszeiten sind Annahmen, siehe die Kopfkommentare der Dateien.
+**Stand Code (16.10.2026):** Die Teile auf dem Gehirn sind gebaut und getestet, mit Daten aus Tests statt vom Würfel: Data Lake (7, 6.1, 8.2) in `brain/datalake.py`, Kühlung (3, mit Druck-Abgleich 3.3) in `brain/cooling.py`, Zustand (6.2) in `brain/context.py`, Muster (9.1–9.3) in `brain/patterns.py`. Die Tests mit echten Daten (z. B. „nach zwei Wochen drei zutreffende Muster“) folgen, sobald der Würfel oder das Handy als Test-Würfel Daten liefert. Schwellen und Tageszeiten sind Annahmen, siehe die Kopfkommentare der Dateien.
 
 ## Kopf
 - **Ziel:** Der Würfel erfasst immer, wenn er an ist, Geräusche als Merkmale, Messwerte und groben Kontext. Das Gehirn legt alles sauber im Data Lake ab, erkennt Muster und nutzt sie für Schlaubis Umgebungsbewusstsein und Laune. Gespräche anderer werden nie mitgehört.
@@ -56,6 +56,8 @@ Stand 14.10.2026. Grundlage: `docs/design-daten.md`, von Marvin am 14.10.2026 fr
 **3.1 Auswertung:** Zuluft gegen Abluft, Chip- und Modem-Temperatur. Trend über die letzte Stunde.
 **3.2 Warnung** per Telegram ab 70 °C Chip-Temperatur oder bei Drosselung, dazu Laune-Ereignis „mir ist warm“.
 - Test: Mit Last (z. B. Stresstest auf dem Pi) steigt die Abluft gegenüber der Zuluft. Bei künstlich gesenkter Warngrenze kommt die Warnung.
+**3.3 Abgleich der Klimasensoren (Ergänzung 16.10.2026, Marvin; Idee aus dem Gemini-Brainstorming):** BMP280 (Zuluft) und BME280 (Abluft) messen beide den Luftdruck. Im selben Würfel muss er nach dem Abgleich aus Körper 8a.4 gleich sein, die Temperatur dagegen nicht (der Unterschied ist die Messgröße). Weicht der Druck im Mittel über 10 Minuten um mehr als 1 hPa ab, gilt ein Sensor als verdächtig: Hinweis an Marvin, einmal pro Phase. Grundlage: BMP280-Datenblatt, relative Genauigkeit ±0,12 hPa, absolute ±1 hPa. Die 1 hPa sind eine Annahme, das BME280-Datenblatt ist vor dem Einbau zu prüfen.
+- Test: Ein abgesteckter oder mit dem Finger erwärmter Sensor ändert die Temperatur, ein Sensor mit absichtlich falschem Abgleich löst den Hinweis aus. Gleiche Werte lösen nichts aus.
 
 ## Phase 4 – Ton-Merkmale
 **4.1 Merkmale:** Lautstärke, Geräuschklassen mit Sicherheit, Sprache ja oder nein, ungefähre Zahl der Stimmen.
@@ -106,6 +108,7 @@ Stand 14.10.2026. Grundlage: `docs/design-daten.md`, von Marvin am 14.10.2026 fr
 ## Phase 9 – Muster erkennen
 **9.1 Tägliche und wöchentliche Auswertung,** z. B.:
 - wann Marvin wo arbeitet
+- wo er öfter kurz ist, z. B. im Café: Ein benannter Ort zählt auch bei kurzen Aufenthalten, sobald er an mindestens 3 Tagen besucht wurde (Ergänzung 16.10.2026, Marvin)
 - wie laut und warm es dabei ist
 - wann der Akku knapp wird
 

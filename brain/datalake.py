@@ -33,6 +33,7 @@ UNTERWEGS = "unterwegs"
 # channel -> (unit, plausible minimum, plausible maximum)
 CHANNELS = {
     "zuluft_temp": ("°C", -20.0, 85.0),
+    "zuluft_druck": ("hPa", 300.0, 1100.0),  # BMP280, for the cross-check with abluft_druck (Daten 3.3)
     "abluft_temp": ("°C", -20.0, 85.0),
     "abluft_feuchte": ("%", 0.0, 100.0),
     "abluft_druck": ("hPa", 300.0, 1100.0),

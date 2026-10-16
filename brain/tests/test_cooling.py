@@ -115,3 +115,82 @@ def test_a_warning_also_moves_the_mood(lake, log, clock):
     current = mood.current()
     assert current.energie < 0
     assert "74 °C im Würfel" in current.reason
+
+
+def test_both_pressure_sensors_agree(lake):
+    feed(lake, 1, 1, zuluft_druck=1012.4, abluft_druck=1012.6)
+
+    status = assess(lake, NOW, druck_abgleich=0.1)
+
+    assert status.druck_differenz == pytest.approx(0.1)
+    assert not status.sensor_verdacht
+
+
+def test_a_pressure_gap_makes_a_sensor_suspect(lake):
+    for seq, minutes_ago in enumerate((9, 6, 3, 1), start=1):
+        feed(lake, minutes_ago, seq, zuluft_druck=1012.0, abluft_druck=1014.5)
+
+    status = assess(lake, NOW)
+
+    assert status.sensor_verdacht
+    assert "Drucksensoren weichen um 2,5 hPa ab" in status.hinweis
+    assert not status.warnung  # a sensor problem is not overheating
+
+
+def test_a_single_odd_pressure_reading_is_not_enough(lake):
+    for seq, minutes_ago in enumerate((9, 6, 3), start=1):
+        feed(lake, minutes_ago, seq, zuluft_druck=1012.0, abluft_druck=1012.2)
+    feed(lake, 1, 4, zuluft_druck=1012.0, abluft_druck=1015.0)
+
+    assert not assess(lake, NOW).sensor_verdacht  # mean of the last 10 minutes: 0.9 hPa
+
+
+def test_old_pressure_readings_are_not_compared(lake):
+    feed(lake, 30, 1, zuluft_druck=1012.0, abluft_druck=1016.0)
+
+    status = assess(lake, NOW)
+    assert (status.druck_differenz, status.sensor_verdacht) == (None, False)
+
+
+def test_the_watch_reports_a_suspect_sensor_once(lake, log, clock):
+    clock.now = NOW
+    watch = CoolingWatch(lake, log, clock=clock)
+    feed(lake, 2, 1, zuluft_druck=1012.0, abluft_druck=1015.0)
+
+    watch.check()
+    watch.check()
+    suspects = [e for e in log.events() if e["intent"] == "cooling.sensor_suspect"]
+    assert len(suspects) == 1
+    assert suspects[0]["type"] == "safety.alert"
+
+    clock.now = NOW + timedelta(minutes=20)
+    lake.ingest("wuerfel-1", 2, NOW + timedelta(minutes=19), {"zuluft_druck": 1012.0, "abluft_druck": 1012.1})
+    watch.check()
+    assert log.events()[-1]["intent"] == "cooling.sensor_ok"
+
+
+def test_a_pressure_sensor_without_valid_values_is_suspect(lake):
+    feed(lake, 2, 1, zuluft_druck=None, abluft_druck=1012.0)  # sensor error from the cube
+
+    status = assess(lake, NOW)
+
+    assert status.sensor_verdacht
+    assert "Zuluft (BMP280) liefert keine gültigen Werte" in status.hinweis
+
+
+def test_the_pressure_hint_is_added_to_other_hints(lake):
+    feed(lake, 2, 1, zuluft_druck=1012.0, abluft_druck=1015.0)
+
+    assert assess(lake, NOW).hinweis.startswith("keine aktuellen Messwerte; Drucksensoren weichen um 3 hPa ab")
+
+
+def test_the_all_clear_needs_a_clear_margin(lake, log, clock):
+    watch = CoolingWatch(lake, log, clock=clock)
+    for step, gap in enumerate((1.2, 0.9, 1.1, 0.5)):
+        clock.now = NOW + timedelta(minutes=20 * step)
+        ts = clock.now - timedelta(minutes=1)
+        lake.ingest("wuerfel-1", step + 1, ts, {"zuluft_druck": 1012.0, "abluft_druck": 1012.0 + gap})
+        watch.check()
+
+    intents = [e["intent"] for e in log.events() if e["intent"].startswith("cooling.sensor")]
+    assert intents == ["cooling.sensor_suspect", "cooling.sensor_ok"]
