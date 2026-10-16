@@ -108,11 +108,25 @@
     "entwicklung": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["von_selbst", "nur_aus", "max_schritt_pro_woche", "bewegliche_regler"],
+      "required": ["von_selbst", "nur_aus", "gespraech", "wochenlauf", "bewegliche_regler"],
       "properties": {
         "von_selbst": {"type": "boolean"},
         "nur_aus": {"const": "Gespräche mit Marvin"},
-        "max_schritt_pro_woche": {"type": "integer", "minimum": 0, "maximum": 1},
+        "gespraech": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["max_pro_tag", "max_pro_regler_und_woche"],
+          "properties": {
+            "max_pro_tag": {"type": "integer", "minimum": 0, "maximum": 1},
+            "max_pro_regler_und_woche": {"type": "integer", "minimum": 0, "maximum": 2}
+          }
+        },
+        "wochenlauf": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["max_pro_woche"],
+          "properties": {"max_pro_woche": {"type": "integer", "minimum": 0, "maximum": 1}}
+        },
         "bewegliche_regler": {"type": "array", "maxItems": 20, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]{1,39}$"}}
       }
     }

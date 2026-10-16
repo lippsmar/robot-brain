@@ -171,12 +171,12 @@ Stand 14.10.2026. Grundlage: `docs/design-charakter.md`, von Marvin am 14.10.202
   - Rückgängig stellt den vorherigen Stand her.
 
 ## Phase 11 – Entwicklung von selbst
-**11.1 Wöchentlicher Lauf:** wertet Gespräche mit Marvin aus und verschiebt Regler höchstens um einen kleinen Schritt, nur innerhalb der erlaubten Bereiche. Jede Verschiebung bekommt einen Grund.
-**11.2 Wöchentlicher Selbsttest:** Die Kern-Prüffragen aus Phase 5 laufen. Fällt einer durch, wird die letzte Entwicklung zurückgenommen und Marvin informiert.
+**11.1 Tempo (geändert 16.10.2026, Marvin):** Im Gespräch mit Marvin darf sich der Charakter höchstens einen Schritt pro Tag bewegen, jeder Regler höchstens zwei Schritte pro Woche. Dazu kommt der **wöchentliche Lauf** mit einem eigenen Schritt pro Woche: Er wertet die ganze Woche aus und hat damit einen gesonderten Einfluss. Nur bewegliche Regler, nur innerhalb der erlaubten Bereiche, jeder Schritt mit Grund. Rückgängig gemachte Schritte zählen mit. Ersetzt „höchstens ein Schritt pro Woche“.
+**11.2 Wöchentlicher Selbsttest:** Die Kern-Prüffragen aus Phase 5 laufen. Fällt einer durch, werden alle Entwicklungsschritte der letzten 7 Tage zurückgenommen (seit 16.10.2026, wegen des schnelleren Tempos) und Marvin informiert.
 **11.3 Auskunft:** „Was hat sich an dir verändert?“ liefert die Änderungen mit Datum und Grund.
 - Test mit simulierten Wochen:
   - Regler bleiben in ihren Bereichen.
-  - Pro Woche bewegt sich höchstens ein Schritt.
+  - Im Gespräch höchstens ein Schritt pro Tag und zwei pro Regler und Woche, dazu ein Schritt des Wochenlaufs.
   - Inhalte von Dritten oder aus dem Netz bewegen nichts.
   - Ein absichtlich verletzter Kern führt zur Rücknahme.
 

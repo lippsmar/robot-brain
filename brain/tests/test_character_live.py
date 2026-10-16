@@ -184,11 +184,11 @@ def test_development_moves_one_step_with_a_reason(live, log):
 
     assert slider(live, "direktheit")["wert"] == 9
     latest = live.veraenderungen()[-1]
-    assert latest.text == "Entwicklung: Direktheit von 8 auf 9: Marvin mag klare Worte"
+    assert latest.text == "Entwicklung (Wochenlauf): Direktheit von 8 auf 9: Marvin mag klare Worte"
     assert log.events()[-1]["intent"] == "profile.developed"
 
 
-def test_at_most_one_step_per_week(live, clock):
+def test_the_weekly_run_moves_at_most_one_step_per_week(live, clock):
     develop(live)
     clock.now = START + timedelta(days=6)  # Sunday, same week
 
@@ -216,9 +216,9 @@ def test_only_movable_sliders_develop(live):
         develop(live, "selbstbewusstsein")
 
 
-@pytest.mark.parametrize("quelle", ["web", "mail", "dritte", "telegram"])
+@pytest.mark.parametrize("quelle", ["web", "mail", "dritte", "telegram", "sprache"])
 def test_only_conversations_with_marvin_move_the_character(live, quelle):
-    with pytest.raises(ProfilError, match="Wochenlauf"):
+    with pytest.raises(ProfilError, match="Gesprächen mit Marvin"):
         live.entwickeln("direktheit", 1, grund="test", quelle=quelle)
 
 
@@ -236,7 +236,7 @@ def test_a_failed_self_test_takes_back_the_last_development(live, clock, log):
 
     text = live.entwicklung_zuruecknehmen(grund="Kern-Prüffrage 3 nicht bestanden")
 
-    assert text == "Zurückgenommen: Entwicklung: Direktheit von 8 auf 9 (Kern-Prüffrage 3 nicht bestanden)"
+    assert text == "Zurückgenommen: Entwicklung (Wochenlauf): Direktheit von 8 auf 9 (Kern-Prüffrage 3 nicht bestanden)"
     assert slider(live, "direktheit")["wert"] == 8
     assert slider(live, "smalltalk_toleranz")["wert"] == 2  # Marvin's own change stays
     assert log.events()[-1]["type"] == "safety.alert"
@@ -251,7 +251,7 @@ def test_what_has_changed_about_you(live, clock):
 
     changes = live.veraenderungen(seit=START + timedelta(days=1))
 
-    assert [c.text for c in changes] == ["Entwicklung: Humor-Häufigkeit von 2 auf 3: Marvin lacht öfter"]
+    assert [c.text for c in changes] == ["Entwicklung (Wochenlauf): Humor-Häufigkeit von 2 auf 3: Marvin lacht öfter"]
     assert changes[0].datum == START + timedelta(days=8)
 
 
@@ -432,3 +432,113 @@ def test_an_empty_repository_is_reported(tmp_path, clock):
 
     with pytest.raises(ProfilError, match="unvollständig"):
         LiveProfil(folder, clock=clock, marvin_chat=MARVIN)
+
+
+# --- Tempo (Marvin, 16.10.2026): in conversation at most one step per day and two per slider and
+# week, plus one separate step of the weekly run.
+
+
+def talk(live, name="direktheit", richtung=1, grund="Marvin will klare Worte"):
+    return live.entwickeln(name, richtung, grund=grund, quelle="gespraech")
+
+
+def test_conversations_move_the_character_with_their_own_label(live):
+    assert talk(live) == "Entwicklung (Gespräch): Direktheit von 8 auf 9"
+    assert live.veraenderungen()[-1].text == "Entwicklung (Gespräch): Direktheit von 8 auf 9: Marvin will klare Worte"
+
+
+def test_in_conversation_at_most_one_step_per_day(live, clock):
+    talk(live)
+    clock.now = START + timedelta(hours=12)  # same local day
+
+    with pytest.raises(ProfilError, match="heute"):
+        talk(live, "humor_haeufigkeit")
+
+    clock.now = START + timedelta(days=1)
+    talk(live, "humor_haeufigkeit")
+    assert slider(live, "humor_haeufigkeit")["wert"] == 3
+
+
+def test_in_conversation_at_most_two_steps_per_slider_and_week(live, clock):
+    talk(live, "humor_haeufigkeit")
+    clock.now = START + timedelta(days=1)
+    talk(live, "humor_haeufigkeit")
+    clock.now = START + timedelta(days=2)
+
+    with pytest.raises(ProfilError, match="schon 2 Mal"):
+        talk(live, "humor_haeufigkeit", -1)
+    talk(live, "direktheit")  # another slider is fine
+
+    clock.now = START + timedelta(days=7)  # next week
+    talk(live, "humor_haeufigkeit", -1)
+    assert slider(live, "humor_haeufigkeit")["wert"] == 3  # 2 -> 3 -> 4 -> 3
+
+
+def test_the_weekly_run_has_its_own_step(live):
+    talk(live)
+    develop(live, "humor_haeufigkeit")  # same day, separate influence
+
+    assert (slider(live, "direktheit")["wert"], slider(live, "humor_haeufigkeit")["wert"]) == (9, 3)
+    with pytest.raises(ProfilError, match="Woche"):
+        develop(live, "humor_trockenheit")
+
+
+def test_weekly_run_steps_do_not_use_up_the_conversation_steps(live, clock):
+    develop(live)
+    talk(live)
+    clock.now = START + timedelta(days=1)
+    talk(live, richtung=-1)  # the weekly run's step does not count against the two conversation steps
+
+    assert slider(live, "direktheit")["wert"] == 9
+
+
+def test_undone_conversation_steps_still_count_for_the_day(live):
+    talk(live)
+    undo(live)
+
+    with pytest.raises(ProfilError, match="heute"):
+        talk(live)
+
+
+def test_a_failed_self_test_also_takes_back_a_conversation_step(live):
+    talk(live)
+
+    text = live.entwicklung_zuruecknehmen(grund="Kern-Prüffrage 4 nicht bestanden")
+
+    assert text.startswith("Zurückgenommen: Entwicklung (Gespräch): Direktheit von 8 auf 9")
+    assert slider(live, "direktheit")["wert"] == 8
+
+
+def test_a_failed_self_test_takes_back_all_steps_of_the_week(live, clock, log):
+    talk(live)  # Monday: direktheit 8 -> 9
+    clock.now = START + timedelta(days=1)
+    talk(live, "humor_haeufigkeit")  # Tuesday: 2 -> 3
+    develop(live, "humor_trockenheit", -1)  # weekly run: 9 -> 8
+    clock.now = START + timedelta(days=6)
+
+    text = live.entwicklung_zuruecknehmen(grund="Kern-Prüffrage 5 nicht bestanden")
+
+    assert [slider(live, name)["wert"] for name in ("direktheit", "humor_haeufigkeit", "humor_trockenheit")] == [
+        8,
+        2,
+        9,
+    ]
+    assert text.count("Entwicklung (") == 3
+    assert log.events()[-1]["intent"] == "profile.development_undone"
+
+
+def test_only_one_writer_at_a_time(live, tmp_path):
+    import fcntl
+    import threading
+
+    result = []
+    with open(tmp_path / "profil" / ".git" / "schlaubi.lock", "a") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        worker = threading.Thread(target=lambda: result.append(talk(live)))
+        worker.start()
+        worker.join(timeout=0.5)
+        assert worker.is_alive()  # waits for the other writer
+        assert slider(live, "direktheit")["wert"] == 8
+        fcntl.flock(handle, fcntl.LOCK_UN)
+    worker.join(timeout=10)
+    assert result == ["Entwicklung (Gespräch): Direktheit von 8 auf 9"]

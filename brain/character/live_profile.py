@@ -15,15 +15,20 @@ Phase 10 – Marvin changes a slider or undoes the last change:
 - Every change is a git commit with its reason and can be undone step by step.
 
 Phase 11 – development on its own: only movable sliders, one step at a time, inside their
-range, at most `max_schritt_pro_woche` steps per calendar week (local time; undone steps still
-count), only from the weekly run over conversations with Marvin. If the weekly self-test fails,
-the newest development is taken back and Marvin is alerted.
+range, only from conversations with Marvin. Tempo (Marvin, 16.10.2026), numbers in the profile:
+- in conversation (`gespraech`): at most `max_pro_tag` steps per local day and
+  `max_pro_regler_und_woche` steps per slider and calendar week,
+- the weekly run (`wochenlauf`) has its own, separate influence: `max_pro_woche` steps per week,
+  which do not use up the conversation steps.
+Undone steps still count. If the weekly self-test fails, the newest development is taken back and
+Marvin is alerted.
 
 Annahmen 16.10.2026: a proposal expires after 10 minutes; if Marvin sets a value outside the
 development range, the range is widened to include it (his word counts more than the range).
 """
 
 import contextlib
+import fcntl
 import os
 import re
 import secrets
@@ -37,8 +42,9 @@ from brain.character.profile import CORE_PATTERNS, PROFILE_FILE, ProfileError, p
 
 FILE_NAME = "profil.yaml"
 GUELTIG = timedelta(minutes=10)
+SELBSTTEST_ABSTAND = timedelta(days=7)  # the core self-test runs weekly (Bauplan Charakter 11.2)
 QUELLEN_MARVIN = ("telegram", "sprache")
-QUELLE_ENTWICKLUNG = "wochenlauf"
+ENTWICKLUNG_QUELLEN = {"gespraech": "Gespräch", "wochenlauf": "Wochenlauf"}
 KERN_HINWEIS = (
     "Der feste Kern lässt sich nicht im Gespräch ändern,"
     " nur in der Datei brain/character/kern.md (Marvin mit Claude Code)."
@@ -53,7 +59,7 @@ NAMEN = {
 _START_SUBJECT = "Startprofil"
 _KURZ = "kurz: "
 _REVERT = "revert: "
-_ENTWICKLUNG = "Entwicklung: "
+_ENTWICKLUNG = "Entwicklung ("
 _CONTROL = re.compile(r"[\x00-\x1f\x7f]")
 
 
@@ -168,6 +174,16 @@ class LiveProfil:
         """Back to the last commit after a failed change: no half-written profile stays live."""
         with contextlib.suppress(ProfilError):  # the original error is the one to report
             self._git_run("reset", "--quiet", "--hard", "HEAD")
+
+    @contextlib.contextmanager
+    def _locked(self):
+        """One writer at a time (conversation, weekly run, Telegram), also across processes."""
+        with open(self._folder / ".git" / "schlaubi.lock", "a") as handle:
+            fcntl.flock(handle, fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(handle, fcntl.LOCK_UN)
 
     def _history(self):
         """Commits newest first."""
@@ -317,14 +333,15 @@ class LiveProfil:
         del self._pending[change_id]
         if self._clock() > change.bis:
             raise ProfilError("Die Änderung ist abgelaufen, bitte noch einmal sagen")
-        if change.art == "rueckgaengig":
-            return self._undo(change, message_id)
-        kurz = f"{_name(change.regler)} von {change.alt} auf {change.neu}"
-        self._apply(
-            lambda: self._write(change.regler, change.alt, change.neu, change.min, change.max),
-            f"{kurz}: {change.grund} (per {change.quelle}, bestätigt per Telegram)",
-            kurz,
-        )
+        with self._locked():
+            if change.art == "rueckgaengig":
+                return self._undo(change, message_id)
+            kurz = f"{_name(change.regler)} von {change.alt} auf {change.neu}"
+            self._apply(
+                lambda: self._write(change.regler, change.alt, change.neu, change.min, change.max),
+                f"{kurz}: {change.grund} (per {change.quelle}, bestätigt per Telegram)",
+                kurz,
+            )
         payload = {"regler": change.regler, "alt": change.alt, "neu": change.neu, "quelle": change.quelle}
         self._event("agent.action", {**payload, "telegram": message_id}, "profile.changed", "übernommen")
         return kurz
@@ -357,51 +374,79 @@ class LiveProfil:
     # --- Phase 11: development on its own -------------------------------------------------
 
     def entwickeln(self, regler, richtung, *, grund, quelle):
-        """One step of a movable slider from the weekly run, with a reason, at most the weekly limit."""
-        if quelle != QUELLE_ENTWICKLUNG:
-            raise ProfilError("Der Charakter entwickelt sich nur im Wochenlauf aus Gesprächen mit Marvin")
+        """One step of a movable slider, from a conversation or the weekly run, within the tempo limits.
+
+        Boundary: only the evaluation of Marvin's own conversations calls this (after each conversation
+        with him, and the weekly run). It is never offered to the model as a tool, and content from
+        websites, mails or other people never reaches it.
+        """
+        if quelle not in ENTWICKLUNG_QUELLEN:
+            raise ProfilError("Der Charakter entwickelt sich nur aus Gesprächen mit Marvin (Gespräch oder Wochenlauf)")
         if isinstance(richtung, bool) or richtung not in (1, -1):
             raise ProfilError("Entwicklung geht immer genau einen Schritt (+1 oder -1)")
         _check_text(grund, "Grund")
-        profile = self.profil()
-        development = profile["entwicklung"]
-        if not development.get("von_selbst") or regler not in development["bewegliche_regler"]:
-            raise ProfilError(f"{_name(regler)} ist kein beweglicher Regler")
-        week = self._clock().astimezone(self._zone).isocalendar()[:2]
-        steps = sum(
-            1
-            for commit in self._history()
-            if commit.kurz.startswith(_ENTWICKLUNG) and commit.datum.astimezone(self._zone).isocalendar()[:2] == week
-        )
-        if steps >= development["max_schritt_pro_woche"]:
-            raise ProfilError("Diese Woche hat sich der Charakter schon entwickelt")
-        current = profile["regler"][regler]
-        neu = current["wert"] + richtung
-        if not current["min"] <= neu <= current["max"]:
-            raise ProfilError(f"{_name(regler)} bleibt im Spielraum {current['min']}–{current['max']}")
-        kurz = f"{_ENTWICKLUNG}{_name(regler)} von {current['wert']} auf {neu}"
-        self._apply(
-            lambda: self._write(regler, current["wert"], neu, current["min"], current["max"]), f"{kurz}: {grund}", kurz
-        )
-        payload = {"regler": regler, "alt": current["wert"], "neu": neu}
+        prefix = f"{_ENTWICKLUNG}{ENTWICKLUNG_QUELLEN[quelle]}): "
+        with self._locked():
+            profile = self.profil()
+            development = profile["entwicklung"]
+            if not development.get("von_selbst") or regler not in development["bewegliche_regler"]:
+                raise ProfilError(f"{_name(regler)} ist kein beweglicher Regler")
+            self._check_tempo(quelle, prefix, _name(regler), development)
+            current = profile["regler"][regler]
+            neu = current["wert"] + richtung
+            if not current["min"] <= neu <= current["max"]:
+                raise ProfilError(f"{_name(regler)} bleibt im Spielraum {current['min']}–{current['max']}")
+            kurz = f"{prefix}{_name(regler)} von {current['wert']} auf {neu}"
+            self._apply(
+                lambda: self._write(regler, current["wert"], neu, current["min"], current["max"]),
+                f"{kurz}: {grund}",
+                kurz,
+            )
+        payload = {"regler": regler, "alt": current["wert"], "neu": neu, "quelle": quelle}
         self._event("agent.action", payload, "profile.developed", "entwickelt")
         return kurz
 
+    def _check_tempo(self, quelle, prefix, name, development):
+        """Count this source's steps (undone ones too) by local day and calendar week."""
+        now = self._clock().astimezone(self._zone)
+        week = now.isocalendar()[:2]
+        steps = [(c.kurz, c.datum.astimezone(self._zone)) for c in self._history() if c.kurz.startswith(prefix)]
+        this_week = [(kurz, day) for kurz, day in steps if day.isocalendar()[:2] == week]
+        if quelle == "wochenlauf":
+            if len(this_week) >= development["wochenlauf"]["max_pro_woche"]:
+                raise ProfilError("Der Wochenlauf hat den Charakter diese Woche schon verändert")
+            return
+        limits = development["gespraech"]
+        if sum(1 for _, day in steps if day.date() == now.date()) >= limits["max_pro_tag"]:
+            raise ProfilError("Im Gespräch hat sich der Charakter heute schon verändert")
+        same_slider = sum(1 for kurz, _ in this_week if kurz.startswith(f"{prefix}{name} von"))
+        if same_slider >= limits["max_pro_regler_und_woche"]:
+            raise ProfilError(f"{name} hat sich diese Woche im Gespräch schon {same_slider} Mal verändert")
+
     def entwicklung_zuruecknehmen(self, *, grund):
-        """After a failed core self-test (11.2): take back the newest development; Marvin is always alerted."""
+        """After a failed core self-test (11.2): take back every development since the last weekly test.
+
+        That is all development steps of the last 7 days still in effect, newest first. Marvin is
+        always alerted, also when nothing could be taken back or a step conflicts with his own
+        later change (his change stays, he decides).
+        """
         _check_text(grund, "Grund")
-        history = self._history()
-        developments = [c for c in history if c.kurz.startswith(_ENTWICKLUNG)]
-        reverted = {c.revert for c in history if c.revert}
-        try:
-            if not developments or developments[0].sha in reverted:
-                raise ProfilError("Es gibt keine Entwicklung zum Zurücknehmen")
-            commit = developments[0]
-            text = f"Zurückgenommen: {commit.kurz} ({grund})"
-            self._revert(commit, text, f"Zurückgenommen: {commit.kurz}")
-        except ProfilError as error:
-            # Nothing to take back, or Marvin changed the same slider later (his change stays): he decides.
-            self._event("safety.alert", {"grund": grund}, "profile.development_undo_failed", str(error)[:200])
-            raise
-        self._event("safety.alert", {"aenderung": commit.kurz, "grund": grund}, "profile.development_undone", text)
+        done = []
+        with self._locked():
+            try:
+                since = self._clock() - SELBSTTEST_ABSTAND
+                targets = [
+                    c for c in self._effective(self._history()) if c.kurz.startswith(_ENTWICKLUNG) and c.datum > since
+                ]
+                if not targets:
+                    raise ProfilError("Es gibt keine Entwicklung zum Zurücknehmen")
+                for commit in targets:
+                    self._revert(commit, f"Zurückgenommen: {commit.kurz} ({grund})", f"Zurückgenommen: {commit.kurz}")
+                    done.append(commit.kurz)
+            except ProfilError as error:
+                payload = {"grund": grund, "zurueckgenommen": done}
+                self._event("safety.alert", payload, "profile.development_undo_failed", str(error)[:200])
+                raise
+        text = f"Zurückgenommen: {'; '.join(done)} ({grund})"
+        self._event("safety.alert", {"aenderungen": done, "grund": grund}, "profile.development_undone", text)
         return text

@@ -102,5 +102,8 @@ laune:
 entwicklung:
   von_selbst: true
   nur_aus: Gespräche mit Marvin
-  max_schritt_pro_woche: 1
+  # Tempo (Marvin, 16.10.2026): im Gespräch höchstens ein Schritt pro Tag und zwei pro Regler und Woche,
+  # dazu der Wochenlauf mit einem eigenen Schritt pro Woche. Rückgängig gemachte Schritte zählen mit.
+  gespraech: {max_pro_tag: 1, max_pro_regler_und_woche: 2}
+  wochenlauf: {max_pro_woche: 1}
   bewegliche_regler: [direktheit, humor_haeufigkeit, humor_trockenheit]
