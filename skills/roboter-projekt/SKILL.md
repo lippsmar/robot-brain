@@ -40,13 +40,15 @@ Immer verwenden, wenn es um den KI-Roboter, Robot Brain, Memory Core, OpenClaw, 
 Ergebnis mit Datum in "Skill-Prüfstatus" eintragen. Mit welchem Modell ein Skill geschrieben wurde, lässt sich nicht prüfen.
 
 ## 5. Dokumentieren
-- Jede neue Entscheidung in die ADR-Tabelle von "Entscheidungen und Projektlog", jeden Arbeitsschritt als Logzeile mit Datum. Nichts löschen, nur ergänzen.
+- Jede neue Entscheidung in die ADR-Tabelle von "Entscheidungen und Projektlog", jedes Arbeitspaket als Logzeile mit Datum. Nichts löschen, nur ergänzen.
+- Bündeln (Marvin, 16.10.2026): ein Commit und ein Notion-Eintrag pro Arbeitspaket, nicht pro Schritt. Code-Prüfung und voller Fehler-Einbau-Lauf einmal am Ende des Pakets, dazwischen `mutation_check.py --geaendert`. Zwischenmeldungen kurz.
 - Die Markdown-Datei ki-roboter-projekt.md parallel aktuell halten, wenn sie verfügbar ist.
 - Auf der Memory-Core-Seite nur gezielte, kleine Änderungen.
 
 ## 6. Arbeitsweise bei Entwicklung
 - Neues Feature: erst klären, was gewollt ist (Skill roboter-brainstorming-plan), dann Plan, dann bauen.
 - Fehler: Skill roboter-debugging. Erfolg erst melden, wenn ein frischer Test es belegt.
+- Parallel arbeiten: Unabhängiges (Recherche, fremde Repos lesen, Code-Prüfung neben Doku) an Agenten im Hintergrund geben. Code an denselben Dateien nie parallel.
 
 ## 7. Checklisten (aus docs/claude-optimierung.md, 15.10.2026)
 **Sitzungsstart:** Repo aktualisieren (git pull), offene Punkte in CLAUDE.md und die letzten Projektlog-Einträge lesen, offene Frage an Marvin nicht vergessen, eine noch nicht gesendete Antwort (z. B. nach einer Kontext-Zusammenfassung) zuerst senden.

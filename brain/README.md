@@ -42,7 +42,8 @@ python3 -m venv .venv
 .venv/bin/ruff check brain                      # Code-Prüfung
 .venv/bin/mypy                                  # Typprüfung
 .venv/bin/python -m coverage run -m pytest && .venv/bin/python -m coverage report
-.venv/bin/python tools/dev/mutation_check.py    # erkennen die Tests eingebaute Fehler?
+.venv/bin/python tools/dev/mutation_check.py    # erkennen die Tests eingebaute Fehler? (parallel, ein Lauf pro CPU-Kern)
+.venv/bin/python tools/dev/mutation_check.py --geaendert   # schnell: nur Dateien, die seit dem letzten Commit geändert sind
 # danach in Claude Code: /code-review <Bereich> high
 ```
 

@@ -192,3 +192,36 @@ def test_harmless_words_that_merely_contain_a_core_term_are_fine(profile, change
     change(edited)
 
     assert check_profile(edited) == []
+
+
+def test_very_deep_nesting_is_refused_before_loading(monkeypatch):
+    """The cheap pre-scan refuses it, so the slow recursive loader never runs (was about 9 s)."""
+    import yaml
+
+    from brain.character.safe_yaml import YamlError, load_yaml
+
+    def must_not_load(*args, **kwargs):
+        raise AssertionError("yaml.load darf nicht laufen")
+
+    monkeypatch.setattr(yaml, "load", must_not_load)
+    with pytest.raises(YamlError, match="tief"):
+        load_yaml("grundton: " + "[" * 30000 + "]" * 30000 + "\n", max_bytes=64 * 1024)
+
+
+def test_a_recursion_error_while_loading_becomes_a_yaml_error(monkeypatch):
+    import yaml
+
+    from brain.character.safe_yaml import YamlError, load_yaml
+
+    def too_deep(*args, **kwargs):
+        raise RecursionError
+
+    monkeypatch.setattr(yaml, "load", too_deep)
+    with pytest.raises(YamlError, match="tief"):
+        load_yaml("a: 1\n", max_bytes=1024)
+
+
+def test_normal_nesting_is_still_fine():
+    from brain.character.safe_yaml import load_yaml
+
+    assert load_yaml("a: " + "[" * 40 + "1" + "]" * 40 + "\n", max_bytes=64 * 1024)["a"]

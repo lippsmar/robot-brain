@@ -32,14 +32,34 @@ def _construct_mapping(loader, node, deep=False):
 _StrictLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _construct_mapping)
 
 
+MAX_DEPTH = 50  # our files nest at most about 6 levels
+
+
+def _prescan(text):
+    """Cheap pass over the parser events (no recursion): no aliases, no deep nesting.
+
+    Without the depth check, nesting of a few thousand levels only fails at Python's recursion
+    limit, after seconds of work (measured 16.10.2026: 3000 levels about 9 s).
+    """
+    depth = 0
+    for event in yaml.parse(text, Loader=yaml.SafeLoader):
+        if isinstance(event, yaml.AliasEvent):
+            raise YamlError("Verweise (YAML-Aliase) sind nicht erlaubt")
+        if isinstance(event, (yaml.MappingStartEvent, yaml.SequenceStartEvent)):
+            depth += 1
+            if depth > MAX_DEPTH:
+                raise YamlError("zu tief verschachtelt")
+        elif isinstance(event, (yaml.MappingEndEvent, yaml.SequenceEndEvent)):
+            depth -= 1
+
+
 def load_yaml(text, *, max_bytes):
     if len(text.encode("utf-8")) > max_bytes:
         raise YamlError(f"zu groß (mehr als {max_bytes} Bytes)")
     try:
-        if any(isinstance(event, yaml.AliasEvent) for event in yaml.parse(text, Loader=yaml.SafeLoader)):
-            raise YamlError("Verweise (YAML-Aliase) sind nicht erlaubt")
+        _prescan(text)
         return yaml.load(text, Loader=_StrictLoader)  # noqa: S506  _StrictLoader is a SafeLoader
     except yaml.YAMLError as error:
         raise YamlError(f"kein gültiges YAML: {error}") from error
-    except RecursionError as error:
+    except RecursionError as error:  # defence in depth, e.g. when called on an already deep stack
         raise YamlError("zu tief verschachtelt") from error

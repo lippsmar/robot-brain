@@ -209,14 +209,14 @@ def _utc_now():
 
 
 class Memory:
-    def __init__(self, path, log=None, origin="gehirn", clock=_utc_now):
+    def __init__(self, path, log=None, origin="gehirn", clock=_utc_now, wait_s=5.0):
         self._path = Path(path)
         if not self._path.exists():
             os.close(os.open(self._path, os.O_CREAT | os.O_RDWR, 0o600))  # only Schlaubi's account
         self._log = log
         self._origin = origin
         self._clock = clock
-        self._conn = sqlite3.connect(self._path)
+        self._conn = sqlite3.connect(self._path, timeout=wait_s)  # how long to wait for other readers/writers
         self._conn.row_factory = sqlite3.Row
         self._conn.setconfig(sqlite3.SQLITE_DBCONFIG_DEFENSIVE, True)
         for pragma in (

@@ -425,18 +425,24 @@ def test_archived_entries_do_not_push_active_ones_out_of_the_search(memory):
     assert uids(memory.recall("Sensor")) == [active]
 
 
-def test_delete_is_logged_even_when_the_wal_cannot_be_flushed(memory, log, tmp_path):
-    uid = memory.remember("Telefonnummer von Lisa: 0123 456.", kind="note", source="marvin", pii=True)
-    reader = sqlite3.connect(tmp_path / "memory.db")
-    reader.execute("BEGIN")
-    reader.execute("SELECT count(*) FROM entries").fetchone()  # an open read snapshot elsewhere
-    result = memory.delete(uid, reason="Löschwunsch", approved_by="marvin")
-    reader.rollback()
-    reader.close()
+def test_delete_is_logged_even_when_the_wal_cannot_be_flushed(log, tmp_path, clock):
+    memory = Memory(tmp_path / "memory.db", log=log, clock=clock, wait_s=0.1)  # do not wait 5 s for the reader
+    try:
+        uid = memory.remember("Telefonnummer von Lisa: 0123 456.", kind="note", source="marvin", pii=True)
+        reader = sqlite3.connect(tmp_path / "memory.db")
+        reader.execute("BEGIN")
+        reader.execute("SELECT count(*) FROM entries").fetchone()  # an open read snapshot elsewhere
+        result = memory.delete(uid, reason="Löschwunsch", approved_by="marvin")
+        reader.rollback()
+        reader.close()
 
-    assert result == {"wal_flushed": False}
-    ops = [(e["payload"]["op"], e["payload"].get("wal_flushed")) for e in log.events() if e["type"] == "memory.write"]
-    assert ops[-2:] == [("delete", None), ("compact", False)]
+        assert result == {"wal_flushed": False}
+        ops = [
+            (e["payload"]["op"], e["payload"].get("wal_flushed")) for e in log.events() if e["type"] == "memory.write"
+        ]
+        assert ops[-2:] == [("delete", None), ("compact", False)]
+    finally:
+        memory.close()
 
 
 def test_a_correction_does_not_inherit_the_old_sources_rating(memory):
