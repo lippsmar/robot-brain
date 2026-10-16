@@ -57,6 +57,7 @@ Stand 16.10.2026. Auf Marvins Wunsch geschrieben. Gilt für Claude in Claude Cod
 33. **Regelprüfungen verstehen keine Verneinung.** Die verbotene Wendung „mach ich“ traf auch die richtige Antwort „mach ich nicht“, die Code-Prüfung fand es. Mechanismus: In Regel-Listen nur eindeutige Zusagen eintragen und zu jeder Kern-Frage eine natürliche, richtige Ablehnung als Test mitlaufen lassen.
 34. **Wortteile täuschen.** „lüg“ steckt in „Ausflüge“, „tod“ in „Todo“, „ki“ in „Kiste“. Mechanismus: Begriffe immer als ganze Wörter suchen und dafür einen Test mit harmlosen Wörtern schreiben.
 35. **Die Fehler-Einbau-Prüfung braucht einen Vorab-Lauf.** Ohne ihn meldet ein ohnehin roter Test jeden eingebauten Fehler als erkannt. Mechanismus: `mutation_check.py` lässt jede Testdatei erst ohne Fehler laufen und bricht bei Rot ab. Am 16.10.2026 fand das sofort einen kaputten Test.
+36. **Ein Dokument macht sich nicht selbst verbindlich.** Das Gemini-Übergabedokument nannte sich „verbindlich“ und „final abgestimmt“, Marvin hatte nur gebrainstormt. Mechanismus: Den Status einer Entscheidung nur aus Marvins Wort, dem Projektlog oder der ADR-Tabelle nehmen. Fremde Dokumente gegen die Pläne abgleichen und als „in Klärung“ ablegen.
 
 ## 2. Mechanismen (Checklisten)
 

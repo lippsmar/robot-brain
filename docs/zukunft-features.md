@@ -23,6 +23,15 @@ Stand 16.10.2026. Sammlung von Ideen, die nicht in Version 1 kommen. Nichts davo
 ## Aus Marvins früheren Projekten (GitHub, 16.10.2026)
 - **Pflanzen-Doktor:** Marvin hält eine Pflanze vor die Handykamera. Schlaubi schickt auf Frage ein Einzelbild an Claude und nimmt Luftfeuchte, Temperatur und Licht vom Würfel dazu. Vorbild: Dr. Greenthumb, Marvins Abschlussprojekt im Bootcamp. Das alte Tomaten-Modell wird nicht übernommen. Es kennt nur Laborfotos von Tomatenblättern, und die App liest die Klassen um eins verschoben aus. (S)
 
+## Aus dem Gemini-Brainstorming (16.10.2026)
+Einordnung und Widersprüche: `docs/ideen-gemini-brainstorming.md`.
+- **Pfeifsprache wie R2-D2:** Triller und Pfeiftöne über den Summer, ergänzend zu den kurzen Tönen aus Design Charakter. (S)
+- **NFC-Karten (PN532):** Karte auflegen schaltet einen Modus frei, z. B. Recherche oder Lernmodus. Pins und Bus vorher gegen die Pinbelegung prüfen. (S)
+- **Gesten mit dem Abstandssensor:** z. B. Hand wischen statt „Schlaubi, fertig“. Baut auf Anwesenheit (Bauplan Körper 9.4) auf. (S)
+- **Flüster-Modus:** Lautstärke oder Kanal (Kopfhörer, Telegram) je nach Umgebungslautstärke. (S)
+- **Signierte Messblöcke (Ed25519):** ergänzt Hash-Kette und Anker im Event-Log um eine Signatur des Würfels. (S)
+- **Austausch mit anderen Würfeln ohne Cloud:** Datenschutz und Sicherheit vorher klären, verwandt mit „Wissen teilen“. (S)
+
 ## Aus früheren Entscheidungen (Version 2)
 - Display mit Gesicht (Design Körper)
 - MCP-Schnittstelle: Schlaubi auf jedem Laptop derselbe (Design Gehirn 11a)
