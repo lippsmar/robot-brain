@@ -11,7 +11,7 @@ Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammel
 - **Vorschlag zur Hardware (offen):** Microcontroller für Not-Aus, Watchdog und Sensorik, Raspberry Pi Zero 2 W für LTE-Modem, Mail und Kommunikation. Das Gehirn (OpenClaw, Vektorspeicher, Embeddings) läuft auf Marvins altem Laptop als Heimserver (Entscheidung 13.10.2026, Eignung noch prüfen).
 - **Wissensspeicher:** SQLite mit sqlite-vec und FTS5 (Hybridsuche), dazu LanceDB als Vergleich und Ersatz. Kleine ONNX-Embeddings über fastembed.
 - **Energie:** Akku mit USB-C-Laden über ein UPS-HAT. Dauerbetrieb braucht ein Netzteil.
-- **Details** (SIM-Modem, Modelle, Embeddings, OpenClaw-Absicherung, Handy-Zugriff, Adobe-Nachbauten): `docs/projektstart-details.md`. Teileliste: `docs/teileliste.md`. Design des Körpers „Schlaubi“: `docs/design-koerper.md`. Design des Gehirns: `docs/design-gehirn.md`. Design des Charakters: `docs/design-charakter.md`. Design Datensammlung: `docs/design-daten.md`. Design Code-Skills: `docs/design-code-umgebung.md`. OpenClaw-Prüfung: `docs/pruefung-openclaw.md`. Sicherheit und Recht: `docs/sicherheit-und-recht.md`. Grenzen von Claude (Umgebung vs. harte Grenzen): `docs/claude-grenzen.md`. Mögliche Features für später: `docs/zukunft-features.md`. Lessons Learned und Mechanismen für Claude: `docs/claude-optimierung.md` (Spiegel des Notion-Projekts „Claude – Selbstoptimierung“). Bilder: `docs/bilder/` (Notion „Bilder: Schlaubi“).
+- **Details** (SIM-Modem, Modelle, Embeddings, OpenClaw-Absicherung, Handy-Zugriff, Adobe-Nachbauten): `docs/projektstart-details.md`. Teileliste: `docs/teileliste.md`. Design des Körpers „Schlaubi“: `docs/design-koerper.md`. Design des Gehirns: `docs/design-gehirn.md`. Design des Charakters: `docs/design-charakter.md`. Design Datensammlung: `docs/design-daten.md`. Design Code-Skills: `docs/design-code-umgebung.md`. Design Data Lakehouse: `docs/design-lakehouse.md`. OpenClaw-Prüfung: `docs/pruefung-openclaw.md`. Sicherheit und Recht: `docs/sicherheit-und-recht.md`. Grenzen von Claude (Umgebung vs. harte Grenzen): `docs/claude-grenzen.md`. Mögliche Features für später: `docs/zukunft-features.md`. Lessons Learned und Mechanismen für Claude: `docs/claude-optimierung.md` (Spiegel des Notion-Projekts „Claude – Selbstoptimierung“). Bilder: `docs/bilder/` (Notion „Bilder: Schlaubi“).
 
 ## 3. Arbeitsregeln für Claude Code
 - Vor der Arbeit den Skill `skills/roboter-projekt` befolgen und die Checklisten in `docs/claude-optimierung.md` nutzen.
@@ -70,5 +70,6 @@ Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marv
 - [ ] Phase 1: Teile Stufe 1 bestellen (Marvin, `docs/einkauf-stufe1.md`)
 - [ ] Laptop als Gehirn: Modell, RAM, Speicher, Akkuzustand und Betriebssystem erfassen und Eignung prüfen (dabei AVX2 prüfen, für LanceDB)
 - [ ] Superpowers in Claude Code installieren und Telemetrie abschalten (macht Marvin, siehe `docs/projektstart-details.md`)
-- [ ] Design Data Lakehouse klären und freigeben (Entwurf 16.10.2026, `docs/design-lakehouse.md`)
+- [x] Design Data Lakehouse freigegeben (16.10.2026, `docs/design-lakehouse.md`)
+- [ ] Bauplan Data Lakehouse bestätigen (`docs/bauplan-lakehouse-v1.md`)
 - [ ] Sperre für Secret-Dateien als Hook (`.env`, `*.key`, `secrets/`, `credentials*.json`, `token*.json`), erst wenn das Projekt fertig ist (Marvin, 16.10.2026)
