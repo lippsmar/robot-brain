@@ -287,3 +287,84 @@ def test_active_packs_come_from_their_last_status_only(wissen, clock):
     wissen.nutzen(ids[2])
 
     assert namen(wissen.aktive()) == ["C", "A"]
+
+
+# --- topic tree and overview (Bauplan Wissen 1.3) ---------------------------------------
+
+
+def test_topic_tree_with_parents(wissen):
+    sensorik = wissen.anlegen("Sensorik")
+    klima = wissen.anlegen("Klimasensoren")
+    bmp = wissen.anlegen("BMP280")
+    licht = wissen.anlegen("Licht")
+    wissen.oberthema(klima, sensorik)
+    wissen.oberthema(bmp, klima)
+    wissen.oberthema(licht, sensorik)
+
+    assert wissen.ober(bmp) == klima
+    assert [(z.paket.name, z.tiefe) for z in wissen.ueberblick()] == [
+        ("Sensorik", 0),
+        ("Klimasensoren", 1),
+        ("BMP280", 2),
+        ("Licht", 1),
+    ]
+
+
+def test_overview_sorts_names_without_regard_to_case(wissen):
+    for name in ["Zuse", "apfel", "Mond", "Birne", "kiwi", "Erde"]:
+        wissen.anlegen(name)
+
+    assert [z.paket.name for z in wissen.ueberblick()] == ["apfel", "Birne", "Erde", "kiwi", "Mond", "Zuse"]
+
+
+def test_cycles_and_self_parents_are_rejected(wissen):
+    a = wissen.anlegen("A")
+    b = wissen.anlegen("B")
+    wissen.oberthema(b, a)
+
+    with pytest.raises(WissenError):
+        wissen.oberthema(a, b)
+    with pytest.raises(WissenError):
+        wissen.oberthema(a, a)
+    with pytest.raises(WissenError):
+        wissen.oberthema(a, "p-gibt-es-nicht")
+
+
+def test_parent_can_be_moved_and_removed(wissen):
+    a = wissen.anlegen("A")
+    b = wissen.anlegen("B")
+    c = wissen.anlegen("C")
+    wissen.oberthema(c, a)
+
+    wissen.oberthema(c, b)
+    assert wissen.ober(c) == b
+    wissen.oberthema(c, None)
+    assert wissen.ober(c) is None
+
+
+def test_overview_counts_sections_and_shows_state(wissen, clock):
+    a = wissen.anlegen("Kühlung")
+    wissen.abschnitt(a, "Lüfter ab 60 Grad.", quelle="x")
+    wissen.abschnitt(a, "Zuluft unten, Abluft oben.", quelle="x")
+    wissen.projekt(a, True, grund="Arbeit")
+    b = wissen.anlegen("Garten")
+
+    zeilen = {z.paket.name: z for z in wissen.ueberblick()}
+
+    assert (zeilen["Kühlung"].abschnitte, zeilen["Kühlung"].paket.status, zeilen["Kühlung"].paket.projekt) == (
+        2,
+        "aktiv",
+        True,
+    )
+    assert (zeilen["Garten"].abschnitte, zeilen["Garten"].paket.status) == (0, "ruhend")
+    assert wissen.paket(b).name == "Garten"
+
+
+def test_moving_a_personal_pack_is_logged_as_personal(wissen, log):
+    marvin = wissen.anlegen("Marvins Pläne", pii=True)
+    oben = wissen.anlegen("Pläne")
+
+    wissen.oberthema(marvin, oben)
+
+    events = [e for e in log.events() if e["intent"] == "wissen.oberthema"]
+    assert [e["pii"] for e in events] == [True]

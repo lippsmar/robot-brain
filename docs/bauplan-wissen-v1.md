@@ -26,6 +26,8 @@ Stand 16.10.2026. Design: `docs/design-wissen.md` (freigegeben 16.10.2026). Marv
 
 **→ Zwischenstand:** Schlaubi legt Aussagen mit Belegen ab, liest Wissensmodule und recherchiert kostenlos in Wikipedia, Wikidata und Marginalia.
 
+**Stand 16.10.2026: Stufe 1 gebaut** (1.1 bis 1.5, Tests und eingebaute Fehler grün, Code-Prüfung erledigt). Abweichung bei 1.5: Wikipedias und Wikidatas robots.txt sperren `/w/` und `/api/` (Schnittstelle und Suche) für Bots. Gebaut sind deshalb Wikipedia-Artikel über die normalen Seiten `/wiki/…` und die Marginalia-Suche. Wikipedia-Suche und Wikidata-Begriff sind offen (Marvins Regel-Entscheidung). Marginalia: Suchen mit mehreren Wörtern bekamen im Test keine Antwort vom Server, einzelne Wörter klappen.
+
 ## Stufe 2 – Vektoren (nach Prüfung von sqlite-vec und fastembed, Lakehouse Phase 2)
 Fast-Doppeltes über Vektor-Nähe, Hybridsuche über alle Bestände, Abfrage-Weiche (genau, breit, Beziehung, Zeit).
 

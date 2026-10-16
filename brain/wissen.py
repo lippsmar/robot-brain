@@ -56,10 +56,18 @@ CREATE TABLE IF NOT EXISTS abschnitte (
     ts TEXT NOT NULL
 ) STRICT;
 CREATE INDEX IF NOT EXISTS abschnitte_pid ON abschnitte (pid, id);
+CREATE TABLE IF NOT EXISTS oberthemen (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pid TEXT NOT NULL REFERENCES pakete (pid),
+    ts TEXT NOT NULL,
+    ober TEXT REFERENCES pakete (pid)
+) STRICT;
+CREATE INDEX IF NOT EXISTS oberthemen_pid ON oberthemen (pid, id);
 """
     + nur_anhaengen("pakete")
     + nur_anhaengen("ereignisse")
     + nur_anhaengen("abschnitte")
+    + nur_anhaengen("oberthemen")
 )
 
 
@@ -79,6 +87,13 @@ class Paket:
     teilbar: bool
     herkunft: str
     angelegt: str
+
+
+@dataclass(frozen=True)
+class Themenzeile:
+    paket: Paket
+    tiefe: int
+    abschnitte: int
 
 
 @dataclass(frozen=True)
@@ -180,6 +195,11 @@ class Wissen:
 
     def _alle(self):
         return [self._paket(row) for row in self._conn.execute("SELECT * FROM pakete ORDER BY id")]
+
+    def mit_herkunft(self, herkunft):
+        """Packs of one origin (e.g. "modul:sensoren"), oldest first."""
+        rows = self._conn.execute("SELECT * FROM pakete WHERE herkunft = ? ORDER BY id", (herkunft,))
+        return [self._paket(row) for row in rows]
 
     # --- packs and sections (1.2) -------------------------------------------------------
 
@@ -321,3 +341,44 @@ class Wissen:
             if neu and neu != paket.kurzfassung:
                 self._add(paket.pid, "kurzfassung", neu)
         self._event("ruhend", paket.pid, paket.pii, grund="lange nicht genutzt")
+
+    # --- topic tree and overview (Bauplan Wissen 1.3) --------------------------------------
+
+    def ober(self, pid):
+        """Parent topic of a pack, or None."""
+        self._row(pid)
+        row = self._conn.execute(
+            "SELECT ober FROM oberthemen WHERE pid = ? ORDER BY id DESC LIMIT 1", (pid,)
+        ).fetchone()
+        return row["ober"] if row else None
+
+    def oberthema(self, pid, ober):
+        """Set (or with None remove) the parent topic; a pack can never end up below itself."""
+        self._row(pid)
+        if ober is not None:
+            self._row(ober)
+            weiter = ober
+            while weiter is not None:
+                if weiter == pid:
+                    raise WissenError("Ein Thema kann nicht unter sich selbst liegen")
+                weiter = self.ober(weiter)
+        with self._conn:
+            self._conn.execute("INSERT INTO oberthemen (pid, ts, ober) VALUES (?, ?, ?)", (pid, self._now(), ober))
+        self._event("oberthema", pid, self.paket(pid).pii, ober=ober)
+
+    def ueberblick(self):
+        """All topics as a tree (depth first, names sorted) with the number of visible sections."""
+        pakete = self._alle()
+        kinder: dict[str | None, list[Paket]] = {}
+        for paket in pakete:
+            kinder.setdefault(self.ober(paket.pid), []).append(paket)
+        zeilen: list[Themenzeile] = []
+
+        def gehen(ober, tiefe):
+            for paket in sorted(kinder.get(ober, []), key=lambda p: p.name.casefold()):
+                zahl = len(self._memory.mit_tag(f"{TAG_PREFIX}{paket.pid}"))
+                zeilen.append(Themenzeile(paket, tiefe, zahl))
+                gehen(paket.pid, tiefe + 1)
+
+        gehen(None, 0)
+        return zeilen
