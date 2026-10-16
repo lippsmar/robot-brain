@@ -72,5 +72,7 @@ Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marv
 - [ ] Superpowers in Claude Code installieren und Telemetrie abschalten (macht Marvin, siehe `docs/projektstart-details.md`)
 - [x] Design Data Lakehouse freigegeben (16.10.2026, `docs/design-lakehouse.md`)
 - [x] Bauplan Data Lakehouse bestätigt (16.10.2026, `docs/bauplan-lakehouse-v1.md`), Phase 1 gebaut
-- [ ] Such-API für Schlaubis Recherche wählen (Bauplan Gehirn 13.1, Vergleich `docs/vergleich-such-apis.md`)
+- [ ] Such-API für Schlaubis Recherche wählen (Bauplan Gehirn 13.1, Vergleich `docs/vergleich-such-apis.md`). Staan-Konto angelegt (16.10.2026), wartet auf Freischaltung, danach Nutzungsbedingungen prüfen
+- [ ] Architektur der Wissensspeicherung für „alles Wissen“ (Erlebtes, Recherche, ganze Bestände wie Wikipedia, Wissensmodule als Markdown, NFC-Chip als Schlüssel), in Klärung. Wie Modul-Wissen behandelt wird (gesichert oder zu prüfen), entscheidet der Live-Test
+- [ ] Prototyp A (Chat mit echtem Kern und Profil, claude.ai-Seite, `tools/prototyp/`) testen: Marvin
 - [ ] Sperre für Secret-Dateien als Hook (`.env`, `*.key`, `secrets/`, `credentials*.json`, `token*.json`), erst wenn das Projekt fertig ist (Marvin, 16.10.2026)
