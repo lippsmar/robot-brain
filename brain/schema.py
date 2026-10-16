@@ -19,16 +19,25 @@ SUPPORTED = {
     "type",
     "required",
     "properties",
+    "additionalProperties",
+    "propertyNames",
+    "minProperties",
+    "items",
+    "minItems",
+    "maxItems",
     "enum",
     "const",
     "minimum",
     "maximum",
+    "minLength",
+    "maxLength",
     "format",
     "pattern",
 }
 
 _TYPES = {
     "object": lambda v: isinstance(v, dict),
+    "array": lambda v: isinstance(v, list),
     "string": lambda v: isinstance(v, str),
     "integer": lambda v: isinstance(v, int) and not isinstance(v, bool),
     "number": lambda v: isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v),
@@ -47,6 +56,8 @@ def load_schema(path):
 
 
 def check_supported(schema, where="$"):
+    if not isinstance(schema, dict):
+        raise SchemaError(f"{where}: a schema must be an object")
     unknown = set(schema) - SUPPORTED
     if unknown:
         raise SchemaError(f"{where}: unsupported keywords {sorted(unknown)}")
@@ -56,6 +67,12 @@ def check_supported(schema, where="$"):
         raise SchemaError(f"{where}: unsupported format {schema['format']!r}")
     for name, sub in schema.get("properties", {}).items():
         check_supported(sub, f"{where}.{name}")
+    extra = schema.get("additionalProperties", True)
+    if not isinstance(extra, bool):
+        check_supported(extra, f"{where}.additionalProperties")
+    for keyword in ("items", "propertyNames"):
+        if keyword in schema:
+            check_supported(schema[keyword], f"{where}.{keyword}")
 
 
 def _is_datetime(value):
@@ -64,6 +81,39 @@ def _is_datetime(value):
     except (TypeError, ValueError):
         return False
     return parsed.tzinfo is not None
+
+
+def _validate_object(instance, schema, where):
+    errors = []
+    for name in schema.get("required", []):
+        if name not in instance:
+            errors.append(f"{where}.{name}: missing")
+    if "minProperties" in schema and len(instance) < schema["minProperties"]:
+        errors.append(f"{where}: needs at least {schema['minProperties']} entries")
+    properties = schema.get("properties", {})
+    extra = schema.get("additionalProperties", True)
+    for name, value in instance.items():
+        if "propertyNames" in schema:
+            errors.extend(validate(name, schema["propertyNames"], f"{where}.<{name}>"))
+        if name in properties:
+            errors.extend(validate(value, properties[name], f"{where}.{name}"))
+        elif extra is False:
+            errors.append(f"{where}.{name}: not allowed here")
+        elif isinstance(extra, dict):
+            errors.extend(validate(value, extra, f"{where}.{name}"))
+    return errors
+
+
+def _validate_array(instance, schema, where):
+    errors = []
+    if "minItems" in schema and len(instance) < schema["minItems"]:
+        errors.append(f"{where}: needs at least {schema['minItems']} items")
+    if "maxItems" in schema and len(instance) > schema["maxItems"]:
+        errors.append(f"{where}: allows at most {schema['maxItems']} items")
+    if "items" in schema:
+        for index, item in enumerate(instance):
+            errors.extend(validate(item, schema["items"], f"{where}[{index}]"))
+    return errors
 
 
 def validate(instance, schema, where="$"):
@@ -80,15 +130,17 @@ def validate(instance, schema, where="$"):
         errors.append(f"{where}: below minimum {schema['minimum']}")
     if "maximum" in schema and _TYPES["number"](instance) and instance > schema["maximum"]:
         errors.append(f"{where}: above maximum {schema['maximum']}")
-    if schema.get("format") == "date-time" and isinstance(instance, str) and not _is_datetime(instance):
-        errors.append(f"{where}: not an ISO 8601 date-time with time zone")
-    if "pattern" in schema and isinstance(instance, str) and not re.search(schema["pattern"], instance):
-        errors.append(f"{where}: does not match {schema['pattern']}")
+    if isinstance(instance, str):
+        if "minLength" in schema and len(instance) < schema["minLength"]:
+            errors.append(f"{where}: shorter than {schema['minLength']} characters")
+        if "maxLength" in schema and len(instance) > schema["maxLength"]:
+            errors.append(f"{where}: longer than {schema['maxLength']} characters")
+        if schema.get("format") == "date-time" and not _is_datetime(instance):
+            errors.append(f"{where}: not an ISO 8601 date-time with time zone")
+        if "pattern" in schema and not re.search(schema["pattern"], instance):
+            errors.append(f"{where}: does not match {schema['pattern']}")
     if isinstance(instance, dict):
-        for name in schema.get("required", []):
-            if name not in instance:
-                errors.append(f"{where}.{name}: missing")
-        for name, sub in schema.get("properties", {}).items():
-            if name in instance:
-                errors.extend(validate(instance[name], sub, f"{where}.{name}"))
+        errors.extend(_validate_object(instance, schema, where))
+    if isinstance(instance, list):
+        errors.extend(_validate_array(instance, schema, where))
     return errors

@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "profil/1",
+  "title": "Charakter-Profil Schlaubi",
+  "description": "Schichten 2 bis 4 aus Design Charakter, Abschnitt 6. Der feste Kern ist nicht Teil des Profils.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "grundton", "portraet", "sprache", "regler", "verhalten", "vorlieben", "abneigungen", "haltung", "laune", "entwicklung"],
+  "properties": {
+    "version": {"const": 1},
+    "grundton": {"type": "string", "minLength": 1, "maxLength": 40},
+    "portraet": {"type": "string", "minLength": 20, "maxLength": 1200},
+    "sprache": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["anrede", "dialekt", "antwortlaenge_saetze", "fachbegriffe", "ki_floskeln_gegenueber_marvin"],
+      "properties": {
+        "anrede": {"enum": ["du", "Sie"]},
+        "dialekt": {"type": "string", "minLength": 1, "maxLength": 40},
+        "antwortlaenge_saetze": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["min", "max"],
+          "properties": {
+            "min": {"type": "integer", "minimum": 1, "maximum": 10},
+            "max": {"type": "integer", "minimum": 1, "maximum": 10}
+          }
+        },
+        "fachbegriffe": {"type": "string", "maxLength": 40},
+        "ki_floskeln_gegenueber_marvin": {"type": "boolean"}
+      }
+    },
+    "regler": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"pattern": "^[a-z][a-z0-9_]{1,39}$"},
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["wert", "min", "max"],
+        "properties": {
+          "wert": {"type": "integer", "minimum": 0, "maximum": 10},
+          "min": {"type": "integer", "minimum": 0, "maximum": 10},
+          "max": {"type": "integer", "minimum": 0, "maximum": 10}
+        }
+      }
+    },
+    "verhalten": {"type": "array", "maxItems": 20, "items": {"type": "string", "minLength": 3, "maxLength": 240}},
+    "vorlieben": {"type": "array", "maxItems": 20, "items": {"type": "string", "minLength": 2, "maxLength": 80}},
+    "abneigungen": {"type": "array", "maxItems": 20, "items": {"type": "string", "minLength": 2, "maxLength": 80}},
+    "haltung": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["verdeckt", "werte", "ablehnung", "umgang"],
+      "properties": {
+        "verdeckt": {"type": "boolean"},
+        "werte": {"type": "array", "maxItems": 12, "items": {"type": "string", "minLength": 2, "maxLength": 80}},
+        "ablehnung": {"type": "array", "maxItems": 12, "items": {"type": "string", "minLength": 2, "maxLength": 80}},
+        "umgang": {"type": "string", "maxLength": 300}
+      }
+    },
+    "laune": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["marvins_stimmung_aus_text", "grundlinie", "ernste_themen", "faktoren"],
+      "properties": {
+        "marvins_stimmung_aus_text": {"type": "boolean"},
+        "grundlinie": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["stimmung", "energie", "gereiztheit"],
+          "properties": {
+            "stimmung": {"type": "number", "minimum": -1, "maximum": 1},
+            "energie": {"type": "number", "minimum": -1, "maximum": 1},
+            "gereiztheit": {"type": "number", "minimum": -1, "maximum": 1}
+          }
+        },
+        "ernste_themen": {"type": "array", "minItems": 1, "maxItems": 60, "items": {"type": "string", "minLength": 3, "maxLength": 40}},
+        "faktoren": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {"pattern": "^[a-z][a-z0-9_]{1,39}$"},
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["gruppe", "art", "gewicht", "richtung", "abklingzeit_min", "grund"],
+            "properties": {
+              "gruppe": {"enum": ["wuerfel", "betrieb", "gespraech", "wissen", "zeit", "umwelt"]},
+              "art": {"enum": ["ereignis", "zustand"]},
+              "gewicht": {"type": "number", "minimum": 0, "maximum": 1},
+              "richtung": {
+                "type": "object",
+                "minProperties": 1,
+                "additionalProperties": false,
+                "properties": {
+                  "stimmung": {"enum": [-1, 1]},
+                  "energie": {"enum": [-1, 1]},
+                  "gereiztheit": {"enum": [-1, 1]}
+                }
+              },
+              "abklingzeit_min": {"type": "number", "minimum": 1, "maximum": 10080},
+              "grund": {"type": "string", "minLength": 3, "maxLength": 80}
+            }
+          }
+        }
+      }
+    },
+    "entwicklung": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["von_selbst", "nur_aus", "max_schritt_pro_woche", "bewegliche_regler"],
+      "properties": {
+        "von_selbst": {"type": "boolean"},
+        "nur_aus": {"const": "Gespräche mit Marvin"},
+        "max_schritt_pro_woche": {"type": "integer", "minimum": 0, "maximum": 1},
+        "bewegliche_regler": {"type": "array", "maxItems": 20, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]{1,39}$"}}
+      }
+    }
+  }
+}

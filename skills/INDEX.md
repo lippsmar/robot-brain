@@ -70,6 +70,13 @@ Geprüft am 15.10.2026 an genau diesen Versionen: Lizenzdatei aus dem Paket gele
 
 Nicht vollständig gelesen (zu groß). Gelesen bzw. durchsucht: Lizenzdateien, alle Python-Dateien per Suche nach `urllib`, `http`, `socket`, `requests`, Telemetrie-Begriffen, die Fundstellen im Detail, Binärdateien per `strings`.
 
+## Python-Pakete für den Betrieb (`brain/requirements.txt`)
+Gleiche Regel wie oben: feste Version, mindestens 14 Tage alt, Installation nur mit SHA-256-Prüfsummen aller Dateien von PyPI.
+
+| Paket | Lizenz | Netz und Telemetrie | Hinweis |
+|---|---|---|---|
+| PyYAML 6.0.3 (25.09.2025) | MIT (Lizenzdatei im Wheel gelesen) | keine. Alle Importe gelesen: nur Standardbibliothek und eigene Module. Die C-Erweiterung `_yaml` hängt nur an libc und pthread, enthält keine URLs | geprüft 16.10.2026. Für das Charakter-Profil (Bauplan Charakter 2.2). Nur `SafeLoader` und `safe_dump`, doppelte Schlüssel und Aliase werden abgewiesen (`brain/character/profile.py`) |
+
 ## Prüfcheckliste für fremde Skills
 - [ ] Quelle und Autor bekannt
 - [ ] Lizenz aus dem Repo selbst gelesen
