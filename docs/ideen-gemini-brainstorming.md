@@ -1,6 +1,6 @@
 # Ideen aus dem Gemini-Brainstorming (in Klärung)
 
-Stand 16.10.2026. **Nichts davon ist entschieden.** Marvin hat das mit Gemini nur gebrainstormt. Es gelten weiter die Designs, Baupläne und Entscheidungen im Repo. Was übernommen werden soll, geht den normalen Weg: Design, Freigabe, Bauplan, Bestätigung. Spiegel der Notion-Seite „Idee: Gemini-Brainstorming (in Klärung)“.
+Stand 16.10.2026. **Nichts davon ist entschieden.** Marvin hat das mit Gemini nur gebrainstormt. Es gelten weiter die Designs, Baupläne und Entscheidungen im Repo. Was übernommen werden soll, geht den normalen Weg: Design, Freigabe, Bauplan, Bestätigung. Marvin (16.10.2026): Gemini hatte nur einen groben Einblick ins Projekt, die Vorschläge sind mit Vorsicht zu betrachten. Jede Idee wird deshalb gegen die Pläne und Primärquellen geprüft, bevor sie in ein Design kommt. Spiegel der Notion-Seite „Idee: Gemini-Brainstorming (in Klärung)“.
 
 ## Quellen
 - „Handover Document & Architektur-Spezifikation: Schlaubi / Robot Brain V1“ (Markdown). Das Dokument nennt sich selbst „verbindlich“ und „final abgestimmt“. Das stimmt nicht, es ist Brainstorming.

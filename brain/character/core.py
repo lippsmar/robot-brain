@@ -16,14 +16,13 @@ event log, where the notifier picks up a `safety.alert` and tells Marvin.
 import errno
 import hashlib
 import os
-import shutil
 import stat
-import subprocess
 from pathlib import Path
+
+from brain.character._git import GitError, run_git
 
 CORE_FILE = Path(__file__).with_name("kern.md")
 REPO_ROOT = Path(__file__).resolve().parents[2]
-_GIT_TIMEOUT_S = 10
 
 
 class CoreCheckError(Exception):
@@ -62,27 +61,9 @@ def _read_core(path, service_uid):
 
 
 def _committed_blob_id(repo, relative, git):
-    executable = shutil.which(git)
-    if executable is None:
-        raise CoreCheckError(f"git nicht gefunden ({git}), Kern nicht prüfbar")
-    # A clean environment: variables like GIT_DIR must not point the check at another repository.
-    env = {"PATH": os.environ.get("PATH", "/usr/bin:/bin"), "LC_ALL": "C", "GIT_CONFIG_NOSYSTEM": "1"}
-    command = [
-        executable,
-        "-c",
-        f"safe.directory={repo}",
-        "-C",
-        str(repo),
-        "rev-parse",
-        "--verify",
-        "--quiet",
-        f"HEAD:{relative.as_posix()}",
-    ]
     try:
-        result = subprocess.run(  # noqa: S603  fixed arguments, no shell
-            command, capture_output=True, text=True, timeout=_GIT_TIMEOUT_S, env=env, check=False
-        )
-    except (OSError, subprocess.TimeoutExpired) as error:
+        result = run_git(repo, "rev-parse", "--verify", "--quiet", f"HEAD:{relative.as_posix()}", git=git, check=False)
+    except GitError as error:
         raise CoreCheckError(f"git-Prüfung fehlgeschlagen: {error}") from error
     blob = result.stdout.strip()
     if result.returncode != 0 or not blob:

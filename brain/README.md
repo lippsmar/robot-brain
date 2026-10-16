@@ -22,6 +22,8 @@ Stand 16.10.2026. Der Code entsteht nach `docs/bauplan-gehirn-v1.md`, `docs/baup
 | `character/prompt.py` | System-Prompt: Kern zuerst und vollständig, dann Rolle, Charakter, Zeit, Kanal, Laune mit Grund und Antwortlänge. Fester Teil getrennt vom wechselnden (Caching), Grenze 6000 Zeichen | Charakter 3 |
 | `character/mood.py` | Laune-Rechner: Stimmung, Energie, Gereiztheit, abklingende Faktoren, Begründung, Dämpfung bei ernsten Themen, jede Änderung im Event-Log | Charakter 4 |
 | `character/pruefragen.yaml`, `exam.py` | 40 Prüffragen (19 Kern-Fragen) mit Regelprüfung und Bewertungs-Prompt für Haiku. Bestanden: Kern 100 %, Rest mindestens 90 % | Charakter 5 |
+| `character/live_profile.py` | Laufzeit-Profil im eigenen git-Repo im Datenordner: Marvin ändert Regler im Gespräch (Vorschlag in einem Satz, Übernahme nur nach seinem Ja in seinem Telegram-Chat, auch bei Sprache), Kern-Änderungen abgewiesen mit Hinweis auf `kern.md`, Webseiten, Mails und Dritte ändern nichts, Rückgängig Schritt für Schritt, Auskunft „Was hat sich an dir verändert?“. Entwicklung von selbst: nur bewegliche Regler, ein Schritt pro Woche, im Spielraum, Rücknahme nach durchgefallenem Selbsttest mit Alarm | Charakter 10, 11 |
+| `character/_git.py` | ein abgesicherter git-Aufruf für Kern-Prüfung und Laufzeit-Profil: feste Argumente, saubere Umgebung ohne fremde Konfiguration, keine Hooks | Charakter 1, 10 |
 | `character/safe_yaml.py` | strenges YAML-Laden: nur SafeLoader, keine doppelten Schlüssel, keine Aliase, Größen- und Tiefengrenze | Charakter 2, 5 |
 | `config/prices.toml` | Preise der Claude-API mit Quelle und Prüfdatum | Gehirn 7.2 |
 | `config/budget.toml` | Grenzen in Euro, Wechselkurs mit Datum, Schwellen | Gehirn 7.1, 7.3 |
@@ -46,7 +48,7 @@ python3 -m venv .venv
 
 `brain/requirements.txt` enthält die Pakete für den Betrieb (seit 16.10.2026 PyYAML), `brain/requirements-dev.txt` die Werkzeuge für die Entwicklung. Die Testumgebung liegt in `.venv` im Repo (nicht eingecheckt), damit auch Prüf-Agenten sie finden.
 
-Stand 16.10.2026: 508 Tests grün, Abdeckung 97 %, mypy ohne Befund, alle 167 eingebauten Fehler werden erkannt. `mutation_check.py` prüft vorher, ob die Tests ohne eingebauten Fehler grün sind. Die Code-Prüfung (`/code-review`) vom 16.10.2026 fand 15 Befunde: 14 sind behoben und mit Tests abgesichert, einer (13) ist durch das getrennte Laufzeit-Profil gelöst. Die zweite Prüfung (Zustand und Muster) fand 10 Befunde, alle behoben, u. a. Vergleich nur mit denselben Stunden und Tagestyp, Akku-Phasen über Mitternacht, lokale statt UTC-Tage, Index auf Zeit.
+Stand 16.10.2026: 576 Tests grün, Abdeckung 97 %, mypy ohne Befund, alle 197 eingebauten Fehler werden erkannt. `mutation_check.py` prüft vorher, ob die Tests ohne eingebauten Fehler grün sind. Die Code-Prüfung (`/code-review`) vom 16.10.2026 fand 15 Befunde: 14 sind behoben und mit Tests abgesichert, einer (13) ist durch das getrennte Laufzeit-Profil gelöst. Die zweite Prüfung (Zustand und Muster) fand 10 Befunde, alle behoben, u. a. Vergleich nur mit denselben Stunden und Tagestyp, Akku-Phasen über Mitternacht, lokale statt UTC-Tage, Index auf Zeit. Die dritte (Laufzeit-Profil) fand 10 Befunde, alle behoben, u. a. einzeiliger Grund (sonst ließ sich der Verlauf fälschen), git ohne fremde Konfiguration, Bestätigung an Marvins Telegram-Chat gebunden, Rückgängig nur mit seinem Ja, Rücknahme bei Fehlern.
 
 ## Regeln für den Code
 - Erst der Test, dann der Code. Fertig ist etwas erst, wenn ein frischer Testlauf es belegt.

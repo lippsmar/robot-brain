@@ -2,7 +2,7 @@
 
 Stand 14.10.2026. Grundlage: `docs/design-charakter.md`, von Marvin am 14.10.2026 freigegeben, einschließlich der drei Annahmen in Abschnitt 11. **Von Marvin am 14.10.2026 bestätigt.**
 
-**Stand der Umsetzung (16.10.2026):** Phasen 1 bis 5 sind als Software fertig und geprüft (`brain/character/`, siehe `brain/README.md`). Annahmen dabei, zur Bestätigung durch Marvin: Zahlen der Regler (hoch = 8, sehr hoch = 9, sehr niedrig = 1, selten = 2), ihre Spielräume, Gewichte und Abklingzeiten der Laune-Faktoren, die vier Werte der verdeckten Haltung. Ab Phase 6 braucht der Plan Laptop und Würfel.
+**Stand der Umsetzung (16.10.2026):** Phasen 1 bis 5 sind als Software fertig und geprüft (`brain/character/`, siehe `brain/README.md`). Annahmen dabei, zur Bestätigung durch Marvin: Zahlen der Regler (hoch = 8, sehr hoch = 9, sehr niedrig = 1, selten = 2), ihre Spielräume, Gewichte und Abklingzeiten der Laune-Faktoren, die vier Werte der verdeckten Haltung. Ab Phase 6 braucht der Plan Laptop und Würfel. Ausnahme: Die Software-Teile von Phase 10 und 11 (Profil im Gespräch ändern, Entwicklung von selbst) stehen seit 16.10.2026 in `brain/character/live_profile.py`. Weitere Annahmen dort: Ein Vorschlag gilt 10 Minuten. Setzt Marvin einen Wert außerhalb des Spielraums, wird der Spielraum erweitert. Auch „rückgängig“ braucht sein Ja per Telegram. Die Anbindung an Telegram und an den Wochenlauf folgt mit Gehirn-Phase 8.
 
 ## Kopf
 - **Ziel:** Schlaubis Charakter als Profil, das Gesprächen, Stimme, Licht und Tönen eine durchgehende Persönlichkeit gibt. Der feste Kern ist geschützt, die Laune begründet. Das Profil lässt sich im Gespräch bearbeiten und entwickelt sich von selbst weiter.
