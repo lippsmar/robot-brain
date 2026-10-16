@@ -82,7 +82,7 @@ Jede Schicht verweist auf die darunter, so bleibt jede Aussage bis zur Quelle na
 - An die API gehen nur die Treffer, die für die Frage nötig sind, nie der ganze Bestand.
 
 ## 9. Kostenlose Quellen bis zur Such-API (getestet 16.10.2026, R)
-- **Wikipedia und Wikidata:** offizielle Schnittstellen, mit Bot-Kennung erreichbar, Inhalte CC BY-SA (Speichern mit Quellenangabe erlaubt).
+- **Wikipedia:** Artikel über die normalen Seiten `/wiki/…`, Inhalte CC BY-SA (Speichern mit Quellenangabe erlaubt). Korrektur 16.10.2026: Die robots.txt von Wikipedia und Wikidata sperrt `/w/` und `/api/` (Schnittstelle und Suche) für Bots. Ob Schlaubi die Schnittstellen trotzdem nutzen darf (Wikimedia erlaubt API-Clients mit Kennung), entscheidet Marvin.
 - **Marginalia Search:** öffentlicher Schlüssel funktioniert, Ergebnisse CC-BY-NC-SA (privat, nicht kommerziell erlaubt), kleiner Index.
 - **Fachliteratur:** Crossref, arXiv, Europe PMC, OpenAlex (Werkzeug `tools/literatur/literatur.py`).
 - **Nicht:** HTML-Seiten von Suchmaschinen abkratzen (z. B. DuckDuckGo-HTML), das umgeht Bot-Sperren.
