@@ -10,7 +10,8 @@ Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. St
 | [roboter-debugging](roboter-debugging/SKILL.md) | aktiv | Ursache finden, Nachweis vor Erfolgsmeldung |
 | [roboter-testumgebung](roboter-testumgebung/SKILL.md) | aktiv | Testphase mit separatem Google-Testkonto |
 | [adobe-oss-agent-tools](adobe-oss-agent-tools/SKILL.md) | aktiv | Prüfverfahren für Adobe-Nachbauten (die Tools selbst sind noch ungeprüft) |
-| [social-media-ansehen](social-media-ansehen/SKILL.md) | aktiv im Repo seit 16.10.2026 (nur Claude Code, in Claude hochzuladen) | Beiträge von TikTok, Instagram, Reddit u. a. ansehen, die Marvin schickt: Text, Untertitel, Kommentare, nichts gespeichert. Pakete in `tools/social/requirements.txt` |
+| [social-media-ansehen](social-media-ansehen/SKILL.md) | aktiv in Claude seit 16.10.2026 (nur Claude Code) | Beiträge von TikTok, Instagram, Reddit u. a. ansehen, die Marvin schickt: Text, Untertitel, Kommentare, nichts gespeichert. Pakete in `tools/social/requirements.txt` |
+| [fachliteratur](fachliteratur/SKILL.md) | aktiv im Repo seit 16.10.2026 (nur Claude Code, in Claude hochzuladen) | Fachliteratur in Crossref, arXiv, Europe PMC und OpenAlex suchen, legale freie Fassungen lesen, nichts gespeichert. Nie Schattenbibliotheken. Werkzeug `tools/literatur/literatur.py`, nur Standardbibliothek und pdftotext |
 | [roboter-retro](roboter-retro/SKILL.md) | aktiv in Claude seit 13.10.2026 | Rückblick auf Sitzungen, Verbesserungen an Regeln, Skills und Prüfungen |
 | [photocraft-agent](photocraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026, einsatzbereit getestet 15.10.2026 (Version 0.9.0), neue Fassung hochzuladen | Photoshop-Nachbau steuern |
 | [vectorcraft-agent](vectorcraft-agent/SKILL.md) | aktiv in Claude seit 13.10.2026, einsatzbereit getestet 15.10.2026 (Version 0.11.0), neue Fassung hochzuladen | Illustrator-Nachbau steuern |

@@ -5,14 +5,14 @@ description = "Schlaubis Gehirn: Event-Log, Budget-Waechter, Gedaechtnis"
 requires-python = ">=3.13"
 
 [tool.pytest.ini_options]
-testpaths = ["brain/tests", "tools/social"]
+testpaths = ["brain/tests", "tools/social", "tools/literatur"]
 # pastebin would upload test output to the internet; it is switched off
 addopts = "-p no:pastebin -q"
 
 [tool.ruff]
 line-length = 120
 target-version = "py313"
-include = ["brain/**/*.py", "tools/dev/*.py", "tools/social/*.py"]
+include = ["brain/**/*.py", "tools/dev/*.py", "tools/social/*.py", "tools/literatur/*.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "RUF"]
@@ -31,7 +31,7 @@ omit = ["brain/tests/*"]
 
 [tool.mypy]
 python_version = "3.13"
-files = ["brain", "tools/social"]
+files = ["brain", "tools/social", "tools/literatur"]
 check_untyped_defs = true
 warn_unused_ignores = true
 warn_redundant_casts = true

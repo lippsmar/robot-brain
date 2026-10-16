@@ -25,7 +25,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_LIST = ROOT / "brain" / "tests" / "mutations.json"
-COPY = ("brain", "schemas", "pyproject.toml", "tools/social")
+COPY = ("brain", "schemas", "pyproject.toml", "tools/social", "tools/literatur")
 TIMEOUT_S = 300  # a mutation that makes the tests hang counts as caught
 GIT = shutil.which("git") or "git"
 
@@ -85,7 +85,8 @@ def select_changed(mutations, list_path, ref):
     shared = sorted(
         path
         for path in changed - covered - {relative_list}
-        if path.startswith(("brain/", "schemas/", "tools/social/", "pyproject.toml")) and not path.endswith(".md")
+        if path.startswith(("brain/", "schemas/", "tools/social/", "tools/literatur/", "pyproject.toml"))
+        and not path.endswith(".md")
     )
     if shared:
         return mutations, f"gemeinsam genutzte Dateien geändert ({', '.join(shared[:3])}), daher alle"
