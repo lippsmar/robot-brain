@@ -1,6 +1,6 @@
 # brain – Code für Schlaubis Gehirn
 
-Stand 16.10.2026. Der Code entsteht nach `docs/bauplan-gehirn-v1.md`, `docs/bauplan-charakter-v1.md` und `docs/bauplan-daten-v1.md`, testgetrieben, mit Python 3.13 (wie Debian 13 auf dem Gehirn-Laptop).
+Stand 16.10.2026. Der Code entsteht nach `docs/bauplan-gehirn-v1.md`, `docs/bauplan-charakter-v1.md`, `docs/bauplan-daten-v1.md` und `docs/bauplan-lakehouse-v1.md`, testgetrieben, mit Python 3.13 (wie Debian 13 auf dem Gehirn-Laptop).
 
 ## Bausteine
 
@@ -14,6 +14,11 @@ Stand 16.10.2026. Der Code entsteht nach `docs/bauplan-gehirn-v1.md`, `docs/baup
 | `cooling.py` | Kühlung: Zuluft, Abluft, Chip und Modem der letzten Stunde, Abgleich der Sensoren, Trend, Warnung ab 70 °C oder bei Drosselung, einmal pro heißer Phase, mit Laune-Faktor. Druck-Abgleich der beiden Klimasensoren (Mittel über 10 Minuten, Toleranz 1 hPa, Entwarnung erst unter 0,75 hPa) | Daten 3, 3.3, Körper 8a.4 |
 | `context.py` | Zustand für das Gespräch: Tageszeit, Ort, Akku, Verbindung, ob ein Gespräch läuft. Nur frische Daten (5 Minuten), sonst „unbekannt“. Ein bekannter Ort ist persönlich (`pii`) | Daten 6.2 |
 | `patterns.py` | Muster aus vier Wochen: wann Marvin wo ist, wo er öfter kurz ist (z. B. Café, ab 3 Besuchstagen), wie laut und warm es dort ist, wann der Akku knapp wird. Vergleich „heute lauter als sonst“ mit denselben Stunden am gleichen Tagestyp. Alles `pii`, lokal, auf Nachfrage gezeigt, löschbar (Sperrliste) und zurückholbar | Daten 9 |
+| `katalog.py` | Katalog aller Datensätze im Lakehouse: Ort, Format, Zeitraum, Anzahl, Prüfsumme, `pii`, Frist. Jede Änderung ist eine neue Version, die neueste gilt. Übernimmt das Manifest des Data Lake (nur geänderte Kanäle). Prüfung ohne Prüfsumme ist ein Fehler, nie ein stilles „ok“ | Lakehouse 1.1 |
+| `wissen.py` | Wissenspakete: Thema mit Kurzfassung und Abschnitten (die Abschnitte liegen im Gedächtnis-Kern, mit Tag des Pakets). Hochholen bei Nutzung, höchstens 5 aktiv, das am längsten ungenutzte rutscht zurück, laufende Projekte nie. Nach 30 Tagen ohne Nutzung ins Langzeitgedächtnis mit neuer Kurzfassung (Modell kommt mit dem API-Key), Projekt endet nach 30 Tagen ohne Arbeit. Gäste sehen nur teilbare Pakete ohne `pii`. Alles als angehängte Ereignisse | Lakehouse 1.2, 1.3 |
+| `sofort.py` | Stufe „Sofort“: Zustand, heutige Messwerte, „heute anders als sonst“, Kühlung, aktive Pakete, Merk-Liste, Budget als Bündel im Arbeitsspeicher. Aufbau beim Start, dann Teil für Teil nachgeführt, eine kaputte Quelle stört die anderen nicht. Lesen dauert Mikrosekunden | Lakehouse 1.4 |
+| `ablage.py` | Dokument-Ablage `dokumente/JJJJ/MM/` außerhalb des Repos: Original unter Prüfsumme, Metadaten daneben, Eintrag im Katalog, gleiches Dokument nur einmal. Text als Abschnitte in ein Wissenspaket, auch bei einem zweiten Paket oder nach einem Fehler genau das Fehlende | Lakehouse 1.5 |
+| `_sqlite.py` | gemeinsames Öffnen der Lakehouse-Datenbanken (private Datei, WAL, Sicherheits-Pragmas) und Sperren gegen Ändern und Löschen | Lakehouse |
 | `zahlen.py` | Zahlen in deutscher Schreibweise für Texte an Marvin | – |
 | `schema.py` | kleine Prüfung gegen JSON-Schema (nur die Schlüsselwörter, die unsere Schemas nutzen) | – |
 | `secrets_guard.py` | erkennt Secrets in Daten, bevor sie gespeichert werden (Schlüsselnamen auch in camelCase, bekannte Key-Formate, HTTP-Auth). Zahlen wie GPIO-Pins bleiben erlaubt | Arbeitsregeln |
@@ -49,7 +54,7 @@ python3 -m venv .venv
 
 `brain/requirements.txt` enthält die Pakete für den Betrieb (seit 16.10.2026 PyYAML), `brain/requirements-dev.txt` die Werkzeuge für die Entwicklung. Die Testumgebung liegt in `.venv` im Repo (nicht eingecheckt), damit auch Prüf-Agenten sie finden.
 
-Stand 16.10.2026: 622 Tests grün, Abdeckung 97 %, mypy ohne Befund, alle 225 eingebauten Fehler werden erkannt. `mutation_check.py` prüft vorher, ob die Tests ohne eingebauten Fehler grün sind. Die Code-Prüfung (`/code-review`) vom 16.10.2026 fand 15 Befunde: 14 sind behoben und mit Tests abgesichert, einer (13) ist durch das getrennte Laufzeit-Profil gelöst. Die zweite Prüfung (Zustand und Muster) fand 10 Befunde, alle behoben, u. a. Vergleich nur mit denselben Stunden und Tagestyp, Akku-Phasen über Mitternacht, lokale statt UTC-Tage, Index auf Zeit. Die dritte (Laufzeit-Profil) fand 10 Befunde, alle behoben, u. a. einzeiliger Grund (sonst ließ sich der Verlauf fälschen), git ohne fremde Konfiguration, Bestätigung an Marvins Telegram-Chat gebunden, Rückgängig nur mit seinem Ja, Rücknahme bei Fehlern.
+Stand 16.10.2026: 769 Tests grün, mypy ohne Befund, alle 302 eingebauten Fehler werden erkannt (Lakehouse Phase 1: Code-Prüfung 10 Befunde, 9 behoben, einer begründet zurückgestellt). `mutation_check.py` prüft vorher, ob die Tests ohne eingebauten Fehler grün sind. Die Code-Prüfung (`/code-review`) vom 16.10.2026 fand 15 Befunde: 14 sind behoben und mit Tests abgesichert, einer (13) ist durch das getrennte Laufzeit-Profil gelöst. Die zweite Prüfung (Zustand und Muster) fand 10 Befunde, alle behoben, u. a. Vergleich nur mit denselben Stunden und Tagestyp, Akku-Phasen über Mitternacht, lokale statt UTC-Tage, Index auf Zeit. Die dritte (Laufzeit-Profil) fand 10 Befunde, alle behoben, u. a. einzeiliger Grund (sonst ließ sich der Verlauf fälschen), git ohne fremde Konfiguration, Bestätigung an Marvins Telegram-Chat gebunden, Rückgängig nur mit seinem Ja, Rücknahme bei Fehlern.
 
 ## Regeln für den Code
 - Erst der Test, dann der Code. Fertig ist etwas erst, wenn ein frischer Testlauf es belegt.

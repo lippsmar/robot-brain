@@ -1,6 +1,6 @@
 # Bauplan Data Lakehouse – Version 1
 
-Stand 16.10.2026. **Zur Bestätigung durch Marvin.** Design: `docs/design-lakehouse.md` (freigegeben 16.10.2026). Spiegel der Notion-Seite „Bauplan Data Lakehouse“.
+Stand 16.10.2026. **Bestätigt von Marvin am 16.10.2026** („Alles bestätigt“). Design: `docs/design-lakehouse.md` (freigegeben 16.10.2026). Spiegel der Notion-Seite „Bauplan Data Lakehouse“.
 
 ## Kopf
 - **Ziel:** Was Schlaubi gerade braucht, liegt sofort bereit (Tagesparameter, laufende Projekte, aktive Themen), alles andere bleibt im Langzeitgedächtnis und im Archiv auffindbar.
@@ -14,7 +14,8 @@ Stand 16.10.2026. **Zur Bestätigung durch Marvin.** Design: `docs/design-lakeho
   - Alle Zahlen aus Design Abschnitt 15 kommen in die Config.
   - `pii` und `teilbar` an jedem Datensatz.
 
-## Phase 1 – Katalog, Wissenspakete, Stufe „Sofort“ (ohne neue Pakete, sofort machbar)
+## Phase 1 – Katalog, Wissenspakete, Stufe „Sofort“ (ohne neue Pakete, sofort machbar) ✅ 16.10.2026
+Umgesetzt in `brain/katalog.py`, `brain/wissen.py`, `brain/sofort.py`, `brain/ablage.py`. Noch offen aus 1.4: die letzten Gespräche (kommen mit der Gesprächs-Ablage, Bauplan Gehirn 10.5).
 **1.1 Katalog:** SQLite-Tabelle mit Datensatz, Ort, Format, Schema-Version, Zeitraum, Anzahl, Prüfsumme, `pii`, Frist.
 - Test: Das Manifest des Data Lake erscheint als Eintrag. Eine geänderte Prüfsumme fällt auf.
 

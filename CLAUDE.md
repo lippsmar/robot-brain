@@ -71,5 +71,6 @@ Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marv
 - [ ] Laptop als Gehirn: Modell, RAM, Speicher, Akkuzustand und Betriebssystem erfassen und Eignung prüfen (dabei AVX2 prüfen, für LanceDB)
 - [ ] Superpowers in Claude Code installieren und Telemetrie abschalten (macht Marvin, siehe `docs/projektstart-details.md`)
 - [x] Design Data Lakehouse freigegeben (16.10.2026, `docs/design-lakehouse.md`)
-- [ ] Bauplan Data Lakehouse bestätigen (`docs/bauplan-lakehouse-v1.md`)
+- [x] Bauplan Data Lakehouse bestätigt (16.10.2026, `docs/bauplan-lakehouse-v1.md`), Phase 1 gebaut
+- [ ] Such-API für Schlaubis Recherche wählen (Bauplan Gehirn 13.1, Vergleich `docs/vergleich-such-apis.md`)
 - [ ] Sperre für Secret-Dateien als Hook (`.env`, `*.key`, `secrets/`, `credentials*.json`, `token*.json`), erst wenn das Projekt fertig ist (Marvin, 16.10.2026)

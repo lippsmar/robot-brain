@@ -484,3 +484,40 @@ def test_deleted_words_are_gone_from_the_word_index(memory, tmp_path):
     terms = {row[0] for row in raw.execute("SELECT term FROM temp.words_vocab")}
     raw.close()
     assert not {"lisa", "mainz"} & terms
+
+
+def test_merkliste_lists_kept_visible_entries_newest_first(memory, clock):
+    first = memory.remember("Tomaten am Südfenster.", kind="fact", source="gespraech", pii=True)
+    clock.advance(minutes=1)
+    second = memory.remember("Lüfter ab 60 Grad.", kind="fact", source="docs")
+    hidden = memory.remember("Altes Wissen.", kind="fact", source="docs")
+    memory.remember("Nicht gemerkt.", kind="fact", source="docs")
+    memory.keep(first)
+    memory.keep(second)
+    memory.keep(hidden)
+    memory.forget(hidden, "veraltet")
+
+    assert uids(memory.merkliste()) == [second, first]
+    assert uids(memory.merkliste(limit=1)) == [second]
+    assert all(hit.keep for hit in memory.merkliste())
+
+
+def test_correction_keeps_the_merken_protection(memory):
+    uid = memory.remember("Tomaten am Fenster.", kind="fact", source="gespraech")
+    memory.keep(uid)
+
+    new = memory.correct(uid, "Tomaten am Südfenster.", source="gespraech")
+
+    assert uids(memory.merkliste()) == [new]
+    assert memory.get(new).keep is True
+
+
+def test_entries_with_a_tag_oldest_first_and_only_visible(memory):
+    a = memory.remember("Eins.", kind="abschnitt", source="x", tags=["paket:p1"])
+    b = memory.remember("Zwei.", kind="abschnitt", source="x", tags=["paket:p1", "dokument:abc"])
+    memory.remember("Anderes Paket.", kind="abschnitt", source="x", tags=["paket:p2"])
+    c = memory.correct(a, "Eins, berichtigt.", source="x")
+
+    assert uids(memory.mit_tag("paket:p1")) == [b, c]
+    assert uids(memory.mit_tag("dokument:abc")) == [b]
+    assert memory.mit_tag("paket:p3") == []

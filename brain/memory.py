@@ -402,6 +402,8 @@ class Memory:
         with self._conn:
             new_uid = self._insert(content, source=source, replaces=uid, **fields)
             self._mark(uid, "replaced", f"replaced by {new_uid}")
+            if self._keep(uid):
+                self._mark(new_uid, "keep", f"merken taken over from {uid}")
         self._event("correct", new_uid, fields["pii"], replaces=uid)
         return new_uid
 
@@ -586,6 +588,27 @@ class Memory:
             row = self._conn.execute("SELECT * FROM entries WHERE id = ?", (rowid,)).fetchone()
             hits.append(self._hit(row, score))
         return hits
+
+    def mit_tag(self, tag, include_archived=False):
+        """Entries carrying `tag`, oldest first; replaced and (by default) archived ones are left out."""
+        statuses = VISIBLE + (("archived",) if include_archived else ())
+        allowed = ", ".join(f"'{status}'" for status in statuses)
+        rows = self._conn.execute(
+            "SELECT e.* FROM entries e WHERE EXISTS (SELECT 1 FROM json_each(e.tags) WHERE value = ?)"
+            f" AND {_STATUS_SQL} IN ({allowed}) ORDER BY e.id",
+            (tag,),
+        ).fetchall()
+        return [self._hit(row) for row in rows]
+
+    def merkliste(self, limit=50):
+        """Visible entries Marvin asked to keep ("merken"), newest first (Design Lakehouse 5)."""
+        visible = ", ".join(f"'{status}'" for status in VISIBLE)
+        rows = self._conn.execute(
+            "SELECT e.* FROM entries e WHERE EXISTS (SELECT 1 FROM marks m WHERE m.uid = e.uid AND m.mark = 'keep')"
+            f" AND {_STATUS_SQL} IN ({visible}) ORDER BY e.id DESC LIMIT ?",
+            (limit,),
+        ).fetchall()
+        return [self._hit(row) for row in rows]
 
     # --- maintenance --------------------------------------------------------------------
 

@@ -42,7 +42,7 @@ def run_tests(work, test_file):
                 "-q",
                 "-p",
                 "no:cacheprovider",
-                f"--basetemp={work / '.pytest-tmp'}",  # parallel runs must not share pytest's temp folder
+                f"--basetemp={work.parent / ('pytest-' + work.name)}",  # own temp folder per copy, outside the copy
                 test_file,
             ],
             cwd=work,
