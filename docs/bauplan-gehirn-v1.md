@@ -152,7 +152,7 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
 
 ## Phase 11 – Würfel-Anbindung und Gespräch
 **11.1 Dienst** für den Würfel über Tailscale: nimmt Ton und Bild an, liefert Text und Ton zurück. Ersetzt den Test-Dienst aus Körper-Phase 11.2. Der Dienst bekommt feste Funktionen (`listen`, `photo`, `led`, `sound`, `status`), damit er später als MCP-Server verpackt werden kann. Audio geht nie an ein Sprachmodell. Der Charakter liegt in einer eigenen Datei.
-**11.2 Bilder:** Metadaten entfernen (EXIF, Ort), dann an Claude. Speichern nur bei „merken“.
+**11.2 Bilder:** Metadaten entfernen (EXIF, Ort), dann an Claude. Speichern nur bei „merken“. Bereinigung umgesetzt am 16.10.2026 in `brain/images.py` (JPEG und PNG, ohne fremde Pakete). Offen: Drehung laut EXIF anwenden, wenn ein Bild nicht schon aufrecht vom Handy kommt (`clean_image` liefert sie mit).
 **11.3 Gesprächsablauf:** Ton → Text → Gedächtnis abrufen → Claude → Antwort ins Gedächtnis → Piper → Würfel. Ohne Bluetooth-Gerät antwortet Schlaubi als Text per Telegram.
 - Test (Risiko 6):
   - Zeit vom Ende der Frage bis zum Beginn der Antwort messen. Ziel: höchstens 4 Sekunden über WLAN, höchstens 6 Sekunden über LTE.

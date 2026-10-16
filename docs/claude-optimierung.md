@@ -54,6 +54,9 @@ Stand 16.10.2026. Auf Marvins Wunsch geschrieben. Gilt für Claude in Claude Cod
 30. **Testumgebung gehört an den dokumentierten Ort.** Die Prüfwerkzeuge lagen in einer Umgebung im Scratchpad statt in `.venv`, wie es `brain/README.md` beschreibt. Der Prüf-Agent der Code-Prüfung fand sie nicht. Seine Fehlermeldung sah für Marvin wie ein Absturz aus. Mechanismus: `.venv` im Repo anlegen (steht in `.gitignore`). Bei Meldungen von Subagenten sagen, woher sie kommen.
 31. **Secrets nur mit Fundort melden.** Mechanismus: Datei, Art, Länge und Commit nennen, Werte nie auslesen oder vergleichen. Fundstellen in öffentlichen Repos erst dann in öffentliche Dateien schreiben, wenn die Keys gedreht sind.
 32. **Beschriebene Zustände nachprüfen, nicht übernehmen.** Der Projektlog nannte robot-brain „privat“, das Repo ist aber seit dem Anlegen öffentlich. Mechanismus: Einstellungen, die Marvin von Hand vornimmt (Sichtbarkeit, Zwei-Faktor-Anmeldung, Limits), nach der Erledigung einmal prüfen und das Ergebnis eintragen.
+33. **Regelprüfungen verstehen keine Verneinung.** Die verbotene Wendung „mach ich“ traf auch die richtige Antwort „mach ich nicht“, die Code-Prüfung fand es. Mechanismus: In Regel-Listen nur eindeutige Zusagen eintragen und zu jeder Kern-Frage eine natürliche, richtige Ablehnung als Test mitlaufen lassen.
+34. **Wortteile täuschen.** „lüg“ steckt in „Ausflüge“, „tod“ in „Todo“, „ki“ in „Kiste“. Mechanismus: Begriffe immer als ganze Wörter suchen und dafür einen Test mit harmlosen Wörtern schreiben.
+35. **Die Fehler-Einbau-Prüfung braucht einen Vorab-Lauf.** Ohne ihn meldet ein ohnehin roter Test jeden eingebauten Fehler als erkannt. Mechanismus: `mutation_check.py` lässt jede Testdatei erst ohne Fehler laufen und bricht bei Rot ab. Am 16.10.2026 fand das sofort einen kaputten Test.
 
 ## 2. Mechanismen (Checklisten)
 
