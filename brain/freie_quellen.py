@@ -25,6 +25,8 @@ from html.parser import HTMLParser
 from urllib.parse import quote, urljoin, urlsplit
 from urllib.robotparser import RobotFileParser
 
+from brain._text import clean
+
 BOT_NAME = "Schlaubi"
 USER_AGENT = f"{BOT_NAME}/0.1 (+https://github.com/lippsmar/robot-brain; privater Bot, Recherche)"
 TIMEOUT_S = 30
@@ -35,7 +37,6 @@ MAX_HOPS = 5
 REDIRECTS = frozenset({301, 302, 303, 307, 308})
 MARGINALIA = "https://api.marginalia.nu/public/search/"
 LIZENZ_WIKIPEDIA = "CC BY-SA 4.0"
-_CONTROL = re.compile(r"[\x00-\x08\x0b-\x1f\x7f-\x9f]")
 _SPACE = re.compile(r"[ \t\r\f\v]+")
 _TITEL_VERBOTEN = re.compile(r"[?#:%]|\.\.")  # "/" is encoded, ":" would open namespaces
 
@@ -64,10 +65,6 @@ class Artikel:
 
 def _utc_now():
     return datetime.now(UTC)
-
-
-def clean(text):
-    return _CONTROL.sub("", text or "")
 
 
 class _KeinRedirect(urllib.request.HTTPRedirectHandler):

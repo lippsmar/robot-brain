@@ -55,3 +55,13 @@ Stand: Commit nach b53f788, geprüft am 16.10.2026 (vier Projekttage seit 13.10.
 6. Regel-Entscheidung: Darf Schlaubi die Wikipedia- und Wikidata-Schnittstelle trotz robots.txt nutzen?
 7. Teile Stufe 1, SIM-Anbieter und mail.de-Konto.
 8. Skill `fachliteratur` in Claude hochladen.
+
+## Nachtrag 16.10.2026 (Marvin: „Ja, mach alles“)
+- **Befund 6 erledigt:** `memory/SYSTEM_PROMPT.md` und die Notion-Seite „Memory Core“ zeigen den gebauten Stand: Laufzeitdaten im Datenordner, Ebenen L1–L5 mit Lakehouse-Stufen. `.gitignore` sperrt jetzt den ganzen Inhalt von `data/` und `logs/`.
+- **Befund 7 erledigt:** Der Gesprächsablauf (`brain/gespraech.py`, Bauplan Gehirn 11.3, Textteil) verbindet die Bausteine. Ein Test über alle Bausteine läuft ohne API-Key.
+- **Befund 8 erledigt:** Die beiden Hooks haben automatische Tests und eingebaute Fehler. Der Kern-Schutz prüft relative Pfade jetzt vom Sitzungsordner aus.
+- **Befund 9 erledigt:** Die Zips der sieben Craft-Skills liegen in `dist/skills/`.
+- **Befund 10 erledigt:** Die Grundregel auf „Robot Brain“ nennt die ADR-Tabelle in Notion.
+- **Befund 11 bleibt:** Marginalia beantwortet Suchen mit mehreren Wörtern mal, mal nicht (beim Nachtest ging „barometer air pressure“, „luftdruck sensor“ lief in die Zeitgrenze). Das liegt am Dienst, Lösung ist die Such-API.
+- **Befund 5 bleibt bei Marvin:** Repo privat stellen.
+- **Prüfung danach:** 883 Tests grün, alle 382 eingebauten Fehler erkannt. Die Code-Prüfung fand 10 Befunde, alle sind behoben.

@@ -521,3 +521,13 @@ def test_entries_with_a_tag_oldest_first_and_only_visible(memory):
     assert uids(memory.mit_tag("paket:p1")) == [b, c]
     assert uids(memory.mit_tag("dokument:abc")) == [b]
     assert memory.mit_tag("paket:p3") == []
+
+
+def test_recall_can_leave_out_one_kind(tmp_path, log, clock):
+    store = Memory(tmp_path / "m.db", log=log, clock=clock)
+    for nummer in range(12):
+        store.remember(f"Kaffee Abschnitt {nummer} Kaffee Kaffee", kind="abschnitt", source="buch")
+    fakt = store.remember("Marvin mag Kaffee", kind="fakt", source="gespraech")
+
+    assert [hit.uid for hit in store.recall("Kaffee", limit=3, exclude_kind="abschnitt")] == [fakt]
+    store.close()

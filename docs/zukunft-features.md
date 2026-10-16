@@ -37,6 +37,15 @@ Einordnung und Widersprüche: `docs/ideen-gemini-brainstorming.md`.
 - **Musik abspielen:** Der Würfel hat in Version 1 keinen Lautsprecher (Design Körper). Möglich: Wiedergabe über das Handy oder einen Bluetooth-Lautsprecher, gesteuert vom Gehirn. Quellen: eigene Dateien, Internetradio oder ein Streaming-Dienst über dessen offizielle Schnittstelle mit Marvins Konto (z. B. Spotify Connect, braucht Premium). Keine inoffiziellen Downloads (Liste B in `docs/claude-grenzen.md`). (S)
 - Zusammen: „Spiel was Ähnliches wie das hier“ oder ein Lied zur Laune. Passt zum Charakter, aber erst, wenn Sprache und Gehirn laufen. (S)
 
+## Morgen-Überblick (Inspiration: TikTok „Jarvis“, Marvin 16.10.2026)
+Vorbild ist ein Video, in dem ein Assistent im Stil von Jarvis den Tag vorsortiert: Termine mit Abständen, Mails nach Wichtigkeit, neue Anfragen auf einen besseren Zeitpunkt gelegt, alles mit trockenem Spott. Nur meine Einordnung, kein Inhalt gespeichert.
+- **Was passt:** Schlaubi meldet sich morgens einmal mit einem kurzen Überblick: Termine (erst aus dem Google-Testkonto), wichtige Mails oben, Budget, Kühlung, Merk-Liste, laufende Projekte, „heute anders als sonst“. Vieles davon liefert die Stufe „Sofort“ schon heute. Trockener Humor passt zum Charakter (`humor_trockenheit` 9).
+- **Was anders sein muss:**
+  - Schlaubi beantwortet keine Mails in Marvins Namen. Er legt Entwürfe vor, Marvin schickt sie ab (CLAUDE.md §3).
+  - Termine verschiebt er nicht selbst, er schlägt vor.
+  - Er ist Mentor, kein Diener: kein „Master“ oder „Chef“, Humor selten (`humor_haeufigkeit` 2), nie auf Marvins Kosten in ernsten Momenten.
+- **Voraussetzungen:** Telegram oder Sprache, Zugriff auf Kalender und Mail nur über das Testkonto bzw. Schlaubis eigene Adresse, Budget für eine kurze Zusammenfassung am Tag. Vor dem Bau Design mit `roboter-brainstorming-plan`. (S)
+
 ## Aus früheren Entscheidungen (Version 2)
 - Display mit Gesicht (Design Körper)
 - MCP-Schnittstelle: Schlaubi auf jedem Laptop derselbe (Design Gehirn 11a)

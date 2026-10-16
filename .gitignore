@@ -8,10 +8,8 @@ credentials*.json
 token*.json
 
 # Rohdaten und Logs bleiben lokal
-data/raw/**
-data/curated/**
-logs/events/*.jsonl
-data/datasets/**
+data/**
+logs/**
 memory/journal/**
 memory/working/**
 memory/knowledge/**

@@ -553,7 +553,7 @@ class Memory:
             return []  # a query the tokenizer reduces to nothing
         return [row["id"] for row in rows]
 
-    def recall(self, query, limit=5, scope="marvin", include_archived=False, kind=None):
+    def recall(self, query, limit=5, scope="marvin", include_archived=False, kind=None, exclude_kind=None):
         """Find entries for a free-text query. Scope "guest" sees only shareable entries without pii."""
         if scope not in SCOPES:
             raise MemoryStoreError(f"unknown scope {scope!r}")
@@ -567,6 +567,9 @@ class Memory:
         if kind:
             where += " AND e.kind = ?"
             params.append(kind)
+        if exclude_kind:
+            where += " AND e.kind != ?"
+            params.append(exclude_kind)
         if not include_archived:
             visible = ", ".join(f"'{status}'" for status in VISIBLE)
             where += f" AND {_STATUS_SQL} IN ({visible})"

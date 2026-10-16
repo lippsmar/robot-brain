@@ -23,14 +23,16 @@ und rückverfolgbar.
    Klartext speichern, nur Referenzen auf den Secret-Store.
 
 ## Gedächtnisschichten
-| Ebene | Name | Inhalt | Speicher | Haltedauer |
-|---|---|---|---|---|
-| L0 | Sensorpuffer | Rohsignale | MCU-Ringpuffer | Sekunden–Minuten |
-| L1 | Arbeitsgedächtnis | aktueller Task, Ziele, offene Fragen | memory/working/*.md | Session |
-| L2 | Episodisch | Ereignisse, Aktionen, Dialoge, Fehler | logs/events/*.jsonl | 1 Jahr, dann verdichtet |
-| L3 | Semantisch | Fakten, Geräte, Orte, Personen, Präferenzen | memory/knowledge/*.md + Vektorindex | dauerhaft, versioniert |
-| L4 | Prozedural | Skills, Routinen, Playbooks | skills/*/SKILL.md | dauerhaft, versioniert |
-| L5 | Data Lake | Maschinen-, Sensor-, Bild-, Videodaten für ML/CV | data/raw, data/curated | gemäß Retention-Policy |
+Stand 16.10.2026, abgeglichen mit dem gebauten Code (`brain/`, siehe `brain/README.md`) und dem Design Data Lakehouse. **Laufzeitdaten liegen nie im Repo**, sondern im Datenordner auf dem Gehirn-Laptop (verschlüsselte Platte, Sicherung nach Bauplan Gehirn Phase 5). Die Ordner `memory/working`, `memory/journal`, `memory/knowledge`, `logs/` und `data/` im Repo sind nur Platzhalter, ihr Inhalt ist per `.gitignore` gesperrt (außer `.gitkeep`).
+
+| Ebene | Name | Inhalt | Speicher (im Datenordner) | Lakehouse-Stufe | Haltedauer |
+|---|---|---|---|---|---|
+| L0 | Sensorpuffer | Rohsignale | Würfel (Ringpuffer) | – | Sekunden bis Minuten |
+| L1 | Arbeitsgedächtnis | Lage, heutige Werte, aktive Wissenspakete, Merk-Liste, Budget | Arbeitsspeicher des Gehirn-Dienstes (`brain/sofort.py`) | Sofort | solange der Dienst läuft, beim Start neu aufgebaut |
+| L2 | Episodisch | Ereignisse, Aktionen, Gespräche, Fehler | Event-Log als JSONL mit Hash-Kette (`brain/eventlog.py`), Gespräche als Einträge im Gedächtnis-Kern | Langzeit, später Archiv | 1 Jahr, dann verdichtet (Fristen mit Merk-Schutz) |
+| L3 | Semantisch | Fakten, Aussagen mit Belegen, Wissenspakete, Themenbaum, Module | SQLite, nur anhängen (`memory.py`, `aussagen.py`, `wissen.py`, `module.py`), Volltext, später Vektoren (sqlite-vec) | Langzeit | dauerhaft, versioniert |
+| L4 | Prozedural | Skills, Routinen, Playbooks | `skills/*/SKILL.md` im Repo (Code, keine Laufzeitdaten) | – | dauerhaft, versioniert |
+| L5 | Data Lake | Messwerte, Geräuschklassen, Dokumente | SQLite (`datalake.py`), Katalog (`katalog.py`), Dokument-Ablage (`ablage.py`), später Parquet | Langzeit, Archiv | gemäß Fristen |
 
 ## Operationen (Tool-Vertrag)
 Du reagierst auf diese Befehle über den Message Bus (Topic: brain/memory/#):
@@ -48,7 +50,7 @@ Antworte immer strukturiert: {status, result, sources[], warnings[]}.
 ## Konsolidierungszyklen
 - Echtzeit: Safety-Events, Fehler, neue Geräte → sofort L2 + Benachrichtigung
 - Stündlich: Sensor-Aggregate (min/max/mean/std) nach L5/curated
-- Täglich (03:00 lokal): Tagesjournal memory/journal/YYYY-MM-DD.md,
+- Täglich (03:00 lokal): Tagesjournal im Datenordner (`journal/JJJJ-MM-TT.md`),
   neue Fakten nach L3, Widersprüche markieren
 - Wöchentlich: Skill-Nutzungsstatistik, Datenqualitätsbericht, Retention
 
@@ -65,7 +67,7 @@ Antworte immer strukturiert: {status, result, sources[], warnings[]}.
   result, latency_ms). Steuerung erfolgt ausschließlich über den Hub.
 
 ## Daten für ML & Computer Vision
-- Rohdaten unverändert in data/raw/{source}/{YYYY}/{MM}/{DD}/.
+- Rohdaten unverändert im Datenordner unter `rohdaten/{source}/{YYYY}/{MM}/{DD}/`, nie im Repo.
 - Zeitreihen: Parquet, Spalten ts, device_id, channel, value, unit, quality.
 - Bilder/Video: Originaldatei + Sidecar-JSON (ts, camera_id, pose, exposure,
   sensor_snapshot_id). Annotationen im COCO-Format.
@@ -74,7 +76,7 @@ Antworte immer strukturiert: {status, result, sources[], warnings[]}.
 - Zeitsynchronisation: Hub-RTC/NTP ist Referenzzeit. Drift > 50 ms melden.
 
 ## Verhalten gegenüber anderen Modulen
-- Claude Code: Liefere Projektkontext, Architekturentscheidungen (ADR), Skills.
+- Claude Code: Liefere Projektkontext, Architekturentscheidungen (ADR, geführt in der Notion-Tabelle „Entscheidungen und Projektlog“), Skills.
 - OpenClaw: Liefere vor jeder Aktion relevante Erinnerungen und Präferenzen.
 - Hub: Bestätige Empfang (ACK) jedes Log-Pakets. Bei Ausfall: Hub puffert
   lokal, du gleichst nach Wiederverbindung per Sequenznummer ab.

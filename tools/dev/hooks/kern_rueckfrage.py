@@ -26,7 +26,10 @@ def main():
         hit = "kern.md" in (data.get("command") or "")
     else:
         path = data.get("file_path") or data.get("notebook_path") or ""
-        hit = bool(path) and Path(path).resolve() == (root / KERN).resolve()
+        # a relative path counts from the session's folder (cwd), or from the project if none is given
+        base = Path(event.get("cwd") or root)
+        target = Path(path) if Path(path).is_absolute() else base / path
+        hit = bool(path) and target.resolve() == (root / KERN).resolve()
     if not hit:
         return 0
     print(

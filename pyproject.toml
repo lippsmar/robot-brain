@@ -5,7 +5,7 @@ description = "Schlaubis Gehirn: Event-Log, Budget-Waechter, Gedaechtnis"
 requires-python = ">=3.13"
 
 [tool.pytest.ini_options]
-testpaths = ["brain/tests", "tools/social", "tools/literatur"]
+testpaths = ["brain/tests", "tools/social", "tools/literatur", "tools/dev/hooks"]
 # pastebin would upload test output to the internet; it is switched off
 addopts = "-p no:pastebin -q"
 
