@@ -16,6 +16,7 @@ logs/events/*.jsonl
 __pycache__/
 *.pyc
 .venv/
+.venv-social/
 .DS_Store
 
 # Test-Werkzeuge

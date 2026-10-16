@@ -32,6 +32,11 @@ Einordnung und Widersprüche: `docs/ideen-gemini-brainstorming.md`.
 - **Signierte Messblöcke (Ed25519):** ergänzt Hash-Kette und Anker im Event-Log um eine Signatur des Würfels. (S)
 - **Austausch mit anderen Würfeln ohne Cloud:** Datenschutz und Sicherheit vorher klären, verwandt mit „Wissen teilen“. (S)
 
+## Musik (Marvin, 16.10.2026)
+- **Songs erkennen:** Marvin fragt „Was läuft da gerade?“, Schlaubi hört ein paar Sekunden hin und nennt Titel und Interpret. Nur auf Frage, nie im Hintergrund. Weg mit der Sprach-Regel vereinbar: Der Ton bleibt lokal, ein Fingerabdruck wird lokal berechnet (z. B. Chromaprint, LGPL), nur dieser Fingerabdruck geht an eine Musik-Datenbank (z. B. AcoustID mit MusicBrainz, frei für nicht kommerzielle Nutzung, Schlüssel nötig). Ob ein Fingerabdruck als „Audio“ im Sinne der Regel zählt, entscheidet Marvin vor dem Design. Gespräche im Raum dürfen dabei nicht ausgewertet werden (§ 201 StGB), also nur kurze Ausschnitte und nur zur Erkennung. Erkennt gespielte Aufnahmen gut, Live-Musik und Summen kaum. (S)
+- **Musik abspielen:** Der Würfel hat in Version 1 keinen Lautsprecher (Design Körper). Möglich: Wiedergabe über das Handy oder einen Bluetooth-Lautsprecher, gesteuert vom Gehirn. Quellen: eigene Dateien, Internetradio oder ein Streaming-Dienst über dessen offizielle Schnittstelle mit Marvins Konto (z. B. Spotify Connect, braucht Premium). Keine inoffiziellen Downloads (Liste B in `docs/claude-grenzen.md`). (S)
+- Zusammen: „Spiel was Ähnliches wie das hier“ oder ein Lied zur Laune. Passt zum Charakter, aber erst, wenn Sprache und Gehirn laufen. (S)
+
 ## Aus früheren Entscheidungen (Version 2)
 - Display mit Gesicht (Design Körper)
 - MCP-Schnittstelle: Schlaubi auf jedem Laptop derselbe (Design Gehirn 11a)

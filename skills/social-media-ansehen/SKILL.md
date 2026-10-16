@@ -20,10 +20,11 @@ description: "Wenn Marvin einen Link zu TikTok, Instagram, Reddit, YouTube oder 
 - Nur privat. Nicht für Schlaubi, nicht in OpenClaw, nicht weitergeben.
 - Rücksicht auf die Plattformen: ein Abruf pro Link, Wiederholung höchstens dreimal (TikTok liefert Untertitel nicht immer beim ersten Mal).
 
-## Einrichten (einmal pro Sitzung, Sandbox)
+## Einrichten
+In Cloud-Sitzungen richtet der Start-Hook (`.claude/hooks/session-start.sh`) die Umgebung `.venv-social` im Repo selbst ein. Von Hand:
 ```sh
-python3 -m venv <scratchpad>/social/venv
-<scratchpad>/social/venv/bin/pip install --require-hashes --no-deps --only-binary=:all: -r tools/social/requirements.txt
+python3 -m venv .venv-social
+.venv-social/bin/pip install --require-hashes --no-deps --only-binary=:all: -r tools/social/requirements.txt
 ```
 Pakete (geprüft 16.10.2026, alle mindestens 14 Tage alt, mit Prüfsummen):
 - yt-dlp 2026.8.19 (Unlicense): keine Telemetrie gefunden. Prüft nicht selbst auf Updates, nur mit `-U`, das wir nie nutzen.
@@ -32,7 +33,7 @@ Pakete (geprüft 16.10.2026, alle mindestens 14 Tage alt, mit Prüfsummen):
 
 ## Benutzen
 ```sh
-<scratchpad>/social/venv/bin/python -I tools/social/ansehen.py "<Link>" [--kommentare 10]
+.venv-social/bin/python -I tools/social/ansehen.py "<Link>" [--kommentare 10]
 ```
 Das Werkzeug liefert je nach Plattform:
 - **TikTok, YouTube, Instagram (Video):** Titel, Kanal, Dauer, Beschreibung und den gesprochenen Text aus den Untertiteln der Plattform, Deutsch vor Englisch. Ohne Untertitel sagt es das offen.

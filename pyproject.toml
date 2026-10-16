@@ -12,7 +12,7 @@ addopts = "-p no:pastebin -q"
 [tool.ruff]
 line-length = 120
 target-version = "py313"
-include = ["brain/**/*.py", "tools/dev/*.py", "tools/social/*.py", "tools/literatur/*.py"]
+include = ["brain/**/*.py", "tools/dev/*.py", "tools/dev/hooks/*.py", "tools/social/*.py", "tools/literatur/*.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "RUF"]
