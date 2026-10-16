@@ -252,3 +252,24 @@ def test_a_missing_last_number_is_found_too(lake):
     lake.ingest("wuerfel-1", 2, minute(2), {"zuluft_temp": 21.0})
 
     assert lake.missing("wuerfel-1", 1, 3) == [3]
+
+
+def test_places_per_hour_for_pattern_finding(lake):
+    lake.name_place("HeimNetz", "Zuhause")
+    lake.ingest("wuerfel-1", 1, minute(0), {"licht": 100})
+    lake.ingest("wuerfel-1", 2, minute(5), {"licht": 100})
+    lake.ingest("wuerfel-1", 3, minute(70), {"licht": None}, wlan="HeimNetz")  # a sensor error still counts
+
+    assert lake.places_by_hour(START, minute(120)) == [
+        ("2026-10-15T08", UNTERWEGS),
+        ("2026-10-15T09", "Zuhause"),
+    ]
+    assert lake.places_by_hour(minute(60), minute(120)) == [("2026-10-15T09", "Zuhause")]
+
+
+def test_time_queries_use_an_index(lake):
+    plan = lake._conn.execute(
+        "EXPLAIN QUERY PLAN SELECT * FROM readings WHERE ts >= ? AND ts < ?", ("a", "b")
+    ).fetchall()
+
+    assert "readings_by_ts" in " ".join(str(row["detail"]) for row in plan)

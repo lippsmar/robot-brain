@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 
 from brain.eventlog import parse_ts
+from brain.zahlen import zahl
 
 WARN_CHIP_C = 70.0
 WINDOW = timedelta(hours=1)
@@ -35,10 +36,6 @@ class CoolingStatus:
 
 def _utc_now():
     return datetime.now(UTC)
-
-
-def _format(value):
-    return f"{value:g}".replace(".", ",")
 
 
 def _latest(rows):
@@ -71,7 +68,7 @@ def assess(lake, now, *, warn_at=WARN_CHIP_C, abgleich=0.0):
     difference = exhaust - supply - abgleich if supply is not None and exhaust is not None else None
     reasons = []
     if chip_temp is not None and chip_temp >= warn_at:
-        reasons.append(f"Chip {_format(chip_temp)} °C, Grenze {_format(warn_at)} °C")
+        reasons.append(f"Chip {zahl(chip_temp)} °C, Grenze {zahl(warn_at)} °C")
     if throttled:
         reasons.append("der Pi drosselt")
     known = (chip_temp, modem_temp, supply, exhaust)

@@ -2,6 +2,8 @@
 
 Stand 14.10.2026. Grundlage: `docs/design-daten.md`, von Marvin am 14.10.2026 freigegeben. **Von Marvin am 14.10.2026 bestätigt.**
 
+**Stand Code (16.10.2026):** Die Teile auf dem Gehirn sind gebaut und getestet, mit Daten aus Tests statt vom Würfel: Data Lake (7, 6.1, 8.2) in `brain/datalake.py`, Kühlung (3) in `brain/cooling.py`, Zustand (6.2) in `brain/context.py`, Muster (9.1–9.3) in `brain/patterns.py`. Die Tests mit echten Daten (z. B. „nach zwei Wochen drei zutreffende Muster“) folgen, sobald der Würfel oder das Handy als Test-Würfel Daten liefert. Schwellen und Tageszeiten sind Annahmen, siehe die Kopfkommentare der Dateien.
+
 ## Kopf
 - **Ziel:** Der Würfel erfasst immer, wenn er an ist, Geräusche als Merkmale, Messwerte und groben Kontext. Das Gehirn legt alles sauber im Data Lake ab, erkennt Muster und nutzt sie für Schlaubis Umgebungsbewusstsein und Laune. Gespräche anderer werden nie mitgehört.
 - **Architektur:**

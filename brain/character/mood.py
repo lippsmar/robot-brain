@@ -20,6 +20,7 @@ from datetime import UTC, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 from brain.eventlog import parse_ts
+from brain.zahlen import zahl
 
 AXES = ("stimmung", "energie", "gereiztheit")
 NEUTRAL_REASON = "nichts Besonderes"
@@ -82,7 +83,7 @@ def _clamp(value):
 
 def _format_value(value):
     if isinstance(value, float):
-        return f"{value:g}".replace(".", ",")
+        return zahl(value)
     return str(value)
 
 

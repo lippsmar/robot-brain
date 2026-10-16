@@ -1,6 +1,6 @@
 # brain – Code für Schlaubis Gehirn
 
-Stand 16.10.2026. Der Code entsteht nach `docs/bauplan-gehirn-v1.md` und `docs/bauplan-charakter-v1.md`, testgetrieben, mit Python 3.13 (wie Debian 13 auf dem Gehirn-Laptop).
+Stand 16.10.2026. Der Code entsteht nach `docs/bauplan-gehirn-v1.md`, `docs/bauplan-charakter-v1.md` und `docs/bauplan-daten-v1.md`, testgetrieben, mit Python 3.13 (wie Debian 13 auf dem Gehirn-Laptop).
 
 ## Bausteine
 
@@ -10,6 +10,11 @@ Stand 16.10.2026. Der Code entsteht nach `docs/bauplan-gehirn-v1.md` und `docs/b
 | `budget.py` | Budget-Wächter: Kosten aus den Nutzungsdaten der API, Grenzen in Euro, Töpfe Gesamt, Recherche und Selbstoptimierung, Stufen Warnung, Sparmodus, Stopp. Stoppt vor dem Console-Limit, lässt Gesprächen immer das Minimum, weist Modelle ohne Preise ab | Gehirn 7.3 |
 | `memory.py` | Gedächtnis-Kern: SQLite (STRICT-Tabellen, nur anhängen, auch gegen `INSERT OR REPLACE` gesichert), Herkunft, `pii`, `teilbar`, Merk-Schutz, Archiv statt Löschen, Löschen nur mit Marvins Freigabe (Inhalt wird überschrieben), Volltextsuche nach Wörtern (ß/ss, ä/ae gleichwertig) und Wortteilen, Eingang für Einträge anderer Hosts | Gehirn 10.2, 10.2a |
 | `images.py` | Bilder vor dem Versand an Claude bereinigen: JPEG und PNG ohne EXIF, Ort, XMP, ICC, Kommentare, Vorschaubilder und Daten hinter dem Bildende. Erlaubnisliste, Pixel bleiben Byte für Byte gleich, andere Formate und kaputte Dateien werden abgewiesen. Die Drehung (EXIF-Orientierung) wird vorher ausgelesen und mitgegeben | Gehirn 11.2 |
+| `datalake.py` | Data Lake für Messwerte und Geräuschklassen vom Würfel: SQLite (STRICT, nur anhängen), doppelt gesendete Pakete werden erkannt, Lücken über fortlaufende Nummern, Qualität ok/fehler/unplausibel, Orte über benannte WLANs (sonst „unterwegs“), Beschriftungen von Marvin mit Vermerk, Stundenwerte, Manifest mit `pii`, Index auf Zeit | Daten 6.1, 7, 8.2 |
+| `cooling.py` | Kühlung: Zuluft, Abluft, Chip und Modem der letzten Stunde, Abgleich der Sensoren, Trend, Warnung ab 70 °C oder bei Drosselung, einmal pro heißer Phase, mit Laune-Faktor | Daten 3, Körper 8a.4 |
+| `context.py` | Zustand für das Gespräch: Tageszeit, Ort, Akku, Verbindung, ob ein Gespräch läuft. Nur frische Daten (5 Minuten), sonst „unbekannt“. Ein bekannter Ort ist persönlich (`pii`) | Daten 6.2 |
+| `patterns.py` | Muster aus vier Wochen: wann Marvin wo ist, wie laut und warm es dort ist, wann der Akku knapp wird. Vergleich „heute lauter als sonst“ mit denselben Stunden am gleichen Tagestyp. Alles `pii`, lokal, auf Nachfrage gezeigt, löschbar (Sperrliste) und zurückholbar | Daten 9 |
+| `zahlen.py` | Zahlen in deutscher Schreibweise für Texte an Marvin | – |
 | `schema.py` | kleine Prüfung gegen JSON-Schema (nur die Schlüsselwörter, die unsere Schemas nutzen) | – |
 | `secrets_guard.py` | erkennt Secrets in Daten, bevor sie gespeichert werden (Schlüsselnamen auch in camelCase, bekannte Key-Formate, HTTP-Auth). Zahlen wie GPIO-Pins bleiben erlaubt | Arbeitsregeln |
 | `character/kern.md`, `character/core.py` | fester Kern (Rangfolge und Regeln aus Design Charakter, Abschnitt 2) und Startschutz: Schlaubi startet nur, wenn der Kern genau dem letzten git-Stand entspricht, dem Dienst nicht gehört, nicht für Gruppe oder andere beschreibbar ist und kein Link ist | Charakter 1 |
@@ -41,7 +46,7 @@ python3 -m venv .venv
 
 `brain/requirements.txt` enthält die Pakete für den Betrieb (seit 16.10.2026 PyYAML), `brain/requirements-dev.txt` die Werkzeuge für die Entwicklung. Die Testumgebung liegt in `.venv` im Repo (nicht eingecheckt), damit auch Prüf-Agenten sie finden.
 
-Stand 16.10.2026: 400 Tests grün, Abdeckung 97 %, mypy ohne Befund, alle 102 eingebauten Fehler werden erkannt. `mutation_check.py` prüft vorher, ob die Tests ohne eingebauten Fehler grün sind. Die Code-Prüfung (`/code-review`) vom 16.10.2026 fand 15 Befunde: 14 sind behoben und mit Tests abgesichert, einer (13) ist durch das getrennte Laufzeit-Profil gelöst.
+Stand 16.10.2026: 508 Tests grün, Abdeckung 97 %, mypy ohne Befund, alle 167 eingebauten Fehler werden erkannt. `mutation_check.py` prüft vorher, ob die Tests ohne eingebauten Fehler grün sind. Die Code-Prüfung (`/code-review`) vom 16.10.2026 fand 15 Befunde: 14 sind behoben und mit Tests abgesichert, einer (13) ist durch das getrennte Laufzeit-Profil gelöst. Die zweite Prüfung (Zustand und Muster) fand 10 Befunde, alle behoben, u. a. Vergleich nur mit denselben Stunden und Tagestyp, Akku-Phasen über Mitternacht, lokale statt UTC-Tage, Index auf Zeit.
 
 ## Regeln für den Code
 - Erst der Test, dann der Code. Fertig ist etwas erst, wenn ein frischer Testlauf es belegt.

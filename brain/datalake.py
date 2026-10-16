@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS readings (
     UNIQUE (device, seq, channel)
 ) STRICT;
 CREATE INDEX IF NOT EXISTS readings_by_channel ON readings (channel, ts);
+CREATE INDEX IF NOT EXISTS readings_by_ts ON readings (ts);
 CREATE TABLE IF NOT EXISTS sounds (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     device TEXT NOT NULL,
@@ -359,6 +360,15 @@ class DataLake:
             variance = max(0.0, row["square"] - row["mean"] ** 2)
             result.append(HourStats(row["hour"], row["lo"], row["hi"], row["mean"], math.sqrt(variance), row["n"]))
         return result
+
+    def places_by_hour(self, start, end):
+        """Distinct (UTC hour, place) pairs in [start, end), from all readings, also failed ones."""
+        rows = self._conn.execute(
+            "SELECT DISTINCT substr(ts, 1, 13) AS hour, place FROM readings WHERE ts >= ? AND ts < ?"
+            " ORDER BY hour, place",
+            (format_ts(start), format_ts(end)),
+        )
+        return [(row["hour"], row["place"]) for row in rows]
 
     # --- sounds and labels (Bauplan Daten 4.1, 8.2) -----------------------------------
 

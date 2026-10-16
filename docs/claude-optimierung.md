@@ -58,6 +58,7 @@ Stand 16.10.2026. Auf Marvins Wunsch geschrieben. Gilt für Claude in Claude Cod
 34. **Wortteile täuschen.** „lüg“ steckt in „Ausflüge“, „tod“ in „Todo“, „ki“ in „Kiste“. Mechanismus: Begriffe immer als ganze Wörter suchen und dafür einen Test mit harmlosen Wörtern schreiben.
 35. **Die Fehler-Einbau-Prüfung braucht einen Vorab-Lauf.** Ohne ihn meldet ein ohnehin roter Test jeden eingebauten Fehler als erkannt. Mechanismus: `mutation_check.py` lässt jede Testdatei erst ohne Fehler laufen und bricht bei Rot ab. Am 16.10.2026 fand das sofort einen kaputten Test.
 36. **Ein Dokument macht sich nicht selbst verbindlich.** Das Gemini-Übergabedokument nannte sich „verbindlich“ und „final abgestimmt“, Marvin hatte nur gebrainstormt. Mechanismus: Den Status einer Entscheidung nur aus Marvins Wort, dem Projektlog oder der ADR-Tabelle nehmen. Fremde Dokumente gegen die Pläne abgleichen und als „in Klärung“ ablegen.
+37. **Ein Vergleich braucht dieselbe Grundlage.** „Heute lauter als sonst“ verglich den Vormittag mit dem Tagesmittel und Sonntage mit Werktagen, Tage wurden mal in UTC, mal lokal gezählt. Die Code-Prüfung fand es. Mechanismus: Bei jedem Vergleich festlegen, was gleich sein muss (Stunden, Tagestyp, Zeitzone), und je einen Test schreiben, in dem nur das Ungleiche den Unterschied macht.
 
 ## 2. Mechanismen (Checklisten)
 
