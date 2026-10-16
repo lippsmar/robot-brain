@@ -25,7 +25,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_LIST = ROOT / "brain" / "tests" / "mutations.json"
-COPY = ("brain", "schemas", "pyproject.toml")
+COPY = ("brain", "schemas", "pyproject.toml", "tools/social")
 TIMEOUT_S = 300  # a mutation that makes the tests hang counts as caught
 GIT = shutil.which("git") or "git"
 
@@ -85,7 +85,7 @@ def select_changed(mutations, list_path, ref):
     shared = sorted(
         path
         for path in changed - covered - {relative_list}
-        if path.startswith(("brain/", "schemas/", "pyproject.toml")) and not path.endswith(".md")
+        if path.startswith(("brain/", "schemas/", "tools/social/", "pyproject.toml")) and not path.endswith(".md")
     )
     if shared:
         return mutations, f"gemeinsam genutzte Dateien geändert ({', '.join(shared[:3])}), daher alle"
@@ -131,7 +131,7 @@ def run_parallel(items, work_dirs, task):
                 return
             try:
                 results[index] = task(work, item)
-            except Exception as error:  # noqa: BLE001  report it instead of losing the worker
+            except Exception as error:  # report it instead of losing the worker
                 results[index] = ("error", f"{type(error).__name__}: {error}")
 
     threads = [threading.Thread(target=worker, args=(work,)) for work in work_dirs]

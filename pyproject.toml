@@ -5,14 +5,14 @@ description = "Schlaubis Gehirn: Event-Log, Budget-Waechter, Gedaechtnis"
 requires-python = ">=3.13"
 
 [tool.pytest.ini_options]
-testpaths = ["brain/tests"]
+testpaths = ["brain/tests", "tools/social"]
 # pastebin would upload test output to the internet; it is switched off
 addopts = "-p no:pastebin -q"
 
 [tool.ruff]
 line-length = 120
 target-version = "py313"
-include = ["brain/**/*.py"]
+include = ["brain/**/*.py", "tools/dev/*.py", "tools/social/*.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "RUF"]
@@ -31,7 +31,7 @@ omit = ["brain/tests/*"]
 
 [tool.mypy]
 python_version = "3.13"
-files = ["brain"]
+files = ["brain", "tools/social"]
 check_untyped_defs = true
 warn_unused_ignores = true
 warn_redundant_casts = true
@@ -40,4 +40,9 @@ strict_equality = true
 [[tool.mypy.overrides]]
 # PyYAML ships without type hints; only safe_load, safe_dump and SafeLoader are used (brain/character/profile.py)
 module = ["yaml", "yaml.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# curl-cffi lives only in the social venv (tools/social/requirements.txt), not in the brain venv
+module = ["curl_cffi", "curl_cffi.*"]
 ignore_missing_imports = true
