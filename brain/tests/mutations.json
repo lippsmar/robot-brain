@@ -59,5 +59,12 @@
   {"file": "brain/character/mood.py", "test": "brain/tests/test_character_mood.py", "old": "self._log.append(\"character.mood\", payload, intent=\"mood.record\")", "new": "pass", "why": "Laune: Änderungen stehen nicht im Log"},
   {"file": "brain/character/mood.py", "test": "brain/tests/test_character_mood.py", "old": "day = at.astimezone(self._zone).date()", "new": "day = at.astimezone(UTC).date()", "why": "Laune: „heute“ zählt nach UTC statt nach Ortszeit"},
   {"file": "brain/character/mood.py", "test": "brain/tests/test_character_mood.py", "old": "if share >= MIN_SHARE", "new": "if share >= 0", "why": "Laune: fast abgeklungene Faktoren tauchen in der Begründung auf"},
-  {"file": "schemas/event.schema.json", "test": "brain/tests/test_eventlog.py", "old": "\"schema\": {\"enum\": [\"event/1.1\", \"event/1.2\"]}", "new": "\"schema\": {\"const\": \"event/1.2\"}", "why": "Event-Log: alte Einträge mit Schema 1.1 gelten nach dem Wechsel als kaputt"}
+  {"file": "schemas/event.schema.json", "test": "brain/tests/test_eventlog.py", "old": "\"schema\": {\"enum\": [\"event/1.1\", \"event/1.2\"]}", "new": "\"schema\": {\"const\": \"event/1.2\"}", "why": "Event-Log: alte Einträge mit Schema 1.1 gelten nach dem Wechsel als kaputt"},
+  {"file": "brain/character/prompt.py", "test": "brain/tests/test_character_prompt.py", "old": "if len(prompt.text) >= MAX_PROMPT_CHARS:", "new": "if False:", "why": "Prompt: zu langer Prompt wird nicht abgewiesen"},
+  {"file": "brain/character/prompt.py", "test": "brain/tests/test_character_prompt.py", "old": "if attitude[\"verdeckt\"]:", "new": "if False:", "why": "Prompt: Anweisung, die Haltung nie zu benennen, fehlt"},
+  {"file": "brain/character/prompt.py", "test": "brain/tests/test_character_prompt.py", "old": "if mood.damped:", "new": "if False:", "why": "Prompt: ernste Lage wird nicht als ernst markiert"},
+  {"file": "brain/character/prompt.py", "test": "brain/tests/test_character_prompt.py", "old": "if more:", "new": "if False:", "why": "Prompt: „Erzähl mehr“ hebt die Kürze nicht auf"},
+  {"file": "brain/character/prompt.py", "test": "brain/tests/test_character_prompt.py", "old": "if channel not in CHANNELS:", "new": "if False:", "why": "Prompt: unbekannter Kanal wird nicht sauber abgewiesen"},
+  {"file": "brain/character/prompt.py", "test": "brain/tests/test_character_prompt.py", "old": "[core_text.strip(), _ROLE, _character(profile)]", "new": "[_ROLE, core_text.strip(), _character(profile)]", "why": "Prompt: Kern steht nicht an erster Stelle"},
+  {"file": "brain/character/prompt.py", "test": "brain/tests/test_character_prompt.py", "old": "if value <= -0.6:", "new": "if value <= -0.9:", "why": "Prompt: Laune-Stufen werden falsch in Worte gefasst"}
 ]
