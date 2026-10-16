@@ -74,5 +74,6 @@ Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marv
 - [x] Bauplan Data Lakehouse bestätigt (16.10.2026, `docs/bauplan-lakehouse-v1.md`), Phase 1 gebaut
 - [ ] Such-API für Schlaubis Recherche wählen (Bauplan Gehirn 13.1, Vergleich `docs/vergleich-such-apis.md`). Staan-Konto angelegt (16.10.2026), wartet auf Freischaltung, danach Nutzungsbedingungen prüfen
 - [x] Design Wissensarchitektur freigegeben (16.10.2026, `docs/design-wissen.md`), Bauplan `docs/bauplan-wissen-v1.md`, Stufe 1 gebaut (16.10.2026). Wie Modul-Wissen behandelt wird (gesichert oder zu prüfen), entscheidet der Live-Test. Bis zur Such-API: kostenlose Quellen (Wikipedia, Wikidata, Marginalia, Fachliteratur) und eigene Vektor-Suche (Marvin, 16.10.2026)
+- [ ] Sicherheit (Empfehlung Claude, 16.10.2026, Entscheidung Marvin): Repo `robot-brain` auf privat stellen (es ist öffentlich und enthält Design, Sicherheitskonzept und Gewohnheiten-Logik). Keys aus den Alt-Repos drehen bzw. löschen (Spotify-Token, Google-Cloud-Projekt prüfen)
 - [ ] Prototyp A (Chat mit echtem Kern und Profil, claude.ai-Seite, `tools/prototyp/`) testen: Marvin
 - [ ] Sperre für Secret-Dateien als Hook (`.env`, `*.key`, `secrets/`, `credentials*.json`, `token*.json`), erst wenn das Projekt fertig ist (Marvin, 16.10.2026)

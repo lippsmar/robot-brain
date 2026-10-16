@@ -86,7 +86,7 @@ Jede Schicht verweist auf die darunter, so bleibt jede Aussage bis zur Quelle na
 - **Marginalia Search:** öffentlicher Schlüssel funktioniert, Ergebnisse CC-BY-NC-SA (privat, nicht kommerziell erlaubt), kleiner Index.
 - **Fachliteratur:** Crossref, arXiv, Europe PMC, OpenAlex (Werkzeug `tools/literatur/literatur.py`).
 - **Nicht:** HTML-Seiten von Suchmaschinen abkratzen (z. B. DuckDuckGo-HTML), das umgeht Bot-Sperren.
-- **Staan:** Das Konto wartet auf Freischaltung. Staan beschreibt sich als B2B-Dienst. Ob es für eine Privatperson aus Albanien freigegeben wird, ist nirgends belegt, das zeigt die Antwort.
+- **Staan:** Das Konto wartet auf Freischaltung. Staan beschreibt sich als B2B-Dienst. Ob es für eine Privatperson außerhalb der EU freigegeben wird, ist nirgends belegt, das zeigt die Antwort.
 
 ## 9a. Wikipedia-Lizenz beim Antworten
 Zitiert Schlaubi Wikipedia-Inhalte wörtlich weiter, gehört die Quelle dazu (CC BY-SA). Für eigene, private Antworten reicht die Quellenangabe auf Nachfrage.

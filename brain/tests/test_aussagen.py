@@ -109,10 +109,10 @@ def test_removing_a_source_drops_only_its_evidence(aussagen):
 
 
 def test_evidence_with_pii_makes_the_statement_personal(aussagen):
-    aid = aussagen.erfassen("Büro", "liegt in", "Tirana", quelle="karte")
+    aid = aussagen.erfassen("Werkstatt", "liegt in", "Musterstadt", quelle="karte")
     assert aussagen.aussage(aid).pii is False
 
-    aussagen.erfassen("Büro", "liegt in", "Tirana", quelle="gespraech", pii=True)
+    aussagen.erfassen("Werkstatt", "liegt in", "Musterstadt", quelle="gespraech", pii=True)
 
     assert aussagen.aussage(aid).pii is True
 
