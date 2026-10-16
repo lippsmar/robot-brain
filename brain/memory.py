@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS marks (
     reason TEXT
 ) STRICT;
 CREATE INDEX IF NOT EXISTS marks_uid ON marks (uid);
+CREATE INDEX IF NOT EXISTS entries_kind_ts ON entries (kind, ts);
 CREATE TABLE IF NOT EXISTS deletion_approvals (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     uid TEXT NOT NULL,
@@ -442,8 +443,10 @@ class Memory:
             self._mark(uid, "confirmed", reason)
         self._event("confirm", uid, row["pii"])
 
-    def delete(self, uid, *, reason, approved_by, override_keep=False):
-        """Physically delete an entry. Only with Marvin's approval; protected entries need override_keep."""
+    def delete(self, uid, *, reason, approved_by, override_keep=False, compact=True):
+        """Physically delete an entry. Only with Marvin's approval; protected entries need override_keep.
+
+        With compact=False the caller deletes several entries and calls `compact()` once at the end."""
         if approved_by not in APPROVERS:
             raise MemoryStoreError("deleting needs Marvin's approval (approved_by='marvin')")
         row = self._require(uid)
@@ -457,8 +460,16 @@ class Memory:
             self._conn.execute("DELETE FROM marks WHERE uid = ?", (uid,))
             self._conn.execute("DELETE FROM entries WHERE uid = ?", (uid,))
         self._event("delete", uid, row["pii"], approved_by=approved_by)
+        if not compact:
+            return {"wal_flushed": None}
         flushed = self._compact()
         self._event("compact", uid, row["pii"], wal_flushed=flushed)
+        return {"wal_flushed": flushed}
+
+    def compact(self):
+        """Merge the search indexes and empty the WAL after several deletions (see delete)."""
+        flushed = self._compact()
+        self._event("compact", "-", False, wal_flushed=flushed)
         return {"wal_flushed": flushed}
 
     def _compact(self):
@@ -601,6 +612,25 @@ class Memory:
             f" AND {_STATUS_SQL} IN ({allowed}) ORDER BY e.id",
             (tag,),
         ).fetchall()
+        return [self._hit(row) for row in rows]
+
+    def tag_targets(self, prefix, *, kind, source):
+        """What visible entries of this host, kind and source point to with tags `<prefix><target>`.
+
+        Used for "taken over into knowledge" (`aus:<uid>` from the consolidation). Entries from other
+        hosts (inbox) never count, so nobody outside can mark an entry as taken over."""
+        visible = ", ".join(f"'{status}'" for status in VISIBLE)
+        rows = self._conn.execute(
+            "SELECT DISTINCT j.value AS tag FROM entries e, json_each(e.tags) j"
+            f" WHERE e.kind = ? AND e.source = ? AND e.origin = ? AND {_STATUS_SQL} IN ({visible})"
+            " AND substr(j.value, 1, length(?)) = ?",
+            (kind, source, self._origin, prefix, prefix),
+        ).fetchall()
+        return {row["tag"][len(prefix) :] for row in rows}
+
+    def older_than(self, kind, ts):
+        """All entries of one kind stored before `ts` (any status, oldest first), for the deadline run."""
+        rows = self._conn.execute("SELECT * FROM entries WHERE kind = ? AND ts < ? ORDER BY id", (kind, ts)).fetchall()
         return [self._hit(row) for row in rows]
 
     def merkliste(self, limit=50):

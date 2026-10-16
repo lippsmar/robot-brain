@@ -138,7 +138,7 @@ Stand 13.10.2026. Grundlage: `docs/design-gehirn.md`, von Marvin am 13.10.2026 f
 **10.2a Schnittstelle (für spätere MCP-Anbindung):** Der Gedächtnisdienst bietet feste Funktionen (`recall`, `remember`, Interessenprofil, Themenseiten), schreibt zu jedem Eintrag die Herkunft (Gerät oder Host), dazu die Felder `teilbar` (Standard nein), Beitragender und Vertrauenswert für das spätere Wissen-Teilen (Version 2) und hat eine Warteschlange für Einträge, die später übertragen werden.
 **10.3 Indizes:** sqlite-vec mit FTS5 (Hybridsuche) und LanceDB aus derselben Quelle. Embeddings lokal mit fastembed. Ein Befehl baut jeden Index komplett neu auf.
 **10.4 Quellen-Bewertung:** Stufen A bis D, Konfidenz, Bestätigungen, lernende Bewertung, „disputed“.
-**10.5 Pflege:** tägliche Konsolidierung (Gespräche zu Wissen, Themenseiten), wöchentliche Aufräumrunde, Fristen mit Merk-Schutz, Liste „Soll das bleiben?“.
+**10.5 Pflege:** tägliche Konsolidierung (Gespräche zu Wissen, Themenseiten), wöchentliche Aufräumrunde, Fristen mit Merk-Schutz, Liste „Soll das bleiben?“. Fristen-Lauf mit Merk-Schutz und Liste gebaut am 16.10.2026 (`brain/fristen.py`). Gelöscht wird nur nach Marvins Ja. Annahme zur Bestätigung: Fremde Mails und Rohseiten brauchen vor dem Löschen keine Verdichtung, nur Gespräche. Offen: die Konsolidierung selbst. Sie braucht das Modell und eine Entscheidung, aus welchem Budget-Topf sie zahlt.
 **10.6 Prüffragen:** 30 Fragen mit bekannten Antworten aus Testwissen. Sie laufen gegen beide Speicher.
 - Test:
   - Index löschen und neu aufbauen, danach gleiche Treffer.
