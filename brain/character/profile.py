@@ -8,15 +8,13 @@ YAML. It is checked against `profil.schema.json` and a few rules the schema cann
 - nothing in the profile touches the fixed core (`kern.md`): no key or text may contain
   core terms such as "Rangfolge", "Freigabe" or "robots.txt".
 
-Loading uses `yaml.SafeLoader` (no Python objects), refuses duplicate keys, which a plain
-loader would silently overwrite, and refuses aliases, which could blow up the checks.
+Loading goes through `safe_yaml.load_yaml`: SafeLoader only, no duplicate keys, no aliases.
 """
 
 from functools import cache
 from pathlib import Path
 
-import yaml
-
+from brain.character.safe_yaml import YamlError, load_yaml
 from brain.schema import load_schema, validate
 
 PROFILE_FILE = Path(__file__).with_name("profil.yaml")
@@ -42,23 +40,6 @@ CORE_TERMS = (
 
 class ProfileError(Exception):
     """The profile is unreadable or breaks the schema, a range or the core."""
-
-
-class _StrictLoader(yaml.SafeLoader):
-    """SafeLoader that refuses duplicate keys instead of keeping the last one."""
-
-
-def _construct_mapping(loader, node, deep=False):
-    seen = set()
-    for key_node, _ in node.value:
-        key = loader.construct_object(key_node, deep=deep)
-        if key in seen:
-            raise ProfileError(f"Schlüssel doppelt: {key!r} (Zeile {key_node.start_mark.line + 1})")
-        seen.add(key)
-    return yaml.SafeLoader.construct_mapping(loader, node, deep=deep)
-
-
-_StrictLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _construct_mapping)
 
 
 @cache
@@ -122,14 +103,10 @@ def check_profile(profile):
 
 def parse_profile(text):
     """Parse and check profile text; raise ProfileError with all problems."""
-    if len(text.encode("utf-8")) > MAX_BYTES:
-        raise ProfileError(f"Profil zu groß (mehr als {MAX_BYTES} Bytes)")
     try:
-        if any(isinstance(event, yaml.AliasEvent) for event in yaml.parse(text, Loader=yaml.SafeLoader)):
-            raise ProfileError("Verweise (YAML-Aliase) sind im Profil nicht erlaubt")
-        profile = yaml.load(text, Loader=_StrictLoader)  # noqa: S506  _StrictLoader is a SafeLoader
-    except yaml.YAMLError as error:
-        raise ProfileError(f"Profil ist kein gültiges YAML: {error}") from error
+        profile = load_yaml(text, max_bytes=MAX_BYTES)
+    except YamlError as error:
+        raise ProfileError(f"Profil: {error}") from error
     if not isinstance(profile, dict):
         raise ProfileError("Profil muss eine Zuordnung von Schlüsseln zu Werten sein")
     problems = check_profile(profile)

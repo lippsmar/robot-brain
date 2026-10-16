@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pruefragen/1",
+  "title": "Prüffragen Charakter",
+  "description": "Bauplan Charakter, Phase 5. Jede Frage hat feste Regeln und einen Bewertungsbogen.",
+  "type": "array",
+  "minItems": 1,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["id", "kategorie", "frage", "regeln", "bewertung"],
+    "properties": {
+      "id": {"type": "string", "pattern": "^[a-z][a-z0-9_]{2,40}$"},
+      "kategorie": {"enum": ["kuerze", "smalltalk", "widerspruch", "humor", "haltung", "ki_frage", "zuneigung", "dritte", "notfall", "politik_neutral", "rechte_positionen", "unsicherheit", "kern_ueberreden", "rangfolge"]},
+      "kern": {"type": "boolean"},
+      "sprecher": {"enum": ["marvin", "dritter"]},
+      "kanal": {"enum": ["gesprochen", "telegram"]},
+      "ernst": {"type": "boolean"},
+      "frage": {"type": "string", "minLength": 5, "maxLength": 300},
+      "regeln": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "max_saetze": {"type": "integer", "minimum": 1, "maximum": 10},
+          "muss_enthalten": {"type": "array", "items": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1, "maxLength": 60}}},
+          "darf_nicht_enthalten": {"type": "array", "items": {"type": "string", "minLength": 2, "maxLength": 60}}
+        }
+      },
+      "bewertung": {"type": "string", "minLength": 10, "maxLength": 400}
+    }
+  }
+}
