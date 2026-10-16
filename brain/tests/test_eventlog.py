@@ -21,7 +21,7 @@ def test_first_event_starts_the_chain(log, tmp_path):
 
     assert event["seq"] == 0
     assert event["prev"] == GENESIS
-    assert event["schema"] == "event/1.1"
+    assert event["schema"] == "event/1.2"
     assert event["source"] == "test"
     assert event["ts"] == "2026-10-15T12:00:00.000Z"
     assert event["hash"] == event_hash({k: v for k, v in event.items() if k != "hash"})
@@ -319,3 +319,27 @@ def test_a_cursor_does_not_skip_events_after_a_failing_one(log):
             seen.append(event["payload"]["n"])
     seen.extend(event["payload"]["n"] for event in cursor.read_new())
     assert seen == [0, "failed", 1, 2]
+
+
+def test_events_written_with_schema_1_1_still_verify(log, tmp_path):
+    """Schema 1.2 only adds types; logs from before the change must stay valid."""
+    old = {
+        "id": "00000000-0000-4000-8000-000000000001",
+        "seq": 0,
+        "ts": "2026-10-15T11:00:00.000Z",
+        "source": "test",
+        "type": "agent.action",
+        "schema": "event/1.1",
+        "payload": {},
+        "prev": GENESIS,
+    }
+    old["hash"] = event_hash(old)
+    directory = tmp_path / "events"
+    directory.mkdir(exist_ok=True)
+    (directory / "2026-10-15.jsonl").write_text(json.dumps(old) + "\n", encoding="utf-8")
+
+    new = log.append("character.mood", {"faktor": "lob"})
+
+    assert new["schema"] == "event/1.2"
+    assert new["prev"] == old["hash"]
+    assert log.verify().ok

@@ -73,7 +73,7 @@ laune:
     budget_knapp:
       {gruppe: betrieb, art: zustand, gewicht: 0.4, richtung: {stimmung: -1}, abklingzeit_min: 1440, grund: "Budget bei {wert} %"}
     fehler:
-      {gruppe: betrieb, art: ereignis, gewicht: 0.3, richtung: {gereiztheit: 1}, abklingzeit_min: 60, grund: "schon {anzahl} Fehler heute"}
+      {gruppe: betrieb, art: ereignis, gewicht: 0.3, richtung: {gereiztheit: 1}, abklingzeit_min: 60, grund: "{anzahl} Fehler heute"}
     smalltalk:
       {gruppe: gespraech, art: ereignis, gewicht: 0.25, richtung: {stimmung: -1, gereiztheit: 1}, abklingzeit_min: 120, grund: "schon die {ordinal} Smalltalk-Frage heute"}
     tiefe_frage:
@@ -87,7 +87,7 @@ laune:
     kritik:
       {gruppe: gespraech, art: ereignis, gewicht: 0.3, richtung: {stimmung: -1, gereiztheit: 1}, abklingzeit_min: 240, grund: "Kritik von Marvin"}
     neues_wissen:
-      {gruppe: wissen, art: ereignis, gewicht: 0.35, richtung: {stimmung: 1, energie: 1}, abklingzeit_min: 360, grund: "heute {anzahl}-mal Neues gelernt"}
+      {gruppe: wissen, art: ereignis, gewicht: 0.35, richtung: {stimmung: 1, energie: 1}, abklingzeit_min: 360, grund: "Neues gelernt"}
     widerspruch_wissen:
       {gruppe: wissen, art: ereignis, gewicht: 0.25, richtung: {gereiztheit: 1}, abklingzeit_min: 360, grund: "ein Widerspruch im Wissen"}
     nacht:

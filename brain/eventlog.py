@@ -20,7 +20,7 @@ from typing import BinaryIO
 from brain.schema import load_schema, validate
 from brain.secrets_guard import find_secret
 
-SCHEMA_ID = "event/1.1"
+SCHEMA_ID = "event/1.2"
 GENESIS = "0" * 64
 DEFAULT_SCHEMA = Path(__file__).resolve().parents[1] / "schemas" / "event.schema.json"
 _OPTIONAL_FIELDS = ("device_id", "intent", "result", "latency_ms", "confidence", "pii")

@@ -8,7 +8,7 @@ from brain.schema import SchemaError, check_supported, load_schema, validate
 
 def test_the_event_schema_uses_only_supported_keywords():
     schema = load_schema(DEFAULT_SCHEMA)
-    assert schema["$id"] == "event/1.1"
+    assert schema["$id"] == "event/1.2"
 
 
 def test_unknown_keywords_are_refused():

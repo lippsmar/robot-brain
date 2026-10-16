@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "event/1.1",
+  "$id": "event/1.2",
   "title": "Event-Log-Eintrag",
-  "description": "1.1 (2026-10-15): Typen budget.usage, budget.alert, memory.write und die Hash-Kette (prev, hash) ergaenzt.",
+  "description": "1.1 (2026-10-15): Typen budget.usage, budget.alert, memory.write und die Hash-Kette (prev, hash) ergaenzt. 1.2 (2026-10-16): Typ character.mood; Eintraege mit 1.1 bleiben gueltig.",
   "type": "object",
   "required": ["id", "seq", "ts", "source", "type", "schema", "prev", "hash"],
   "properties": {
@@ -11,7 +11,7 @@
     "ts": {"type": "string", "format": "date-time"},
     "source": {"type": "string"},
     "device_id": {"type": "string"},
-    "type": {"enum": ["sensor.reading", "device.discovered", "device.command", "device.state", "agent.action", "agent.decision", "comm.sms", "comm.mail", "vision.capture", "system.health", "safety.alert", "error", "budget.usage", "budget.alert", "memory.write"]},
+    "type": {"enum": ["sensor.reading", "device.discovered", "device.command", "device.state", "agent.action", "agent.decision", "comm.sms", "comm.mail", "vision.capture", "system.health", "safety.alert", "error", "budget.usage", "budget.alert", "memory.write", "character.mood"]},
     "intent": {"type": "string"},
     "payload": {"type": "object"},
     "result": {"type": "string"},
@@ -20,6 +20,6 @@
     "pii": {"type": "boolean"},
     "prev": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
-    "schema": {"const": "event/1.1"}
+    "schema": {"enum": ["event/1.1", "event/1.2"]}
   }
 }
