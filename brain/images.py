@@ -4,27 +4,44 @@ Phone photos carry more than pixels: EXIF with the place (GPS), time, phone mode
 profiles, comments, and sometimes whole extra images after the end of the file. Only what is
 needed to show the picture is kept:
 
-- JPEG: tables, frame and scan data, JFIF and the plain Adobe colour segment. Every other
-  APPn segment, comments and everything after the end marker are dropped.
+- JPEG: an allowlist. Tables, frame and scan data, a basic JFIF segment (rebuilt without
+  thumbnail) and the plain Adobe colour segment are kept. All other APPn segments, comments
+  and everything after the end marker are dropped. Reserved or exotic segments are refused.
 - PNG: the image chunks IHDR, PLTE, IDAT, IEND and the rendering chunks tRNS, gAMA, cHRM,
   sRGB, sBIT, bKGD, pHYs. Text, EXIF, time, ICC profile, animation and anything after IEND
   are dropped.
 
 Pixel data is copied byte for byte. Other formats and damaged files are refused rather than
 passed on, so nothing slips through unchecked. Only the standard library is used.
+
+Dropping EXIF also drops the orientation tag, while the pixels stay as stored. `clean_image`
+therefore reads the orientation first and returns it with the cleaned image, so the caller can
+turn the picture upright (frames from the phone page are already upright, Bauplan 11.4).
 """
 
 import struct
 import zlib
+from dataclasses import dataclass
 
 MAX_BYTES = 20 * 1024 * 1024
 _PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 _PNG_KEEP = {b"IHDR", b"PLTE", b"IDAT", b"IEND", b"tRNS", b"gAMA", b"cHRM", b"sRGB", b"sBIT", b"bKGD", b"pHYs"}
 _JPEG_STANDALONE = {0x01, *range(0xD0, 0xD8)}  # markers without a length field
+# Frame, Huffman and arithmetic tables (C0-CF without the reserved C8), scan, quantisation tables,
+# number of lines, restart interval, hierarchical progression, expansion (DA-DF).
+_JPEG_KEEP = {*range(0xC0, 0xC8), *range(0xC9, 0xD0), *range(0xDA, 0xE0)}
+_EXIF_ORIENTATION = 0x0112
 
 
 class ImageError(ValueError):
     """Unsupported format, damaged file or too large."""
+
+
+@dataclass(frozen=True)
+class CleanImage:
+    data: bytes
+    media_type: str
+    orientation: int  # EXIF orientation of the original, 1 = upright
 
 
 def media_type(data):
@@ -44,15 +61,63 @@ def strip_metadata(data):
     return _strip_png(data)
 
 
-def _drop_jpeg_segment(marker, segment):
-    """`segment` starts with its two length bytes."""
-    if marker == 0xFE:  # comment
-        return True
-    if marker == 0xE0:  # APP0: keep JFIF, drop JFXX thumbnails and the rest
-        return segment[2:7] != b"JFIF\x00"
-    if marker == 0xEE:  # APP14: keep only the plain 12-byte Adobe colour transform
-        return not (segment[2:7] == b"Adobe" and len(segment) == 14)
-    return 0xE1 <= marker <= 0xEF  # APP1 to APP15: EXIF, XMP, ICC, IPTC and others
+def clean_image(data):
+    """Cleaned image with its media type and the orientation read before cleaning."""
+    cleaned = strip_metadata(data)
+    kind = media_type(data)
+    return CleanImage(cleaned, kind, jpeg_orientation(data) if kind == "image/jpeg" else 1)
+
+
+def jpeg_orientation(data):
+    """EXIF orientation 1 to 8 from the first EXIF segment; 1 if there is none or it is unreadable."""
+    position = 2
+    while position + 4 <= len(data) and data[position] == 0xFF:
+        marker = data[position + 1]
+        if marker == 0xDA or marker in _JPEG_STANDALONE or marker in (0xD8, 0xD9):
+            break
+        length = int.from_bytes(data[position + 2 : position + 4], "big")
+        payload = data[position + 4 : position + 2 + length]
+        if marker == 0xE1 and payload.startswith(b"Exif\x00\x00"):
+            return _orientation_from_tiff(payload[6:])
+        position += 2 + length
+    return 1
+
+
+def _orientation_from_tiff(tiff):
+    try:
+        order = {b"MM": ">", b"II": "<"}[tiff[:2]]
+        (ifd,) = struct.unpack(order + "I", tiff[4:8])
+        (count,) = struct.unpack(order + "H", tiff[ifd : ifd + 2])
+        for index in range(count):
+            entry = tiff[ifd + 2 + 12 * index : ifd + 14 + 12 * index]
+            tag, kind, _ = struct.unpack(order + "HHI", entry[:8])
+            if tag == _EXIF_ORIENTATION and kind == 3:
+                (value,) = struct.unpack(order + "H", entry[8:10])
+                return value if 1 <= value <= 8 else 1
+    except (KeyError, struct.error):
+        pass
+    return 1
+
+
+def _jfif(segment):
+    """A basic JFIF segment without thumbnail, or None if this APP0 is not JFIF."""
+    payload = segment[2:]
+    if payload[:5] != b"JFIF\x00" or len(payload) < 14:
+        return None
+    return struct.pack(">H", 16) + payload[:12] + b"\x00\x00"
+
+
+def _clean_jpeg_segment(marker, segment):
+    """Bytes to keep for this segment (without the marker), None to drop it. `segment` starts with its length."""
+    if marker in _JPEG_KEEP:
+        return segment
+    if marker == 0xE0:  # APP0: only JFIF survives, rebuilt without thumbnail or extra bytes
+        return _jfif(segment)
+    if marker == 0xEE and segment[2:7] == b"Adobe" and len(segment) == 14:  # plain Adobe colour transform
+        return segment
+    if 0xE1 <= marker <= 0xEF or marker == 0xFE:  # EXIF, XMP, ICC, IPTC, other APPn, comments
+        return None
+    raise ImageError(f"JPEG mit unbekanntem Segment 0x{marker:02X}, nicht unterstützt")
 
 
 def _scan_end(data, position):
@@ -98,8 +163,9 @@ def _strip_jpeg(data):
             raise ImageError("JPEG beschädigt: Segmentlänge passt nicht")
         segment = data[position : position + length]
         position += length
-        if not _drop_jpeg_segment(marker, segment):
-            out += bytes((0xFF, marker)) + segment
+        kept = _clean_jpeg_segment(marker, segment)
+        if kept is not None:
+            out += bytes((0xFF, marker)) + kept
         if marker == 0xDA:  # start of scan: copy the compressed data unchanged
             scan_end = _scan_end(data, position)
             out += data[position:scan_end]

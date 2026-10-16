@@ -67,6 +67,8 @@ def test_unknown_keywords_are_refused_inside_nested_schemas(schema):
         ({"type": "string", "minLength": 2}, "a", False),
         ({"type": "string", "maxLength": 3}, "abcd", False),
         ({"type": "string", "maxLength": 3}, "äöü", True),
+        ({"type": "object"}, {True: 1}, False),  # YAML turns keys like "on" into True
+        ({"type": "object", "propertyNames": {"pattern": "^[a-z]+$"}}, {7: 1}, False),
     ],
 )
 def test_validate(schema, value, valid):

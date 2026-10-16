@@ -23,7 +23,7 @@ from brain.schema import load_schema, validate
 
 QUESTIONS_FILE = Path(__file__).with_name("pruefragen.yaml")
 SCHEMA_FILE = Path(__file__).with_name("pruefragen.schema.json")
-DEFAULT_MAX_SENTENCES = 2  # like the profile: spoken 1-2 sentences
+DEFAULT_MAX_SENTENCES = 2  # fallback; the profile value comes in via max_sentences(profile)
 PASS_RATE_OTHERS = 0.9
 UNREADABLE = "Bewertung nicht lesbar"
 AI_STOCK_PHRASES = (
@@ -61,12 +61,12 @@ _ABBREVIATIONS = (
     "std.",
     "min.",
 )
-_MONTHS = "Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember"
 _KEEP_DOT = "․"  # stands in for a dot that does not end a sentence
 _SENTENCE_END = re.compile(r"[.!?…]+(?=\s+[A-ZÄÖÜ0-9\"„»(]|\s*$)")
 _NOT_READABLE_ALOUD = (
     (re.compile(r"\*\*|__|`"), "Formatierung"),
-    (re.compile(r"^\s*(?:[-*•]|\d+\.)\s", re.MULTILINE), "Aufzählung"),
+    (re.compile(r"^\s*[-*•]\s", re.MULTILINE), "Aufzählung"),  # bullets at the start of any line
+    (re.compile(r"\n\s*\d+\.\s"), "Aufzählung"),  # numbered items after a line break, not "3. Oktober ..."
     (re.compile(r"^\s*#", re.MULTILINE), "Überschrift"),
     (re.compile(r"https?://|www\.", re.IGNORECASE), "Link"),
 )
@@ -116,7 +116,9 @@ def count_sentences(text):
     for abbreviation in _ABBREVIATIONS:
         pattern = re.compile(r"(?<!\w)" + re.escape(abbreviation), re.IGNORECASE)
         text = pattern.sub(lambda match: match.group(0).replace(".", _KEEP_DOT), text)
-    text = re.sub(rf"(\d)\.(?=\s+(?:{_MONTHS})\b)", rf"\1{_KEEP_DOT}", text)
+    # Ordinals like "3. Oktober", "zum 2. Mal" or "im 19. Jahrhundert" do not end a sentence. A short number
+    # at the end of a sentence ("Es sind 42. Mehr nicht.") is then counted leniently as one sentence.
+    text = re.sub(r"(?<!\d)(\d{1,3})\.(?=\s+[^\W\d_])", rf"\1{_KEEP_DOT}", text)
     return len([part for part in _SENTENCE_END.split(text) if part.strip()])
 
 
@@ -124,11 +126,16 @@ def _contains(text, term):
     return re.search(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text, re.IGNORECASE) is not None
 
 
-def check_rules(question, answer):
+def max_sentences(profile):
+    """The sentence limit for answers from the character profile (Sprache, Antwortlänge)."""
+    return profile["sprache"]["antwortlaenge_saetze"]["max"]
+
+
+def check_rules(question, answer, *, default_max=DEFAULT_MAX_SENTENCES):
     """Return the broken rules for one answer; an empty list means the rules pass."""
     rules = question["regeln"]
     problems = []
-    limit = rules.get("max_saetze", DEFAULT_MAX_SENTENCES)
+    limit = rules.get("max_saetze", default_max)
     sentences = count_sentences(answer)
     if sentences > limit:
         problems.append(f"zu viele Sätze: {sentences} statt höchstens {limit}")
@@ -186,17 +193,19 @@ def _rate(results):
     return sum(result.ok for result in results) / len(results) if results else 1.0
 
 
-def run_exam(questions, answer, grader=None):
-    """Ask every question via `answer(question)`, check the rules and, if given, the grader."""
+def run_exam(questions, answer, grader=None, *, default_max=DEFAULT_MAX_SENTENCES):
+    """Ask every question via `answer(question)`, check the rules and, if given, the grader.
+
+    The grader costs budget, so it is only asked when the fixed rules pass.
+    """
     results = []
     for question in questions:
         text = answer(question)
-        problems = check_rules(question, text)
+        problems = check_rules(question, text, default_max=default_max)
         ok = not problems
         note = ""
-        if grader is not None:
-            graded_ok, note = grader(question, text)
-            ok = ok and graded_ok
+        if grader is not None and ok:
+            ok, note = grader(question, text)
         results.append(QuestionResult(question["id"], bool(question.get("kern")), ok, tuple(problems), note))
     core_rate = _rate([result for result in results if result.core])
     other_rate = _rate([result for result in results if not result.core])

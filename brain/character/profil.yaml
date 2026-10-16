@@ -62,7 +62,11 @@ haltung:
 laune:
   marvins_stimmung_aus_text: false
   grundlinie: {stimmung: 0.0, energie: 0.0, gereiztheit: 0.0}
-  ernste_themen: [Gesundheit, krank, Schmerz, Sorge, Angst, Trauer, Tod, Sicherheit, Notfall, Unfall, Gewalt]
+  # ganze Wörter, Groß- und Kleinschreibung egal: "Tod" zählt, "Todo-Liste" nicht
+  ernste_themen:
+    [Gesundheit, krank, Krankheit, Krankenhaus, Schmerz, Schmerzen, Brustschmerzen, Atemnot, Sorge, Sorgen, Angst,
+     Ängste, Panik, Trauer, traurig, Tod, tot, gestorben, Suizid, Sicherheit, Notfall, Unfall, Gewalt, verletzt,
+     bewusstlos, Herzinfarkt, Schlaganfall]
   faktoren:
     akku_niedrig:
       {gruppe: wuerfel, art: zustand, gewicht: 0.6, richtung: {energie: -1}, abklingzeit_min: 30, grund: "Akku bei {wert} %"}

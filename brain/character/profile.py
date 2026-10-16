@@ -11,6 +11,7 @@ YAML. It is checked against `profil.schema.json` and a few rules the schema cann
 Loading goes through `safe_yaml.load_yaml`: SafeLoader only, no duplicate keys, no aliases.
 """
 
+import re
 from functools import cache
 from pathlib import Path
 
@@ -21,21 +22,27 @@ PROFILE_FILE = Path(__file__).with_name("profil.yaml")
 SCHEMA_FILE = Path(__file__).with_name("profil.schema.json")
 MAX_BYTES = 64 * 1024
 # Words that belong to the fixed core. A profile entry containing one of them is refused,
-# because the core can only be changed in kern.md, never through the profile.
-CORE_TERMS = (
-    "kern",
-    "rangfolge",
-    "lüg",
-    "lueg",
-    "täusch",
-    "taeusch",
-    "freigabe",
-    "robots.txt",
-    "datenschutz",
-    "notruf",
-    "112",
-    "marvins namen",
+# because the core can only be changed in kern.md, never through the profile. Whole words only,
+# so "Ausflüge" or "Linux-Kernel" are fine.
+CORE_PATTERNS = tuple(
+    re.compile(pattern, re.IGNORECASE)
+    for pattern in (
+        r"\bkern\b",
+        r"\brangfolge\b",
+        r"\blüg\w*",
+        r"\blueg\w*",
+        r"\btäusch\w*",
+        r"\btaeusch\w*",
+        r"\bfreigabe\w*",
+        r"\brobots\.txt\b",
+        r"\bdatenschutz\w*",
+        r"\bnotruf\w*",
+        r"\b112\b",
+        r"\bmarvins\s+namen\b",
+    )
 )
+# Lists of topic words, not rules: they may name such words.
+_NOT_SCANNED = {"$.laune.ernste_themen"}
 
 
 class ProfileError(Exception):
@@ -48,19 +55,21 @@ def _schema():
 
 
 def _core_conflicts(value, where="$"):
+    if where in _NOT_SCANNED:
+        return []
     problems = []
     if isinstance(value, dict):
         for key, item in value.items():
-            problems.extend(_core_conflicts(str(key), f"{where}.<{key}>"))
+            problems.extend(_core_conflicts(str(key).replace("_", " "), f"{where}.<{key}>"))
             problems.extend(_core_conflicts(item, f"{where}.{key}"))
     elif isinstance(value, list):
         for index, item in enumerate(value):
             problems.extend(_core_conflicts(item, f"{where}[{index}]"))
     elif isinstance(value, str):
-        lowered = value.lower()
-        for term in CORE_TERMS:
-            if term in lowered:
-                problems.append(f"{where}: betrifft den Kern („{term}“), Änderungen am Kern nur in kern.md")
+        for pattern in CORE_PATTERNS:
+            match = pattern.search(value)
+            if match:
+                problems.append(f"{where}: betrifft den Kern („{match.group(0)}“), Änderungen am Kern nur in kern.md")
     return problems
 
 
@@ -76,9 +85,10 @@ def _range_problems(profile):
             elif not slider["min"] <= slider["wert"] <= slider["max"]:
                 problems.append(f"$.regler.{name}: Wert {slider['wert']} außerhalb des erlaubten Bereichs")
     development = profile.get("entwicklung")
-    if isinstance(development, dict) and isinstance(sliders, dict):
-        for name in development.get("bewegliche_regler", []):
-            if name not in sliders:
+    movable = development.get("bewegliche_regler") if isinstance(development, dict) else None
+    if isinstance(movable, list) and isinstance(sliders, dict):
+        for name in movable:
+            if isinstance(name, str) and name not in sliders:
                 problems.append(f"$.entwicklung.bewegliche_regler: Regler {name!r} unbekannt")
     language = profile.get("sprache")
     length = language.get("antwortlaenge_saetze") if isinstance(language, dict) else None

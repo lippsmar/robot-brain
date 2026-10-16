@@ -253,3 +253,41 @@ def test_nearly_faded_factors_are_not_named(engine, clock):
     mood = engine.current()
     assert mood.stimmung > 0
     assert mood.reason == "nichts Besonderes"
+
+
+def test_the_reason_never_counts_zero_for_a_factor_from_before_midnight():
+    clock = FakeClock(datetime(2026, 10, 15, 21, 30, tzinfo=UTC))  # 23:30 in Berlin
+    engine = MoodEngine(PROFILE, clock=clock)
+    engine.record("smalltalk")
+    clock.advance(minutes=45)  # 00:15 in Berlin
+
+    reason = engine.current().reason
+    assert "die erste Smalltalk-Frage" in reason
+    assert "0." not in reason
+
+
+@pytest.mark.parametrize(
+    "text",
+    ["Hast du die Todo-Liste?", "Kannst du Milch besorgen?", "Ein gewaltiger Fortschritt!", "Neue Sicherheitslücke?"],
+)
+def test_everyday_words_are_not_mistaken_for_serious_topics(engine, text):
+    engine.record("smalltalk")
+
+    assert engine.for_answer(text).damped is False
+
+
+class BrokenLog:
+    def append(self, *args, **kwargs):
+        raise OSError("Platte voll")
+
+
+def test_a_failed_log_write_leaves_the_mood_unchanged(clock):
+    engine = MoodEngine(PROFILE, log=BrokenLog(), clock=clock)
+
+    with pytest.raises(OSError):
+        engine.record("smalltalk")
+
+    assert engine.current().reason == "nichts Besonderes"
+    engine._log = None
+    engine.record("smalltalk")
+    assert "die erste Smalltalk-Frage" in engine.current().reason

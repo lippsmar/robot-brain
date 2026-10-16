@@ -1,40 +1,52 @@
 # brain – Code für Schlaubis Gehirn
 
-Stand 15.10.2026. Der Code entsteht nach `docs/bauplan-gehirn-v1.md`, testgetrieben, mit Python 3.13 (wie Debian 13 auf dem Gehirn-Laptop).
+Stand 16.10.2026. Der Code entsteht nach `docs/bauplan-gehirn-v1.md` und `docs/bauplan-charakter-v1.md`, testgetrieben, mit Python 3.13 (wie Debian 13 auf dem Gehirn-Laptop).
 
 ## Bausteine
 
 | Datei | Zweck | Bauplan |
 |---|---|---|
-| `eventlog.py` | Event-Log: eine JSONL-Datei pro Tag (UTC), fortlaufende Nummer, Hash-Kette gegen unbemerkte Änderungen, Anker (`head()`) gegen Kürzen und Neuschreiben, Prüfung gegen `schemas/event.schema.json`, Secrets werden abgewiesen, Dateien nur für Schlaubis Konto lesbar | Grenzen und Regeln: „Jede Aktion wird protokolliert“ |
-| `budget.py` | Budget-Wächter: Kosten aus den Nutzungsdaten der API, Grenzen in Euro, Töpfe Gesamt, Recherche und Selbstoptimierung, Stufen Warnung, Sparmodus, Stopp. Stoppt vor dem Console-Limit, lässt Gesprächen immer das Minimum, weist Modelle ohne Preise ab | 7.3 |
-| `memory.py` | Gedächtnis-Kern: SQLite (STRICT-Tabellen, nur anhängen, auch gegen `INSERT OR REPLACE` gesichert), Herkunft, `pii`, `teilbar`, Merk-Schutz, Archiv statt Löschen, Löschen nur mit Marvins Freigabe (Inhalt wird überschrieben), Volltextsuche nach Wörtern (ß/ss, ä/ae gleichwertig) und Wortteilen, Eingang für Einträge anderer Hosts | 10.2, 10.2a |
+| `eventlog.py` | Event-Log: eine JSONL-Datei pro Tag (UTC), fortlaufende Nummer, Hash-Kette gegen unbemerkte Änderungen, Anker (`head()`) gegen Kürzen und Neuschreiben, Prüfung gegen `schemas/event.schema.json` (seit 16.10.2026 Version 1.2, alte Einträge mit 1.1 bleiben gültig), Secrets werden abgewiesen, Dateien nur für Schlaubis Konto lesbar | Grenzen und Regeln: „Jede Aktion wird protokolliert“ |
+| `budget.py` | Budget-Wächter: Kosten aus den Nutzungsdaten der API, Grenzen in Euro, Töpfe Gesamt, Recherche und Selbstoptimierung, Stufen Warnung, Sparmodus, Stopp. Stoppt vor dem Console-Limit, lässt Gesprächen immer das Minimum, weist Modelle ohne Preise ab | Gehirn 7.3 |
+| `memory.py` | Gedächtnis-Kern: SQLite (STRICT-Tabellen, nur anhängen, auch gegen `INSERT OR REPLACE` gesichert), Herkunft, `pii`, `teilbar`, Merk-Schutz, Archiv statt Löschen, Löschen nur mit Marvins Freigabe (Inhalt wird überschrieben), Volltextsuche nach Wörtern (ß/ss, ä/ae gleichwertig) und Wortteilen, Eingang für Einträge anderer Hosts | Gehirn 10.2, 10.2a |
+| `images.py` | Bilder vor dem Versand an Claude bereinigen: JPEG und PNG ohne EXIF, Ort, XMP, ICC, Kommentare, Vorschaubilder und Daten hinter dem Bildende. Erlaubnisliste, Pixel bleiben Byte für Byte gleich, andere Formate und kaputte Dateien werden abgewiesen. Die Drehung (EXIF-Orientierung) wird vorher ausgelesen und mitgegeben | Gehirn 11.2 |
 | `schema.py` | kleine Prüfung gegen JSON-Schema (nur die Schlüsselwörter, die unsere Schemas nutzen) | – |
 | `secrets_guard.py` | erkennt Secrets in Daten, bevor sie gespeichert werden (Schlüsselnamen auch in camelCase, bekannte Key-Formate, HTTP-Auth). Zahlen wie GPIO-Pins bleiben erlaubt | Arbeitsregeln |
-| `config/prices.toml` | Preise der Claude-API mit Quelle und Prüfdatum | 7.2 |
-| `config/budget.toml` | Grenzen in Euro, Wechselkurs mit Datum, Schwellen | 7.1, 7.3 |
+| `character/kern.md`, `character/core.py` | fester Kern (Rangfolge und Regeln aus Design Charakter, Abschnitt 2) und Startschutz: Schlaubi startet nur, wenn der Kern genau dem letzten git-Stand entspricht, dem Dienst nicht gehört, nicht für Gruppe oder andere beschreibbar ist und kein Link ist | Charakter 1 |
+| `character/profil.yaml`, `profil.schema.json`, `profile.py` | Startprofil (Persönlichkeit, Regler, Haltung, Laune-Faktoren, Entwicklung) mit Schema. Einträge, die den Kern berühren, werden abgewiesen | Charakter 2 |
+| `character/prompt.py` | System-Prompt: Kern zuerst und vollständig, dann Rolle, Charakter, Zeit, Kanal, Laune mit Grund und Antwortlänge. Fester Teil getrennt vom wechselnden (Caching), Grenze 6000 Zeichen | Charakter 3 |
+| `character/mood.py` | Laune-Rechner: Stimmung, Energie, Gereiztheit, abklingende Faktoren, Begründung, Dämpfung bei ernsten Themen, jede Änderung im Event-Log | Charakter 4 |
+| `character/pruefragen.yaml`, `exam.py` | 40 Prüffragen (19 Kern-Fragen) mit Regelprüfung und Bewertungs-Prompt für Haiku. Bestanden: Kern 100 %, Rest mindestens 90 % | Charakter 5 |
+| `character/safe_yaml.py` | strenges YAML-Laden: nur SafeLoader, keine doppelten Schlüssel, keine Aliase, Größen- und Tiefengrenze | Charakter 2, 5 |
+| `config/prices.toml` | Preise der Claude-API mit Quelle und Prüfdatum | Gehirn 7.2 |
+| `config/budget.toml` | Grenzen in Euro, Wechselkurs mit Datum, Schwellen | Gehirn 7.1, 7.3 |
 
-Vektorsuche (sqlite-vec, fastembed, LanceDB), Fristen-Lauf, Themenseiten und Quellen-Bewertung folgen in eigenen Schritten (Bauplan 10.1, 10.3 bis 10.6).
+Vektorsuche (sqlite-vec, fastembed, LanceDB), Fristen-Lauf, Themenseiten und Quellen-Bewertung folgen in eigenen Schritten (Bauplan Gehirn 10.1, 10.3 bis 10.6).
+
+### Laufzeit-Profil liegt nicht im Repo
+`character/profil.yaml` ist das Startprofil. Ändert Marvin den Charakter im Gespräch (Bauplan Charakter Phase 10), ist das Laufzeit-Datum und liegt nach der Code-Regel nie im Repo: Das laufende Profil bekommt ein eigenes git-Repo in Schlaubis Datenordner, dem Dienst gehörend. Das Code-Repo mit `kern.md` bleibt für den Dienst nur lesbar. Deshalb darf der Startschutz verlangen, dass der `.git`-Ordner des Code-Repos dem Dienst nicht gehört (Befund 13 der Code-Prüfung vom 16.10.2026).
 
 ## Tests
 
 ```sh
 python3 -m venv .venv
-.venv/bin/pip install --require-hashes -r brain/requirements-dev.txt
+.venv/bin/pip install --require-hashes -r brain/requirements.txt -r brain/requirements-dev.txt
 .venv/bin/python -m pytest                      # alle Tests
 .venv/bin/ruff check brain                      # Code-Prüfung
 .venv/bin/mypy                                  # Typprüfung
 .venv/bin/python -m coverage run -m pytest && .venv/bin/python -m coverage report
 .venv/bin/python tools/dev/mutation_check.py    # erkennen die Tests eingebaute Fehler?
-# danach in Claude Code: /code-review brain/ high
+# danach in Claude Code: /code-review <Bereich> high
 ```
 
-Stand 15.10.2026: 166 Tests grün, Abdeckung 97 %, mypy ohne Befund, alle 35 eingebauten Fehler werden erkannt. Danach lief die eingebaute Code-Prüfung von Claude Code (`/code-review`); ihre 14 berechtigten Befunde sind behoben und mit Tests abgesichert.
+`brain/requirements.txt` enthält die Pakete für den Betrieb (seit 16.10.2026 PyYAML), `brain/requirements-dev.txt` die Werkzeuge für die Entwicklung. Die Testumgebung liegt in `.venv` im Repo (nicht eingecheckt), damit auch Prüf-Agenten sie finden.
+
+Stand 16.10.2026: 400 Tests grün, Abdeckung 97 %, mypy ohne Befund, alle 102 eingebauten Fehler werden erkannt. `mutation_check.py` prüft vorher, ob die Tests ohne eingebauten Fehler grün sind. Die Code-Prüfung (`/code-review`) vom 16.10.2026 fand 15 Befunde: 14 sind behoben und mit Tests abgesichert, einer (13) ist durch das getrennte Laufzeit-Profil gelöst.
 
 ## Regeln für den Code
 - Erst der Test, dann der Code. Fertig ist etwas erst, wenn ein frischer Testlauf es belegt.
 - Für jede wichtige Regel einen eingebauten Fehler in `brain/tests/mutations.json` ergänzen. Überlebt er, fehlt ein Test.
-- Laufzeitdaten (Event-Log, Datenbank) liegen nie im Repo. Pfade kommen aus der Config.
+- Laufzeitdaten (Event-Log, Datenbank, laufendes Profil) liegen nie im Repo. Pfade kommen aus der Config.
 - Keine Secrets in Code, Tests, Logs oder Gedächtnis. Nur Referenzen auf den Secret-Store.
 - Fremde Pakete nur nach Prüfung (`skills/INDEX.md`), mit fester Version, mindestens 14 Tage alt, Installation nur mit Prüfsummen (`--require-hashes`).
 - Bezeichner und Kommentare im Code auf Englisch, Doku für Marvin auf Deutsch.

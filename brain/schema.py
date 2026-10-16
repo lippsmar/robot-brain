@@ -93,6 +93,9 @@ def _validate_object(instance, schema, where):
     properties = schema.get("properties", {})
     extra = schema.get("additionalProperties", True)
     for name, value in instance.items():
+        if not isinstance(name, str):
+            errors.append(f"{where}: key {name!r} is not text")
+            continue
         if "propertyNames" in schema:
             errors.extend(validate(name, schema["propertyNames"], f"{where}.<{name}>"))
         if name in properties:

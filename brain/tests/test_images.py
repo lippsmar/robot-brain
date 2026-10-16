@@ -8,7 +8,7 @@ import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from brain.images import MAX_BYTES, ImageError, media_type, strip_metadata
+from brain.images import MAX_BYTES, ImageError, clean_image, media_type, strip_metadata
 
 FIXTURES = Path(__file__).with_name("fixtures")
 META_JPG = (FIXTURES / "meta.jpg").read_bytes()  # EXIF with GPS, XMP, ICC, comment, data after the end
@@ -206,3 +206,51 @@ def test_cleaning_keeps_exactly_the_image_segments(segments, scan, trailer):
 
     assert cleaned == expected
     assert strip_metadata(cleaned) == cleaned
+
+
+def test_a_jfif_thumbnail_and_hidden_bytes_are_removed():
+    basic = b"JFIF\x00\x01\x02\x01\x00\x48\x00\x48"
+    with_thumbnail = basic + b"\x02\x02" + bytes(12) + b"GPS 50.1,8.6 Marvin"
+
+    cleaned = strip_metadata(jpeg(segment(0xE0, with_thumbnail)))
+
+    assert b"Marvin" not in cleaned
+    assert cleaned == jpeg(segment(0xE0, basic + b"\x00\x00"))
+
+
+@pytest.mark.parametrize("marker", [0x02, 0x50, 0xBF, 0xC8, 0xF0, 0xF7, 0xFD])
+def test_unknown_segments_are_refused_instead_of_passed_on(marker):
+    with pytest.raises(ImageError, match="unbekannt"):
+        strip_metadata(jpeg(segment(marker, b"GPS 50.1,8.6 Marvin")))
+
+
+def exif(orientation, big_endian=True):
+    order = ">" if big_endian else "<"
+    header = (b"MM" if big_endian else b"II") + struct.pack(order + "HI", 42, 8)
+    entry = struct.pack(order + "HHI", 0x0112, 3, 1) + struct.pack(order + "H", orientation) + b"\x00\x00"
+    return b"Exif\x00\x00" + header + struct.pack(order + "H", 1) + entry + struct.pack(order + "I", 0)
+
+
+@pytest.mark.parametrize("big_endian", [True, False])
+def test_the_orientation_is_read_before_the_metadata_goes(big_endian):
+    original = jpeg(segment(0xE1, exif(6, big_endian)))
+
+    cleaned = clean_image(original)
+
+    assert cleaned.orientation == 6
+    assert cleaned.media_type == "image/jpeg"
+    assert cleaned.data == jpeg()
+
+
+@pytest.mark.parametrize(
+    "data",
+    [
+        jpeg(),
+        jpeg(segment(0xE1, b"Exif\x00\x00MM\x00*\x00\x00\x00\xff")),  # IFD offset outside the segment
+        jpeg(segment(0xE1, exif(9))),  # not a valid orientation
+        jpeg(segment(0xE1, b"http://ns.adobe.com/xap/1.0/\x00<x/>")),
+        META_PNG,
+    ],
+)
+def test_without_a_valid_orientation_the_image_counts_as_upright(data):
+    assert clean_image(data).orientation == 1

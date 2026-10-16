@@ -135,3 +135,57 @@ def test_profile_files_on_disk_are_checked_too(tmp_path):
 
     with pytest.raises(ProfileError, match="maximum"):
         load_profile(path)
+
+
+@pytest.mark.parametrize(
+    "replacement",
+    [
+        "bewegliche_regler:",
+        "bewegliche_regler: 5",
+        "bewegliche_regler: [[direktheit]]",
+    ],
+)
+def test_malformed_development_rules_give_a_profile_error(replacement):
+    text = PROFILE_FILE.read_text(encoding="utf-8")
+    text = text.replace("bewegliche_regler: [direktheit, humor_haeufigkeit, humor_trockenheit]", replacement)
+
+    with pytest.raises(ProfileError):
+        parse_profile(text)
+
+
+@pytest.mark.parametrize("key", ["on", "yes", "7"])
+def test_slider_names_must_be_text(key):
+    text = PROFILE_FILE.read_text(encoding="utf-8").replace(
+        "regler:\n", f"regler:\n  {key}: {{wert: 1, min: 0, max: 3}}\n", 1
+    )
+
+    with pytest.raises(ProfileError):
+        parse_profile(text)
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "? [a, b]\n: 1\n",  # a list as key
+        "grundton: " + "[" * 3000 + "]" * 3000 + "\n",  # far too deep
+    ],
+)
+def test_odd_yaml_gives_a_profile_error(text):
+    with pytest.raises(ProfileError):
+        parse_profile(text)
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        lambda p: p["vorlieben"].append("Ausflüge in die Natur"),
+        lambda p: p["vorlieben"].append("der Linux-Kernel"),
+        lambda p: p["laune"]["faktoren"]["kritik"].update(grund="Marvin ist enttäuscht"),
+        lambda p: p["laune"]["ernste_themen"].append("Notruf"),
+    ],
+)
+def test_harmless_words_that_merely_contain_a_core_term_are_fine(profile, change):
+    edited = copy.deepcopy(profile)
+    change(edited)
+
+    assert check_profile(edited) == []

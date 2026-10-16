@@ -112,7 +112,10 @@ class MoodEngine:
         settings = profile["laune"]
         self._factors = settings["faktoren"]
         self._baseline = {axis: float(settings["grundlinie"][axis]) for axis in AXES}
-        self._serious = tuple(term.lower() for term in settings["ernste_themen"])
+        # Whole words only: "Tod" is serious, "Todo-Liste" is not.
+        self._serious = tuple(
+            re.compile(r"(?<!\w)" + re.escape(term) + r"(?!\w)", re.IGNORECASE) for term in settings["ernste_themen"]
+        )
         self._log = log
         self._zone = ZoneInfo(timezone)
         self.clock = clock
@@ -136,7 +139,11 @@ class MoodEngine:
         return engine
 
     def record(self, factor, *, value=None, strength=1.0):
-        """Record an event or a new state and log the resulting mood with its reason."""
+        """Record an event or a new state and log the resulting mood with its reason.
+
+        If the log cannot be written, the change is undone: every mood change stays in the log.
+        """
+        saved = (list(self._entries), dict(self._counts))
         self._add(factor, self.clock(), value, strength)
         mood = self.current()
         if self._log is not None:
@@ -148,7 +155,11 @@ class MoodEngine:
             }
             if value is not None:
                 payload["wert"] = value
-            self._log.append("character.mood", payload, intent="mood.record")
+            try:
+                self._log.append("character.mood", payload, intent="mood.record")
+            except Exception:
+                self._entries, self._counts = saved
+                raise
         return mood
 
     def _add(self, factor, at, value, strength):
@@ -198,6 +209,9 @@ class MoodEngine:
     def _describe(self, name, now):
         latest = next((entry for entry in reversed(self._entries) if entry.factor == name), None)
         count = self._counts.get((name, now.astimezone(self._zone).date()), 0)
+        if count == 0:  # still active from before local midnight: count what is still active
+            fading = timedelta(minutes=self._factors[name]["abklingzeit_min"])
+            count = sum(1 for entry in self._entries if entry.factor == name and now - entry.at < fading)
         values = {
             "wert": _format_value(latest.value) if latest is not None and latest.value is not None else "?",
             "anzahl": str(count),
@@ -207,7 +221,6 @@ class MoodEngine:
 
     def for_answer(self, text="", *, serious=False):
         """The mood to answer with: neutral when the topic is serious (Bauplan 4.4)."""
-        lowered = text.lower()
-        if serious or any(term in lowered for term in self._serious):
+        if serious or any(pattern.search(text) for pattern in self._serious):
             return Mood(0.0, 0.0, 0.0, DAMPED_REASON, (), damped=True)
         return self.current()
