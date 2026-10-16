@@ -77,5 +77,14 @@
   {"file": "brain/character/exam.py", "test": "brain/tests/test_character_exam.py", "old": "if not isinstance(verdict, dict) or not isinstance(verdict.get(\"bestanden\"), bool):", "new": "if not isinstance(verdict, dict):", "why": "Prüffragen: unklares Urteil zählt als bestanden"},
   {"file": "brain/character/exam.py", "test": "brain/tests/test_character_exam.py", "old": "if question.get(\"kanal\", \"gesprochen\") == \"gesprochen\":", "new": "if False:", "why": "Prüffragen: Formatierung in gesprochenen Antworten fällt nicht auf"},
   {"file": "brain/character/exam.py", "test": "brain/tests/test_character_exam.py", "old": "for phrase in AI_STOCK_PHRASES:", "new": "for phrase in ():", "why": "Prüffragen: KI-Floskeln fallen nicht auf"},
-  {"file": "brain/character/exam.py", "test": "brain/tests/test_character_exam.py", "old": "duplicates = sorted({name for name in ids if ids.count(name) > 1})", "new": "duplicates = []", "why": "Prüffragen: doppelte ids werden nicht bemerkt"}
+  {"file": "brain/character/exam.py", "test": "brain/tests/test_character_exam.py", "old": "duplicates = sorted({name for name in ids if ids.count(name) > 1})", "new": "duplicates = []", "why": "Prüffragen: doppelte ids werden nicht bemerkt"},
+  {"file": "brain/images.py", "test": "brain/tests/test_images.py", "old": "if marker == 0xFE:  # comment", "new": "if False:", "why": "Bilder: Kommentare bleiben im JPEG"},
+  {"file": "brain/images.py", "test": "brain/tests/test_images.py", "old": "return 0xE1 <= marker <= 0xEF", "new": "return 0xE1 <= marker <= 0xE1", "why": "Bilder: nur APP1 wird entfernt, ICC und IPTC bleiben"},
+  {"file": "brain/images.py", "test": "brain/tests/test_images.py", "old": "out += b\"\\xff\\xd9\"", "new": "out += data[position - 2 :]", "why": "Bilder: Daten hinter dem Bildende bleiben drin"},
+  {"file": "brain/images.py", "test": "brain/tests/test_images.py", "old": "if following == 0x00 or 0xD0 <= following <= 0xD7:", "new": "if following == 0x00:", "why": "Bilder: Restart-Marker beenden die Bilddaten zu früh"},
+  {"file": "brain/images.py", "test": "brain/tests/test_images.py", "old": "if kind in _PNG_KEEP:", "new": "if True:", "why": "Bilder: Text- und EXIF-Blöcke bleiben im PNG"},
+  {"file": "brain/images.py", "test": "brain/tests/test_images.py", "old": "if zlib.crc32(kind + body) != checksum:", "new": "if False:", "why": "Bilder: beschädigte PNG-Blöcke werden durchgereicht"},
+  {"file": "brain/images.py", "test": "brain/tests/test_images.py", "old": "return segment[2:7] != b\"JFIF\\x00\"", "new": "return False", "why": "Bilder: Vorschaubilder in APP0 bleiben drin"},
+  {"file": "brain/images.py", "test": "brain/tests/test_images.py", "old": "if len(data) > MAX_BYTES:", "new": "if False:", "why": "Bilder: riesige Dateien werden verarbeitet"},
+  {"file": "brain/images.py", "test": "brain/tests/test_images.py", "old": "return not (segment[2:7] == b\"Adobe\" and len(segment) == 14)", "new": "return False", "why": "Bilder: APP14 mit Zusatzdaten bleibt drin"}
 ]
