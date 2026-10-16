@@ -1,6 +1,6 @@
 # CLAUDE.md – KI-Roboter (robot-brain)
 
-Status: Entwurf v0.1, Stand 13.10.2026. Spiegel der Notion-Seite „CLAUDE.md – Projektbeschreibung“. Bei Widerspruch gilt Notion, und es wird nachgefragt.
+Status: Stand 16.10.2026, abgeglichen mit der Notion-Seite „CLAUDE.md – Projektbeschreibung“ (Spiegel). Bei Widerspruch gilt Notion, und es wird nachgefragt.
 
 ## 1. Ziel
 Ein kleiner Roboter mit Sensoren und KI-Zugang, der im Hintergrund Wissen sammelt, auf Anweisung Themen vertieft und sein Wissen in einem externen Speicher ablegt und abrufbar hält. Er hat eine eigene SIM-Karte (SMS, Daten) und eine eigene E-Mail-Adresse. Marvin trägt die rechtliche Verantwortung für alle Konten, die SIM und den API-Key.
@@ -68,5 +68,6 @@ Google-Funktionen werden mit einem separaten Google-Testkonto getestet, das Marv
 - [x] Testweg und angepasste Baupläne bestätigt (15.10.2026): Gehirn zuerst, dann Handy als Test-Würfel (Bauplan Gehirn 11.5–11.8), erst danach Stufe 2 kaufen
 - [ ] Testweg durchführen (nach Gehirn Phase 1–11)
 - [ ] Phase 1: Teile Stufe 1 bestellen (Marvin, `docs/einkauf-stufe1.md`)
-- [ ] Laptop als Gehirn: Modell, RAM, Speicher, Akkuzustand und Betriebssystem erfassen und Eignung prüfen
+- [ ] Laptop als Gehirn: Modell, RAM, Speicher, Akkuzustand und Betriebssystem erfassen und Eignung prüfen (dabei AVX2 prüfen, für LanceDB)
 - [ ] Superpowers in Claude Code installieren und Telemetrie abschalten (macht Marvin, siehe `docs/projektstart-details.md`)
+- [ ] Design Data Lakehouse klären und freigeben (Entwurf 16.10.2026, `docs/design-lakehouse.md`)
