@@ -19,6 +19,16 @@ DEFAULT_LIST = ROOT / "brain" / "tests" / "mutations.json"
 COPY = ("brain", "schemas", "pyproject.toml")
 
 
+def run_tests(work, test_file):
+    return subprocess.run(
+        [sys.executable, "-m", "pytest", "-x", "-q", "-p", "no:cacheprovider", test_file],
+        cwd=work,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
 def main(list_path):
     mutations = json.loads(Path(list_path).read_text(encoding="utf-8"))
     survivors = 0
@@ -30,6 +40,11 @@ def main(list_path):
                 shutil.copytree(source, work / name, ignore=shutil.ignore_patterns("__pycache__"))
             else:
                 shutil.copy(source, work / name)
+        # Without this baseline, a test file that fails anyway would make every mutation look "caught".
+        for test_file in sorted({mutation["test"] for mutation in mutations}):
+            if run_tests(work, test_file).returncode != 0:
+                print(f"BASIS ROT {test_file}: schlägt schon ohne eingebauten Fehler fehl, Prüfung abgebrochen")
+                return 2
         for mutation in mutations:
             file = work / mutation["file"]
             original = file.read_text(encoding="utf-8")
@@ -38,13 +53,7 @@ def main(list_path):
                 survivors += 1
                 continue
             file.write_text(original.replace(mutation["old"], mutation["new"]), encoding="utf-8")
-            result = subprocess.run(
-                [sys.executable, "-m", "pytest", "-x", "-q", "-p", "no:cacheprovider", mutation["test"]],
-                cwd=work,
-                capture_output=True,
-                text=True,
-                check=False,
-            )
+            result = run_tests(work, mutation["test"])
             file.write_text(original, encoding="utf-8")
             caught = result.returncode != 0
             survivors += not caught
