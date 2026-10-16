@@ -1,10 +1,10 @@
 # Optimierung für Claude: Lessons Learned und Mechanismen
 
-Stand 15.10.2026. Auf Marvins Wunsch geschrieben. Gilt für Claude in Claude Code und im Chat bei der Arbeit am KI-Roboter „Schlaubi“. Ergänzt `CLAUDE.md` und die roboter-Skills, ersetzt sie nicht. Wird nach jedem Rückblick (roboter-retro) fortgeschrieben.
+Stand 16.10.2026. Auf Marvins Wunsch geschrieben. Gilt für Claude in Claude Code und im Chat bei der Arbeit am KI-Roboter „Schlaubi“. Ergänzt `CLAUDE.md` und die roboter-Skills, ersetzt sie nicht. Wird nach jedem Rückblick (roboter-retro) fortgeschrieben.
 
 **Eigenes Notion-Projekt seit 15.10.2026:** „Claude – Selbstoptimierung“ (privat, nicht im Robot Brain) mit der Datenbank „Lessons Learned“. Diese Datei ist der Spiegel im Repo. Bei Widerspruch gilt Notion.
 
-## 1. Lessons Learned (13.–15.10.2026)
+## 1. Lessons Learned (13.–16.10.2026)
 
 ### Zusammenarbeit mit Marvin
 1. **Marvin liest am Pixel 8.** Kurze Absätze, Listen statt breiter Tabellen, Fazit zuerst, Deutsch.
@@ -51,6 +51,9 @@ Stand 15.10.2026. Auf Marvins Wunsch geschrieben. Gilt für Claude in Claude Cod
 27. **Frische Paketversionen meiden.** pluggy 1.7.0 und hypothesis 6.170.0 waren am selben Tag erschienen. Mechanismus: nur Versionen, die mindestens 14 Tage alt sind, Installation nur mit Prüfsummen.
 28. **Grüne Tests und überlebende Fehler reichen nicht.** Die eingebaute Code-Prüfung (`/code-review`) fand danach noch 14 echte Fehler (Eingang hängt, Sperre bleibt offen, Budget verliert Ausgaben). Mechanismus: nach jedem Code-Baustein `/code-review` laufen lassen, jeden Befund mit Test und eingebautem Fehler absichern.
 29. **Prüfer können sich auf veraltete Doku stützen.** Die Code-Prüfung hielt den Sonnet-Cache-Preis für falsch, gestützt auf die lokale Doku; die offizielle Preisseite bestätigt den Wert im Code. Mechanismus: jeden Befund gegen die Primärquelle prüfen, abgelehnte Befunde mit Beleg nennen.
+30. **Testumgebung gehört an den dokumentierten Ort.** Die Prüfwerkzeuge lagen in einer Umgebung im Scratchpad statt in `.venv`, wie es `brain/README.md` beschreibt. Der Prüf-Agent der Code-Prüfung fand sie nicht. Seine Fehlermeldung sah für Marvin wie ein Absturz aus. Mechanismus: `.venv` im Repo anlegen (steht in `.gitignore`). Bei Meldungen von Subagenten sagen, woher sie kommen.
+31. **Secrets nur mit Fundort melden.** Mechanismus: Datei, Art, Länge und Commit nennen, Werte nie auslesen oder vergleichen. Fundstellen in öffentlichen Repos erst dann in öffentliche Dateien schreiben, wenn die Keys gedreht sind.
+32. **Beschriebene Zustände nachprüfen, nicht übernehmen.** Der Projektlog nannte robot-brain „privat“, das Repo ist aber seit dem Anlegen öffentlich. Mechanismus: Einstellungen, die Marvin von Hand vornimmt (Sichtbarkeit, Zwei-Faktor-Anmeldung, Limits), nach der Erledigung einmal prüfen und das Ergebnis eintragen.
 
 ## 2. Mechanismen (Checklisten)
 

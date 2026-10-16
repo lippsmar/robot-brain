@@ -1,6 +1,6 @@
 # Skill-Katalog
 
-Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. Stand 15.10.2026.
+Spiegel der Notion-Seiten „Skill-Bibliothek“ und „Skill-Prüfstatus“. Stand 16.10.2026.
 
 ## Eigene Skills
 | Skill | Status | Zweck |
@@ -76,6 +76,7 @@ Nicht vollständig gelesen (zu groß). Gelesen bzw. durchsucht: Lizenzdateien, a
 - [ ] Berechtigungen geprüft: Skripte, Hooks, Netzwerk, Telemetrie, Zugangsdaten
 - [ ] Passt zu einem Solo-Hardwareprojekt
 - [ ] Skill vollständig gelesen, nicht nur die Beschreibung
+- [ ] Modelldateien nur als ONNX, safetensors oder GGUF/GGML. Pickle-Formate (`.pkl`, `.pt`, `.pth`, FAISS-Index mit `allow_dangerous_deserialization`) und Keras-`.h5` mit Lambda-Schichten können beim Laden Code ausführen und werden nie aus fremden Quellen geladen (16.10.2026)
 
 ## Vorlage für neue Skills
 ```markdown

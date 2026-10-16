@@ -1,6 +1,6 @@
 # Mögliche Features für später
 
-Stand 15.10.2026. Sammlung von Ideen, die nicht in Version 1 kommen. Nichts davon ist beschlossen. Vor der Umsetzung gilt der normale Weg: Design, Freigabe, Bauplan, Bestätigung. Spiegel der Notion-Seite „Mögliche Features (Zukunft)“. R = recherchiert, S = Schätzung.
+Stand 16.10.2026. Sammlung von Ideen, die nicht in Version 1 kommen. Nichts davon ist beschlossen. Vor der Umsetzung gilt der normale Weg: Design, Freigabe, Bauplan, Bestätigung. Spiegel der Notion-Seite „Mögliche Features (Zukunft)“. R = recherchiert, S = Schätzung.
 
 ## Sehen und 3D
 - **ToF-Tiefenkamera am Würfel:** Arducam ToF-Kamera, 240×180, bis 4 m, ±2 cm, am Zero 2 W ca. 15 Bilder/s über den Kamera-Anschluss, der durch den Wegfall der Kamera frei ist. Doku von 2022, Unterstützung für aktuelles Raspberry Pi OS prüfen. (R)
@@ -19,6 +19,9 @@ Stand 15.10.2026. Sammlung von Ideen, die nicht in Version 1 kommen. Nichts davo
 - USB-Hub, weil der einzige USB-Anschluss des Zero vom LTE-Modem belegt ist
 - Bluetooth LE für kabelloses Zubehör
 - Magnetische Kontakte (Pogo-Pins) für aufsteckbare Module
+
+## Aus Marvins früheren Projekten (GitHub, 16.10.2026)
+- **Pflanzen-Doktor:** Marvin hält eine Pflanze vor die Handykamera. Schlaubi schickt auf Frage ein Einzelbild an Claude und nimmt Luftfeuchte, Temperatur und Licht vom Würfel dazu. Vorbild: Dr. Greenthumb, Marvins Abschlussprojekt im Bootcamp. Das alte Tomaten-Modell wird nicht übernommen. Es kennt nur Laborfotos von Tomatenblättern, und die App liest die Klassen um eins verschoben aus. (S)
 
 ## Aus früheren Entscheidungen (Version 2)
 - Display mit Gesicht (Design Körper)
