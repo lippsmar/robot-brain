@@ -1,6 +1,6 @@
-# Design Wissensarchitektur – Entwurf
+# Design Wissensarchitektur – Version 1
 
-Stand 16.10.2026. **Entwurf zur Freigabe.** Baut auf dem freigegebenen Design Data Lakehouse auf (`docs/design-lakehouse.md`) und ersetzt nichts davon. Spiegel der Notion-Seite „Design Wissensarchitektur (Entwurf)“. S = Schätzung, R = recherchiert, A = Annahme.
+Stand 16.10.2026. **Freigegeben von Marvin am 16.10.2026** („Ja“, zusammen mit dem Auftrag, den Bauplan zu schreiben und mit Stufe 1 anzufangen). Bauplan: `docs/bauplan-wissen-v1.md`. Baut auf dem freigegebenen Design Data Lakehouse auf (`docs/design-lakehouse.md`) und ersetzt nichts davon. Spiegel der Notion-Seite „Design Wissensarchitektur“. S = Schätzung, R = recherchiert, A = Annahme.
 
 ## 1. Zweck
 Schlaubi soll wirklich alles Wissen aufnehmen können und es trotzdem schnell, belegt und aktuell abrufen. Dazu gehört, was er erlebt und recherchiert, ganze Wissensbestände wie die Wikipedia und Wissensmodule, die Marvin ihm gibt.
